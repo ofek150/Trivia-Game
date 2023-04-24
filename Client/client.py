@@ -15,27 +15,40 @@ def get_port() -> int:
             print("Invalid input. Please try again.")
 
 def connect_to_server(port:int) -> socket:
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_address = (SERVER_ADDR, port)
-    client_socket.connect(server_address)
+    try:
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server_address = (SERVER_ADDR, port)
+        client_socket.connect(server_address)
+    except Exception as e:
+        client_socket = -1
+        print(e)
     return client_socket
 
 def send_msg(client_socket):
     while True:
         message = input("Enter message to send: ")
         if len(message) > 0:
-            client_socket.sendall(message.encode('utf-8'))
-            break
+            try:
+                client_socket.sendall(message.encode('utf-8'))
+                break
+            except Exception as e:
+                print(e)
 
 def print_response(client_socket):
-    data = client_socket.recv(1024).decode('utf-8')
-    if data == "Hello":
-        print("Hello")
+    try:
+        data = client_socket.recv(1024).decode('utf-8')
+        if data == "Hello":
+            print("Hello")
+    except Exception as e:
+        print(e)
+        
 
 def main():
     
     port = get_port()
     client_socket = connect_to_server(port)
+    if client_socket == -1:
+        return 0
     send_msg(client_socket)
     print_response(client_socket)
     client_socket.close()
