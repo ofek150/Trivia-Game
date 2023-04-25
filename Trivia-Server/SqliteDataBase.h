@@ -13,6 +13,6 @@ class SqliteDataBase : public IDatabse
 	bool isPasswordValid(const std::string& username, const std::string& password) override;
 	void insertUserIntoDB(const std::string& username, const std::string& password, const std::string& email) override;
 private:
-	sqlite3* db;
+	sqlite3* db; 
 };
 
