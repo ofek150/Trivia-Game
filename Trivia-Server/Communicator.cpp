@@ -4,6 +4,12 @@ Communicator::~Communicator()
 {
 	try
 	{
+		// Delete all the IRequestHandlers from the memory
+		for (auto& client : m_clients)
+		{
+			delete client.second;
+		}
+
 		closesocket(m_serverSocket);
 	}
 	catch (...) {}
@@ -35,6 +41,10 @@ void Communicator::bindAndListen()
 	if (listen(m_serverSocket, SOMAXCONN) == SOCKET_ERROR)
 		throw std::exception(__FUNCTION__ " - listen");
 	std::cout << "Listening on port " << SERVER_PORT << std::endl;
+
+	/*int buffer_size = 57;
+	const char* buffer2 = "\x02\x00\x00\x00\x32\x11\x2A\x23\x98\x23\xAB\xFF{\"username\":\"john_doe\",\"password\":\"p@ssw0rd\"}";
+	LoginRequest loginRequest = JsonRequestPacketDeserializer::getInstance().deserializeLoginRequest(buffer2, buffer_size);*/
 
 	while (true)
 	{
@@ -88,12 +98,12 @@ void Communicator::clientHandler(SOCKET clientSocket)
 
 		std::cout << "Message from client: " << receivedMessage << std::endl;
 
-		LoginResponse loginResponse;
-		loginResponse.status = 100;
-		std::vector<unsigned char> serializedLoginResponse = JsonRequestPacketSerializer::getInstance().serializeResponse(loginResponse);
+		ErrorResponse errorResponse;
+		errorResponse.errorMessage = "ERROR";
+		std::vector<unsigned char> serializedErrorResponse = JsonRequestPacketSerializer::getInstance().serializeResponse(errorResponse);
 
 		// Convert the response message to a UTF-8 encoded byte array
-		std::vector<uint8_t> responseBytes(serializedLoginResponse.begin(), serializedLoginResponse.end());
+		std::vector<uint8_t> responseBytes(serializedErrorResponse.begin(), serializedErrorResponse.end());
 
 		// Send the response message back to the client
 		int bytesSent = send(clientSocket, reinterpret_cast<char*>(responseBytes.data()), responseBytes.size(), 0);
@@ -103,23 +113,24 @@ void Communicator::clientHandler(SOCKET clientSocket)
 		{
 			// handle error
 		}
-		logOutUser(clientSocket);
+		logOutClient(clientSocket);
 
 	}
 	catch (const std::exception& e)
 	{
 		std::cerr << e.what() << std::endl;
-		logOutUser(clientSocket);
+		logOutClient(clientSocket);
 		return;
 	}
 }
 
-void Communicator::logOutUser(SOCKET clientSocket)
+void Communicator::logOutClient(SOCKET clientSocket)
 {
 	try
 	{
 		std::lock_guard<std::mutex> clients_lock(clients_mutex);
 		closesocket(clientSocket);
+		delete m_clients[clientSocket];
 		m_clients.erase(clientSocket);
 		std::cout << "Removed a user from the connected users list" << std::endl;
 	}

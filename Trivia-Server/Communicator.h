@@ -16,6 +16,7 @@
 #include <string>
 #include "LoginRequestHandler.h"
 #include "JsonRequestPacketSerializer.h"
+#include "JsonRequestPacketDeserializer.h"
 
 
 #define SERVER_PORT 6969
@@ -30,7 +31,7 @@ private:
 	void bindAndListen();
 	void handleNewClient();
 	void clientHandler(SOCKET clientSocket);
-	void logOutUser(SOCKET clientSocket);
+	void logOutClient(SOCKET clientSocket);
 
 	SOCKET m_serverSocket;
 	std::map<SOCKET, IRequestHandler*> m_clients;

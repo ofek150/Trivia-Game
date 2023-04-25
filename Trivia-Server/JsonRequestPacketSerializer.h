@@ -3,6 +3,8 @@
 #include "ErrorResponse.h"
 #include "LoginResponse.h"
 #include "SignupResponse.h"
+#include "ResponseCodes.h"
+#include "json.hpp"
 
 #include <vector>
 
@@ -19,9 +21,9 @@ public:
     }
 
     // Public member functions for serializing responses
-    std::vector<unsigned char> serializeResponse(const ErrorResponse& response) const;
-    std::vector<unsigned char> serializeResponse(const LoginResponse& response) const;
-    std::vector<unsigned char> serializeResponse(const SignupResponse& response) const;
+    const std::vector<unsigned char> serializeResponse(const ErrorResponse& response) const;
+    const std::vector<unsigned char> serializeResponse(const LoginResponse& response) const;
+    const std::vector<unsigned char> serializeResponse(const SignupResponse& response) const;
 
     
 private:
