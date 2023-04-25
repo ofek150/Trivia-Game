@@ -1,5 +1,5 @@
 #include "Server.h"
-
+#include "SqliteDataBase.h"
 std::mutex exit_mtx;
 std::condition_variable exit_cv;
 bool exit_flag = false;
@@ -24,10 +24,8 @@ void getInput()
 int main()
 {	
 	Server myServer;
-
 	std::thread server_thread(&Server::run, &myServer);
 	server_thread.detach();
-
 	getInput();
 	return 0;
 }
