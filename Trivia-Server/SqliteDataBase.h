@@ -9,10 +9,10 @@ class SqliteDataBase : public IDatabse
 	bool open()override;
 	void close() override;
 	void clear() override;
-	void insertUserIntoDB(const std::string& username, const std::string& password, const std::string& email) override;
-	// queries
 	bool doesUserExist(const std::string& username) override;
 	bool isPasswordValid(const std::string& username, const std::string& password) override;
-
+	void insertUserIntoDB(const std::string& username, const std::string& password, const std::string& email) override;
+private:
+	sqlite3* db;
 };
 
