@@ -74,5 +74,14 @@
     <ClInclude Include="SignupRequest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="RequestInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RequestResult.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RequestCodes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
