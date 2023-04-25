@@ -13,8 +13,10 @@
 #include <exception>
 #include <mutex>
 #include <iostream>
-#include <set>
+#include <string>
 #include "LoginRequestHandler.h"
+#include "JsonRequestPacketSerializer.h"
+
 
 #define SERVER_PORT 6969
 
@@ -27,7 +29,7 @@ public:
 private:
 	void bindAndListen();
 	void handleNewClient();
-	void clientHandler(SOCKET clientSocket); // Handles the client
+	void clientHandler(SOCKET clientSocket);
 	void logOutUser(SOCKET clientSocket);
 
 	SOCKET m_serverSocket;

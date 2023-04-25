@@ -16,7 +16,6 @@ void Communicator::startHandleRequests()
 	if (m_serverSocket == INVALID_SOCKET)
 		throw std::exception(__FUNCTION__ " - socket");
 
-
 	bindAndListen();
 }
 
@@ -86,11 +85,15 @@ void Communicator::clientHandler(SOCKET clientSocket)
 		// Convert the received message to a std::string
 		std::string receivedMessage(buffer, bytesReceived);
 
-		// Handle the received message and prepare the response message
-		std::string responseMessage = "Hello";
+
+		std::cout << "Message from client: " << receivedMessage << std::endl;
+
+		LoginResponse loginResponse;
+		loginResponse.status = 100;
+		std::vector<unsigned char> serializedLoginResponse = JsonRequestPacketSerializer::getInstance().serializeResponse(loginResponse);
 
 		// Convert the response message to a UTF-8 encoded byte array
-		std::vector<uint8_t> responseBytes(responseMessage.begin(), responseMessage.end());
+		std::vector<uint8_t> responseBytes(serializedLoginResponse.begin(), serializedLoginResponse.end());
 
 		// Send the response message back to the client
 		int bytesSent = send(clientSocket, reinterpret_cast<char*>(responseBytes.data()), responseBytes.size(), 0);
