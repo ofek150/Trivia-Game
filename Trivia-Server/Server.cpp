@@ -1,7 +1,7 @@
 #include "Server.h"
 #define EXIT_INPUT "EXIT"
 
-void getInput()
+void Server::getInput()
 {
 	//get string in while(true) if input = exit ->exit else keep going 
 	std::string input;
@@ -15,23 +15,15 @@ void getInput()
 	}
 }
 
-int main()
-{	
-	Server myServer;
-
-	std::thread server_thread(&Server::run, &myServer);
-	server_thread.detach();
-
-	getInput();
-	return 0;
-}
-
 void Server::run()
 {
 	try
 	{
 		WSAInitializer wsaInit;
-		m_communicator.startHandleRequests();
+		std::thread t_connector([&]() { m_communicator.startHandleRequests(); });
+		t_connector.detach();
+
+		getInput();
 	}
 	catch (std::exception& e)
 	{

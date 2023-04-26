@@ -11,6 +11,8 @@ public:
 	void run();
 
 private:
+	void getInput();
+
 	Communicator m_communicator;
 };
 

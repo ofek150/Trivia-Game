@@ -25,13 +25,12 @@ def connect_to_server(port:int) -> socket:
     return client_socket
 
 def send_msg(client_socket):
-    while True:
-        message = input("Enter message to send: ")
-        if len(message) > 0:
-            try:
-                client_socket.sendall(message.encode('utf-8'))
-            except Exception as e:
-                print(e)
+    message = input("Enter message to send: ")
+    if len(message) > 0:
+        try:
+            client_socket.sendall(message.encode('utf-8'))
+        except Exception as e:
+            print(e)
 
 def print_server_message(client_socket):
     try:
