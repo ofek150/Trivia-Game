@@ -18,7 +18,7 @@ const std::vector<unsigned char> JsonRequestPacketSerializer::serializeResponse(
     return constructPacket(ResponseCodes::SignupResponseCode, json_data.dump());
 }
 
-const std::vector<unsigned char> JsonRequestPacketSerializer::constructPacket(int response_code, std::string json_dump) const
+const std::vector<unsigned char> JsonRequestPacketSerializer::constructPacket(int response_code, std::string json_dump)
 {
     std::vector<unsigned char> buffer;
 
