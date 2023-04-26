@@ -132,6 +132,7 @@
     <ClCompile Include="JsonRequestPacketSerializer.cpp" />
     <ClCompile Include="LoginRequestHandler.cpp" />
     <ClCompile Include="Server.cpp" />
+    <ClCompile Include="TriviaServer.cpp" />
     <ClCompile Include="WSAInitializer.cpp" />
   </ItemGroup>
   <ItemGroup>

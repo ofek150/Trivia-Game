@@ -21,13 +21,13 @@ public:
     }
 
     // Public member functions for serializing responses
-    const std::vector<unsigned char> serializeResponse(const ErrorResponse& response) const;
-    const std::vector<unsigned char> serializeResponse(const LoginResponse& response) const;
-    const std::vector<unsigned char> serializeResponse(const SignupResponse& response) const;
+    static const std::vector<unsigned char> serializeResponse(const ErrorResponse& response);
+    static const std::vector<unsigned char> serializeResponse(const LoginResponse& response);
+    static const std::vector<unsigned char> serializeResponse(const SignupResponse& response);
 
     
 private:
-    const std::vector<unsigned char> constructPacket(int response_code, std::string json_dump) const; // Constructs the packet from
+    static const std::vector<unsigned char> constructPacket(int response_code, std::string json_dump) const; // Constructs the packet from
     
 
     // Private constructor to prevent instantiation from outside

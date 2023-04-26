@@ -1,13 +1,10 @@
 #include "JsonRequestPacketDeserializer.h"
 
-LoginRequest JsonRequestPacketDeserializer::deserializeLoginRequest(std::vector<unsigned char> buffer) const
+LoginRequest JsonRequestPacketDeserializer::deserializeLoginRequest(const std::string& buffer)
 {
-    //Extracting message code
-    int message_code = static_cast<int>(buffer[0]);
+    std::string data = buffer.substr(buffer.find('{')); // Get only the json part in the buffer
 
-    //Extracting the time of arrival
-    time_t timestamp = *reinterpret_cast<time_t*>(&buffer[sizeof(int)]);
-
+    nlohmann::json json_Data = nlohmann::json::parse(data); // parse to json
     //Extracting the json data and parsing it.
     int json_size = buffer.size() - sizeof(int) - sizeof(time_t);
     std::string json_str(buffer[sizeof(int) + sizeof(std::time_t)], json_size);
@@ -21,7 +18,7 @@ LoginRequest JsonRequestPacketDeserializer::deserializeLoginRequest(std::vector<
     return login_request;
 }
 
-SignupRequest JsonRequestPacketDeserializer::deserializeSignupRequest(std::vector<unsigned char> buffer) const
+SignupRequest JsonRequestPacketDeserializer::deserializeSignupRequest(const std::string& buffer)
 {
     //Extracting message code
     int message_code = static_cast<int>(buffer[0]);

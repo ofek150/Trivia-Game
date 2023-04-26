@@ -5,6 +5,7 @@
 #include "json.hpp"
 #include <ctime>
 #include <iostream>
+#include <string>
 
 #include <vector>
 
@@ -21,8 +22,8 @@ public:
     }
 
     // Public member functions for serializing responses
-    LoginRequest deserializeLoginRequest(std::vector<unsigned char> buffer) const;
-    SignupRequest deserializeSignupRequest(std::vector<unsigned char> buffer) const;
+    static LoginRequest deserializeLoginRequest(const std::string& buffer);
+    static SignupRequest deserializeSignupRequest(const std::string& buffer);
 
 
 private:
