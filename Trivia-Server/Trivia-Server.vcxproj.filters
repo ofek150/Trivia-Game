@@ -65,9 +65,6 @@
     <ClInclude Include="SignupResponse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ResponseCodes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="JsonRequestPacketDeserializer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -77,10 +74,16 @@
     <ClInclude Include="SignupRequest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RequestCodes.h">
+    <ClInclude Include="StatusCodes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="StatusCodes.h">
+    <ClInclude Include="RequestInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RequestResult.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RequestCodes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

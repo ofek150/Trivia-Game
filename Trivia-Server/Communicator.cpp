@@ -4,6 +4,12 @@ Communicator::~Communicator()
 {
 	try
 	{
+		// Delete all the IRequestHandlers from the memory
+		for (auto& client : m_clients)
+		{
+			delete client.second;
+		}
+
 		closesocket(m_serverSocket);
 	}
 	catch (...) {}
@@ -15,7 +21,6 @@ void Communicator::startHandleRequests()
 
 	if (m_serverSocket == INVALID_SOCKET)
 		throw std::exception(__FUNCTION__ " - socket");
-
 
 	bindAndListen();
 }
@@ -73,52 +78,88 @@ void Communicator::handleNewClient()
 
 void Communicator::clientHandler(SOCKET clientSocket)
 {
-	try
+	while (true)
 	{
-		// Receive the message from the client
-		char buffer[1024] = { 0 };
-		int bytesReceived = recv(clientSocket, buffer, 1024, 0);
-		if (bytesReceived < 0)
+		try
 		{
-			// handle error
+			std::string buffer = getMessage(clientSocket);
+			if(buffer.empty()) throw std::exception("Error in connection. Logging out client...");
+
+			//Extracting message code
+			int message_code = getRequestCodeFromRequest(buffer);
+
+			//Extracting the time of arrival
+			time_t timestamp = getTimeStampFromRequest(buffer);
+
+			std::cout << "Message from client: " << buffer << std::endl;
+
+
+			if (message_code == RequestCodes::Login)
+			{
+				LoginRequest loginRequest = JsonRequestPacketDeserializer::deserializeLoginRequest(buffer);
+				//Handle Login request
+				LoginResponse response;
+				response.status = StatusCodes::LOGIN_SUCCESSFUL;
+				std::vector<unsigned char> buffer = JsonRequestPacketSerializer::serializeResponse(response);
+				std::string response_str(buffer.begin(), buffer.end());
+				sendMessage(clientSocket, response_str);
+			}
+			else if (message_code == RequestCodes::Signup)
+			{
+				SignupRequest signupRequest = JsonRequestPacketDeserializer::deserializeSignupRequest(buffer);
+				//Handle Signup request
+				SignupResponse response;
+				response.status = StatusCodes::SIGNUP_SUCCESSFUL;
+				std::vector<unsigned char> buffer = JsonRequestPacketSerializer::serializeResponse(response);
+				std::string response_str(buffer.begin(), buffer.end());
+				sendMessage(clientSocket, response_str);
+			}
 		}
-
-		// Convert the received message to a std::string
-		std::string receivedMessage(buffer, bytesReceived);
-
-		// Handle the received message and prepare the response message
-		std::string responseMessage = "Hello";
-
-		// Convert the response message to a UTF-8 encoded byte array
-		std::vector<uint8_t> responseBytes(responseMessage.begin(), responseMessage.end());
-
-		// Send the response message back to the client
-		int bytesSent = send(clientSocket, reinterpret_cast<char*>(responseBytes.data()), responseBytes.size(), 0);
-		std::cout << "Sent hello to client." << std::endl;
-		
-		if (bytesSent < 0)
+		catch (const std::exception& e)
 		{
-			// handle error
+			std::cerr << e.what() << std::endl;
+			logOutClient(clientSocket);
+			return;
 		}
-		logOutUser(clientSocket);
-
-	}
-	catch (const std::exception& e)
-	{
-		std::cerr << e.what() << std::endl;
-		logOutUser(clientSocket);
-		return;
 	}
 }
 
-void Communicator::logOutUser(SOCKET clientSocket)
+void Communicator::logOutClient(SOCKET clientSocket)
 {
 	try
 	{
 		std::lock_guard<std::mutex> clients_lock(clients_mutex);
 		closesocket(clientSocket);
+		delete m_clients[clientSocket];
 		m_clients.erase(clientSocket);
 		std::cout << "Removed a user from the connected users list" << std::endl;
 	}
 	catch (...) {}
+}
+
+time_t Communicator::getTimeStampFromRequest(std::string buffer)
+{
+	return *reinterpret_cast<time_t*>(&buffer[sizeof(int)]);
+}
+
+int Communicator::getRequestCodeFromRequest(std::string buffer)
+{
+	return static_cast<int>(buffer[0]);
+}
+
+void Communicator::sendMessage(const SOCKET socket, const std::string& message)
+{
+	const char* data = message.c_str();
+	if (send(socket, data, message.size(), 0) == INVALID_SOCKET) throw std::exception("Error in connection. Logging out client...");
+}
+
+std::string Communicator::getMessage(const SOCKET socket)
+{
+	// Receive the message from the client
+	char buffer[1024] = { 0 };
+	int bytesReceived = recv(socket, buffer, 1024, 0);
+	std::string receivedMessage(buffer, bytesReceived);
+
+	return receivedMessage;
+
 }
