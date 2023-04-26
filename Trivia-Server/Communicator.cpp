@@ -83,15 +83,15 @@ void Communicator::clientHandler(SOCKET clientSocket)
 		try
 		{
 			std::string buffer = getMessage(clientSocket);
-			
-			std::cout << "Message from client: " << buffer << std::endl;
-			
+			if(buffer.empty()) throw std::exception("Error in connection. Logging out client...");
 
 			//Extracting message code
 			int message_code = getRequestCodeFromRequest(buffer);
 
 			//Extracting the time of arrival
 			time_t timestamp = getTimeStampFromRequest(buffer);
+
+			std::cout << "Message from client: " << buffer << std::endl;
 
 
 			if (message_code == RequestCodes::Login)
@@ -157,8 +157,7 @@ std::string Communicator::getMessage(const SOCKET socket)
 {
 	// Receive the message from the client
 	char buffer[1024] = { 0 };
-	unsigned int bytesReceived = recv(socket, buffer, 1024, 0);
-	if(bytesReceived == INVALID_SOCKET) throw std::exception("Error in connection. Logging out client...");
+	int bytesReceived = recv(socket, buffer, 1024, 0);
 	std::string receivedMessage(buffer, bytesReceived);
 
 	return receivedMessage;
