@@ -27,6 +27,9 @@ public:
 
     
 private:
+    const std::vector<unsigned char> constructPacket(int response_code, std::string json_dump) const; // Constructs the packet from
+    
+
     // Private constructor to prevent instantiation from outside
     JsonRequestPacketSerializer() {}
 
