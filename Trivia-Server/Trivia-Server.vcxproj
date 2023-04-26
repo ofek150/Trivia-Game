@@ -127,21 +127,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\gallery_2023_danielmordukhovich\Gallery\sqlite3.c" />
     <ClCompile Include="Communicator.cpp" />
+    <ClCompile Include="JsonRequestPacketDeserializer.cpp" />
+    <ClCompile Include="JsonRequestPacketSerializer.cpp" />
     <ClCompile Include="LoginRequestHandler.cpp" />
     <ClCompile Include="Server.cpp" />
-    <ClCompile Include="SqliteDataBase.cpp" />
+    <ClCompile Include="TriviaServer.cpp" />
     <ClCompile Include="WSAInitializer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\gallery_2023_danielmordukhovich\Gallery\sqlite3.h" />
     <ClInclude Include="Communicator.h" />
-    <ClInclude Include="IDatabase.h" />
+    <ClInclude Include="ErrorResponse.h" />
     <ClInclude Include="IRequestHandler.h" />
+    <ClInclude Include="JsonRequestPacketDeserializer.h" />
+    <ClInclude Include="JsonRequestPacketSerializer.h" />
+    <ClInclude Include="LoginRequest.h" />
     <ClInclude Include="LoginRequestHandler.h" />
+    <ClInclude Include="LoginResponse.h" />
+    <ClInclude Include="RequestCodes.h" />
+    <ClInclude Include="ResponseCodes.h" />
     <ClInclude Include="Server.h" />
-    <ClInclude Include="SqliteDataBase.h" />
+    <ClInclude Include="SignupRequest.h" />
+    <ClInclude Include="SignupResponse.h" />
+    <ClInclude Include="StatusCodes.h" />
     <ClInclude Include="WSAInitializer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
