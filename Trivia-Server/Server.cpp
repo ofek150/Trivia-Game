@@ -10,7 +10,6 @@ void getInput()
 		std::cin >> input;
 		if (input == EXIT_INPUT)
 		{
-			std::unique_lock<std::mutex> exit_lock(exit_mtx);
 			system("PAUSE");
 			break;
 		}
