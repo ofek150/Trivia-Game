@@ -30,7 +30,6 @@ def send_msg(client_socket):
         if len(message) > 0:
             try:
                 client_socket.sendall(message.encode('utf-8'))
-                break
             except Exception as e:
                 print(e)
 
@@ -47,7 +46,6 @@ def main():
     port = get_port()
     client_socket = connect_to_server(port)
     if client_socket == -1:
-        print("Error in connection")
         return 0
     
     print_server_message(client_socket)
