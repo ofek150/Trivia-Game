@@ -34,11 +34,10 @@ def send_msg(client_socket):
             except Exception as e:
                 print(e)
 
-def print_response(client_socket):
+def print_server_message(client_socket):
     try:
         data = client_socket.recv(1024).decode('utf-8')
-        if data == "Hello":
-            print("Hello")
+        print(data)
     except Exception as e:
         print(e)
         
@@ -48,9 +47,11 @@ def main():
     port = get_port()
     client_socket = connect_to_server(port)
     if client_socket == -1:
+        print("Error in connection")
         return 0
+    
+    print_server_message(client_socket)
     send_msg(client_socket)
-    print_response(client_socket)
     client_socket.close()
 
 if __name__ == "__main__":
