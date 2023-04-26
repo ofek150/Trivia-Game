@@ -1,35 +1,18 @@
 #include "Server.h"
+#define EXIT_INPUT "EXIT"
 
-std::mutex exit_mtx;
-std::condition_variable exit_cv;
-bool exit_flag = false;
-
-void getInput()
+void Server::getInput()
 {
 	//get string in while(true) if input = exit ->exit else keep going 
 	std::string input;
 	while (true)
 	{
 		std::cin >> input;
-		if (input == "EXIT")
+		if (input == EXIT_INPUT)
 		{
-			std::unique_lock<std::mutex> exit_lock(exit_mtx);
-			exit_flag = true;
-			system("PAUSE");
 			break;
 		}
 	}
-}
-
-int main()
-{	
-	Server myServer;
-
-	std::thread server_thread(&Server::run, &myServer);
-	server_thread.detach();
-
-	getInput();
-	return 0;
 }
 
 void Server::run()
@@ -37,7 +20,10 @@ void Server::run()
 	try
 	{
 		WSAInitializer wsaInit;
-		m_communicator.startHandleRequests();
+		std::thread t_connector([&]() { m_communicator.startHandleRequests(); });
+		t_connector.detach();
+
+		getInput();
 	}
 	catch (std::exception& e)
 	{
