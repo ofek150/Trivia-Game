@@ -84,10 +84,25 @@ void Communicator::clientHandler(SOCKET clientSocket)
 {
 	try
 	{
+		// Handle the received message and prepare the response message
+		std::string responseMessage = "Hello";
+
+		// Convert the response message to a UTF-8 encoded byte array
+		std::vector<uint8_t> responseBytes(responseMessage.begin(), responseMessage.end());
+
+		// Send the response message back to the client
+		int bytesSent = send(clientSocket, reinterpret_cast<char*>(responseBytes.data()), responseBytes.size(), 0);
+		std::cout << "Sent hello to client." << std::endl;
+
+		if (bytesSent < 0) // Handling error in connection
+		{
+			throw std::exception("Error in connection. Logging out client...");
+		}
+
 		// Receive the message from the client
 		char buffer[1024] = { 0 };
 		int bytesReceived = recv(clientSocket, buffer, 1024, 0);
-		
+
 		if (bytesReceived < 0) // Handling error in connection
 		{
 			throw std::exception("Error in connection. Logging out client...");
@@ -96,24 +111,8 @@ void Communicator::clientHandler(SOCKET clientSocket)
 		// Convert the received message to a std::string
 		std::string receivedMessage(buffer, bytesReceived);
 
-
 		std::cout << "Message from client: " << receivedMessage << std::endl;
 
-		ErrorResponse errorResponse;
-		errorResponse.errorMessage = "ERROR";
-		std::vector<unsigned char> serializedErrorResponse = JsonRequestPacketSerializer::getInstance().serializeResponse(errorResponse);
-
-		// Convert the response message to a UTF-8 encoded byte array
-		std::vector<uint8_t> responseBytes(serializedErrorResponse.begin(), serializedErrorResponse.end());
-
-		// Send the response message back to the client
-		int bytesSent = send(clientSocket, reinterpret_cast<char*>(responseBytes.data()), responseBytes.size(), 0);
-		std::cout << "Sent hello to client." << std::endl;
-		
-		if (bytesSent < 0) // Handling error in connection
-		{
-			throw std::exception("Error in connection. Logging out client...");
-		}
 		logOutClient(clientSocket);
 
 	}

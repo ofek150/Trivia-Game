@@ -1,6 +1,4 @@
 import socket
-import json
-import struct
 
 SERVER_ADDR = '127.0.0.1'
 
@@ -27,35 +25,17 @@ def connect_to_server(port:int) -> socket:
     return client_socket
 
 def send_msg(client_socket):
-    while True:
-        message = input("Enter message to send: ")
-        if len(message) > 0:
-            try:
-                client_socket.sendall(message.encode('utf-8'))
-                break
-            except Exception as e:
-                print(e)
+    message = input("Enter message to send: ")
+    if len(message) > 0:
+        try:
+            client_socket.sendall(message.encode('utf-8'))
+        except Exception as e:
+            print(e)
 
-def print_response(client_socket):
+def print_server_message(client_socket):
     try:
-        data = client_socket.recv(1024)
-        response_code, json_length = struct.unpack('!BI', data[:5])
-        json_data = data[5:5+json_length].decode('utf-8')
-
-        # Print the results
-        print(f'Response code: {response_code}')
-        print(f'JSON data length: {json_length}')
-        print(f'JSON data: {json_data}')
-        
-        json_object = json.loads(json_data)
-        print(json_object["message"])
-        
-        # print(data)
-        # data = data[1:]
-        # deserialized_data = json.loads(data)
-        # print("Data: " + deserialized_data)
-        # if data == "Hello":
-        #     print("Hello")
+        data = client_socket.recv(1024).decode('utf-8')
+        print(data)
     except Exception as e:
         print(e)
         
@@ -66,8 +46,9 @@ def main():
     client_socket = connect_to_server(port)
     if client_socket == -1:
         return 0
+    
+    print_server_message(client_socket)
     send_msg(client_socket)
-    print_response(client_socket)
     client_socket.close()
 
 if __name__ == "__main__":
