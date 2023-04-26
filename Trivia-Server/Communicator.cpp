@@ -87,9 +87,10 @@ void Communicator::clientHandler(SOCKET clientSocket)
 		// Receive the message from the client
 		char buffer[1024] = { 0 };
 		int bytesReceived = recv(clientSocket, buffer, 1024, 0);
-		if (bytesReceived < 0)
+		
+		if (bytesReceived < 0) // Handling error in connection
 		{
-			// handle error
+			throw std::exception("Error in connection. Logging out client...");
 		}
 
 		// Convert the received message to a std::string
@@ -109,9 +110,9 @@ void Communicator::clientHandler(SOCKET clientSocket)
 		int bytesSent = send(clientSocket, reinterpret_cast<char*>(responseBytes.data()), responseBytes.size(), 0);
 		std::cout << "Sent hello to client." << std::endl;
 		
-		if (bytesSent < 0)
+		if (bytesSent < 0) // Handling error in connection
 		{
-			// handle error
+			throw std::exception("Error in connection. Logging out client...");
 		}
 		logOutClient(clientSocket);
 
