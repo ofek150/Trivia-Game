@@ -18,11 +18,13 @@ const std::vector<unsigned char> JsonRequestPacketSerializer::serializeResponse(
     return constructPacket(ResponseCodes::SignupResponseCode, json_data.dump());
 }
 
-const std::vector<unsigned char> JsonRequestPacketSerializer::constructPacket(int response_code, std::string json_dump)
+const std::vector<unsigned char> JsonRequestPacketSerializer::constructPacket(int response_code, std::string json_dump) const
 {
     std::vector<unsigned char> buffer;
 
-    buffer.insert(buffer.end(), reinterpret_cast<const unsigned char*>(&response_code), reinterpret_cast<const unsigned char*>(&response_code) + sizeof(unsigned int));
+    // Converting the response code to a 1 byte int
+    uint8_t response_code_1byte = static_cast<uint8_t>(response_code);
+    buffer.push_back(response_code_1byte);
 
     // Add the JSON data length to the buffer
     unsigned int json_length = json_dump.length();
