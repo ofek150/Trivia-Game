@@ -10,7 +10,6 @@ void getInput()
 		std::cin >> input;
 		if (input == EXIT_INPUT)
 		{
-			system("PAUSE");
 			break;
 		}
 	}
