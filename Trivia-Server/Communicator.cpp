@@ -42,10 +42,6 @@ void Communicator::bindAndListen()
 		throw std::exception(__FUNCTION__ " - listen");
 	std::cout << "Listening on port " << SERVER_PORT << std::endl;
 
-	/*int buffer_size = 57;
-	const char* buffer2 = "\x02\x00\x00\x00\x32\x11\x2A\x23\x98\x23\xAB\xFF{\"username\":\"john_doe\",\"password\":\"p@ssw0rd\"}";
-	LoginRequest loginRequest = JsonRequestPacketDeserializer::getInstance().deserializeLoginRequest(buffer2, buffer_size);*/
-
 	while (true)
 	{
 		// the main thread is only accepting clients 
