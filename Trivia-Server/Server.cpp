@@ -1,8 +1,5 @@
 #include "Server.h"
-
-std::mutex exit_mtx;
-std::condition_variable exit_cv;
-bool exit_flag = false;
+#define EXIT_INPUT "EXIT"
 
 void getInput()
 {
@@ -11,10 +8,8 @@ void getInput()
 	while (true)
 	{
 		std::cin >> input;
-		if (input == "EXIT")
+		if (input == EXIT_INPUT)
 		{
-			std::unique_lock<std::mutex> exit_lock(exit_mtx);
-			exit_flag = true;
 			system("PAUSE");
 			break;
 		}
