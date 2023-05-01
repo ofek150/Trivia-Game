@@ -168,7 +168,7 @@ std::string Communicator::getMessage(const SOCKET socket)
 
 	std::string receivedMessage(buffer, data_size);
 
-	delete buffer;
+	delete[] buffer;
 
 	return receivedMessage;
 
