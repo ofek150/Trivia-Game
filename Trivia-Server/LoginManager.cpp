@@ -1,6 +1,6 @@
 #include "LoginManager.h"
 
-void LoginManager::singup(std::string username, std::string password, std::string email)
+void LoginManager::signup(std::string username, std::string password, std::string email)
 {
 	m_database->insertUserIntoDB(username, password, email);
 }
