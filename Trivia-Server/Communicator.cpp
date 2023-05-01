@@ -82,14 +82,15 @@ void Communicator::clientHandler(SOCKET clientSocket)
 	{
 		try
 		{
+			//Extracting message code
+			int message_code = getRequestCodeFromRequest(clientSocket);
+
 			std::string buffer = getMessage(clientSocket);
 			if(buffer.empty()) throw std::exception("Error in connection. Logging out client...");
 
-			//Extracting message code
-			int message_code = getRequestCodeFromRequest(buffer);
+			
 
 			//Extracting the time of arrival
-			time_t timestamp = getTimeStampFromRequest(buffer);
 
 			std::cout << "Message from client: " << buffer << std::endl;
 
@@ -137,13 +138,12 @@ void Communicator::logOutClient(SOCKET clientSocket)
 	catch (...) {}
 }
 
-time_t Communicator::getTimeStampFromRequest(std::string buffer)
+int Communicator::getRequestCodeFromRequest(const SOCKET socket)
 {
-	return *reinterpret_cast<time_t*>(&buffer[sizeof(int)]);
-}
-
-int Communicator::getRequestCodeFromRequest(std::string buffer)
-{
+	// Receive the message from the client
+	char buffer[1] = { 0 };
+	int bytesReceived = recv(socket, buffer, 1, 0);
+	if (bytesReceived < 0) throw std::exception("Error in connection. Logging out client...");
 	return static_cast<int>(buffer[0]);
 }
 
@@ -156,9 +156,17 @@ void Communicator::sendMessage(const SOCKET socket, const std::string& message)
 std::string Communicator::getMessage(const SOCKET socket)
 {
 	// Receive the message from the client
-	char buffer[1024] = { 0 };
-	int bytesReceived = recv(socket, buffer, 1024, 0);
-	std::string receivedMessage(buffer, bytesReceived);
+	char data_size_buffer[4] = { 0 };
+	int bytesReceived = recv(socket, data_size_buffer, 4, 0);
+	if (bytesReceived < 0) throw std::exception("Error in connection. Logging out client...");
+
+	int data_size = ntohl(*reinterpret_cast<uint32_t*>(data_size_buffer));
+
+	char* buffer = new char[data_size];
+	int bytesReceived2 = recv(socket, buffer, data_size, 0);
+	if (bytesReceived2 < 0) throw std::exception("Error in connection. Logging out client...");
+
+	std::string receivedMessage(buffer, data_size);
 
 	return receivedMessage;
 

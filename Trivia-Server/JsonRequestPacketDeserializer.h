@@ -26,7 +26,9 @@ public:
     static SignupRequest deserializeSignupRequest(const std::string& buffer);
 
 
+
 private:
+
     // Private constructor to prevent instantiation from outside
     JsonRequestPacketDeserializer() {}
 

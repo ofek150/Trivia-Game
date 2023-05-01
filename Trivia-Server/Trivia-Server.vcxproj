@@ -45,6 +45,7 @@
     <ClCompile Include="JsonRequestPacketSerializer.cpp" />
     <ClCompile Include="LoginRequestHandler.cpp" />
     <ClCompile Include="Server.cpp" />
+    <ClCompile Include="sqlite3.c" />
     <ClCompile Include="SqliteDataBase.cpp" />
     <ClCompile Include="TriviaServer.cpp" />
     <ClCompile Include="WSAInitializer.cpp" />

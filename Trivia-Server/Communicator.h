@@ -31,8 +31,7 @@ private:
 	void logOutClient(SOCKET clientSocket); // Removes a client from the clients map and closes socket
 
 	//Helper functions
-	time_t getTimeStampFromRequest(std::string buffer); // Parses the timestamp from the buffer and returns it
-	int getRequestCodeFromRequest(std::string buffer); // Parses the request code from the buffer and returns it
+	int getRequestCodeFromRequest(const SOCKET socket); // Parses the request code from the buffer and returns it
 	void sendMessage(const SOCKET socket, const std::string& message); // Send a message to the client
 	std::string getMessage(const SOCKET socket); // Gets a message from the client.
 
