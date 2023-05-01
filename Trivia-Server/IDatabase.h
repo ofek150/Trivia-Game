@@ -1,7 +1,7 @@
 #include <string>
 #include <iostream>
 
-class IDatabse
+class IDatabase
 {
 public:
 	

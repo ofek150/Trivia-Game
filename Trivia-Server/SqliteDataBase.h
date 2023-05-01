@@ -4,7 +4,7 @@
 #include <iostream>
 #include "sqlite3.h"
 #include <io.h>
-class SqliteDataBase : public IDatabse
+class SqliteDataBase : public IDatabase
 {
 public:
 	void operator=(const SqliteDataBase&) = delete;
