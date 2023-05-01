@@ -2,6 +2,7 @@
 
 void LoginManager::signup(std::string username, std::string password, std::string email)
 {
+	if (this->m_database->doesUserExist(username)) return;
 	m_database->insertUserIntoDB(username, password, email);
 }
 
