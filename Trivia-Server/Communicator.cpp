@@ -168,6 +168,8 @@ std::string Communicator::getMessage(const SOCKET socket)
 
 	std::string receivedMessage(buffer, data_size);
 
+	delete buffer;
+
 	return receivedMessage;
 
 }
