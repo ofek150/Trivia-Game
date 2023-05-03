@@ -100,9 +100,12 @@ def main():
     #registration(client_socket, "user0000", "00000", "user00000@gmail.com")
 
     #case 3 : user cant login twice in a row
-    registration(client_socket, "user0000", "00000", "user00000@gmail.com")
-    login(client_socket, "user0000",  "00000")
-    login(client_socket, "user0000",  "00000")
+    #registration(client_socket, "user0000", "00000", "user00000@gmail.com")
+    #login(client_socket, "user0000",  "00000")
+    #login(client_socket, "user0000",  "00000")
+
+    #case 4 : user have to use valid username
+    registration(client_socket, "!user0000", "00000", "user00000@gmail.com")
 
 
     client_socket.close()
