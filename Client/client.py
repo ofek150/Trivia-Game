@@ -90,10 +90,16 @@ def main():
         return 0
 
     #case 1 : login with user that is not signed up
-    login(client_socket, "user0000",  "00000")
+    #login(client_socket, "user0000",  "00000")
     #case 1 fixed: sign up and then log in
+    #registration(client_socket, "user0000", "00000", "user00000@gmail.com")
+    #login(client_socket, "user0000",  "00000")
+
+    #case 2 : user cant register twice in a row
     registration(client_socket, "user0000", "00000", "user00000@gmail.com")
-    login(client_socket, "user0000",  "00000")
+    registration(client_socket, "user0000", "00000", "user00000@gmail.com")
+    
+
 
     client_socket.close()
 
