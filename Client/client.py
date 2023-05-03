@@ -52,10 +52,10 @@ def receive_msg(client_socket):
     except Exception as e:
         print(e)
 
-def login(client_socket):
+def login(client_socket, username, password):
     # Create login JSON data
-    username = input("Enter username: ")
-    password = input("Enter password: ")
+    #username = input("Enter username: ")
+    #password = input("Enter password: ")
     data = {"Username": username, "Password": password}
 
     # Send the data to the server with the login code
@@ -67,11 +67,11 @@ def login(client_socket):
     print(f"Response code: {response_code}")
     print(f"Response data: {response_data}")
 
-def registration(client_socket):
+def registration(client_socket, username, password, email):
     # Create registration JSON data
-    username = input("Enter username: ")
-    password = input("Enter password: ")
-    email = input("Enter email: ")
+    #username = input("Enter username: ")
+    #password = input("Enter password: ")
+    #email = input("Enter email: ")
     data = {"username": username, "password": password, "email": email}
 
     # Send the data to the server with the registration code
@@ -89,16 +89,11 @@ def main():
     if client_socket == -1:
         return 0
 
-    while True:
-        action = input("Enter 'l' to login, 'r' to register, or 'q' to quit: ")
-        if action == 'l':
-            login(client_socket)
-        elif action == 'r':
-            registration(client_socket)
-        elif action == 'q':
-            break
-        else:
-            print("Invalid input. Please try again.")
+    #case 1 : login with user that is not signed up
+    login(client_socket, "user0000",  "00000")
+    #case 1 fixed: sign up and then log in
+    registration(client_socket, "user0000", "00000", "user00000@gmail.com")
+    login(client_socket, "user0000",  "00000")
 
     client_socket.close()
 
