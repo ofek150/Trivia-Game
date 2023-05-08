@@ -1,8 +1,10 @@
 #include "JsonRequestPacketDeserializer.h"
 
-LoginRequest JsonRequestPacketDeserializer::deserializeLoginRequest(const std::string& buffer)
+LoginRequest JsonRequestPacketDeserializer::deserializeLoginRequest(const std::vector<unsigned char>& buffer)
 {
-    std::string json_str = buffer.substr(buffer.find('{')); // Get only the JSON part in the buffer
+    std::string buffer_str(buffer.begin(), buffer.end());
+
+    std::string json_str = buffer_str.substr(buffer_str.find('{')); // Get only the JSON part in the buffer
     nlohmann::json json_data = nlohmann::json::parse(json_str);
 
     LoginRequest login_request;
@@ -15,9 +17,11 @@ LoginRequest JsonRequestPacketDeserializer::deserializeLoginRequest(const std::s
 
 }
 
-SignupRequest JsonRequestPacketDeserializer::deserializeSignupRequest(const std::string& buffer)
+SignupRequest JsonRequestPacketDeserializer::deserializeSignupRequest(const std::vector<unsigned char>& buffer)
 {
-    std::string json_str = buffer.substr(buffer.find('{')); // Get only the JSON part in the buffer
+    std::string buffer_str(buffer.begin(), buffer.end());
+
+    std::string json_str = buffer_str.substr(buffer_str.find('{')); // Get only the JSON part in the buffer
     nlohmann::json json_data = nlohmann::json::parse(json_str);
 
     SignupRequest signup_request;

@@ -13,6 +13,7 @@
 #include <iostream>
 #include <string>
 #include "LoginRequestHandler.h"
+#include "RequestHandlerFactory.h"
 #include "StatusCodes.h"
 
 
@@ -22,6 +23,15 @@
 class Communicator
 {
 public:
+	void operator=(const Communicator&) = delete;
+
+	// Public static function to get the singleton instance
+	static Communicator& getInstance() {
+		static Communicator instance;
+		return instance;
+	}
+
+
 	~Communicator();
 	void startHandleRequests();
 private:
@@ -32,12 +42,20 @@ private:
 
 	//Helper functions
 	int getRequestCodeFromRequest(const SOCKET socket); // Parses the request code from the buffer and returns it
-	void sendMessage(const SOCKET socket, const std::string& message); // Send a message to the client
-	std::string getMessage(const SOCKET socket); // Gets a message from the client.
+	void sendMessage(const SOCKET socket, const std::vector<unsigned char>& message) const; // Send a message to the client
+	RequestInfo getRequest(const SOCKET socket); // Gets a request from the client
 
 	SOCKET m_serverSocket;
 	std::map<SOCKET, IRequestHandler*> m_clients;
 	std::mutex clients_mutex;
 
+	RequestHandlerFactory& m_handlerFactory;
+
+
+	// Private constructor to prevent instantiation from outside
+	Communicator() : m_handlerFactory(RequestHandlerFactory::getInstance()) {}
+
+	// Private copy constructor to prevent cloning
+	Communicator(const Communicator&);
 };
 

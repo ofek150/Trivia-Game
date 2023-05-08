@@ -6,7 +6,6 @@
 #include <ctime>
 #include <iostream>
 #include <string>
-
 #include <vector>
 
 
@@ -22,8 +21,8 @@ public:
     }
 
     // Public member functions for serializing responses
-    static LoginRequest deserializeLoginRequest(const std::string& buffer);
-    static SignupRequest deserializeSignupRequest(const std::string& buffer);
+    static LoginRequest deserializeLoginRequest(const std::vector<unsigned char>& buffer);
+    static SignupRequest deserializeSignupRequest(const std::vector<unsigned char>& buffer);
 
 
 
