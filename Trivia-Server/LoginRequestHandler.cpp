@@ -1,44 +1,82 @@
 #include "LoginRequestHandler.h"
+#include "RequestHandlerFactory.h"
+#include "LoginRequestHandler.h"
+#include "MenuRequestHandler.h"
 
-bool LoginRequestHandler::isRequestRelevant(RequestInfo requestInfo)
+LoginRequestHandler::LoginRequestHandler() : m_handlerFactory(RequestHandlerFactory::getInstance()) {}
+
+bool LoginRequestHandler::isRequestRelevant(const RequestInfo& requestInfo)
 {
     return (requestInfo.code == Signup || requestInfo.code == Login);
 }
 
-RequestResult LoginRequestHandler::handleRequest(RequestInfo requestInfo)
+RequestResult LoginRequestHandler::handleRequest(const RequestInfo& requestInfo)
 {
-    RequestResult requestResult;
-    IRequestHandler* newHandler;
     if (requestInfo.code == Signup)
     {
-        std::string buffer_str(reinterpret_cast<const char*>(requestInfo.buffer.data()), requestInfo.buffer.size());
-
-        SignupRequest signupRequest = JsonRequestPacketDeserializer::getInstance().deserializeSignupRequest(buffer_str);
-        SignupResponse signupResponse;
-        signupResponse.status = ResponseCodes::SignupResponseCode;
-        requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(signupResponse);
+        return signup(requestInfo);
     }
     else if(requestInfo.code == Login)
     {
-        std::string buffer_str(reinterpret_cast<const char*>(requestInfo.buffer.data()), requestInfo.buffer.size());
+        return login(requestInfo);
+    }
+}
 
-        LoginRequest loginRequest = JsonRequestPacketDeserializer::getInstance().deserializeLoginRequest(buffer_str);
-        LoginResponse loginResponse;
-        loginResponse.status = ResponseCodes::LoginResponseCode;
+RequestResult LoginRequestHandler::login(const RequestInfo& requestInfo)
+{
+    RequestResult requestResult;
+    LoginResponse loginResponse;
+    requestResult.newHandler = m_handlerFactory.createLoginRequestHandler();
+    try {
+        LoginManager& loginManager = m_handlerFactory.getLoginManager();
+
+        LoginRequest loginRequest = JsonRequestPacketDeserializer::getInstance().deserializeLoginRequest(requestInfo.buffer);
+        loginManager.login(loginRequest.username, loginRequest.password);
+
+        loginResponse.status = StatusCodes::SUCCESSFUL;
         requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(loginResponse);
     }
-
-
+    catch (std::exception e)
+    {
+        ErrorResponse errorResponse;
+        errorResponse.errorMessage = e.what();
+        std::cerr << e.what() << std::endl;
+        requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(errorResponse);
+    }
+    catch (...)
+    {
+        loginResponse.status = StatusCodes::FAILED;
+    }
 
     return requestResult;
+    
 }
 
-RequestResult LoginRequestHandler::login(RequestInfo requestInfo)
+RequestResult LoginRequestHandler::signup(const RequestInfo& requestInfo)
 {
-    return RequestResult();
-}
+    RequestResult requestResult;
+    LoginResponse signupResponse;
+    requestResult.newHandler = m_handlerFactory.createLoginRequestHandler();
+    try {
+        LoginManager& loginManager = m_handlerFactory.getLoginManager();
 
-RequestResult LoginRequestHandler::signup(RequestInfo requestInfo)
-{
-    return RequestResult();
+        SignupRequest signupRequest = JsonRequestPacketDeserializer::getInstance().deserializeSignupRequest(requestInfo.buffer);
+        loginManager.signup(signupRequest.username, signupRequest.password, signupRequest.email);
+
+        signupResponse.status = StatusCodes::SUCCESSFUL;
+        requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(signupResponse);
+    }
+    catch (std::exception e)
+    {
+        ErrorResponse errorResponse;
+        errorResponse.errorMessage = e.what();
+        std::cerr << e.what() << std::endl;
+        requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(errorResponse);
+    }
+    catch (...)
+    {
+        signupResponse.status = StatusCodes::FAILED;
+    }
+
+    return requestResult;
 }

@@ -85,35 +85,30 @@ void Communicator::clientHandler(SOCKET clientSocket)
 			//Extracting message code
 			int message_code = getRequestCodeFromRequest(clientSocket);
 
-			std::string buffer = getMessage(clientSocket);
-			if(buffer.empty()) throw std::exception("Error in connection. Logging out client...");
+			RequestInfo requestInfo = getRequest(clientSocket);
 
-			
-
-			//Extracting the time of arrival
-
-			std::cout << "Message from client: " << buffer << std::endl;
-
-
-			if (message_code == RequestCodes::Login)
+			switch (message_code)
 			{
-				LoginRequest loginRequest = JsonRequestPacketDeserializer::deserializeLoginRequest(buffer);
-				//Handle Login request
-				LoginResponse response;
-				response.status = StatusCodes::LOGIN_SUCCESSFUL;
-				std::vector<unsigned char> buffer = JsonRequestPacketSerializer::serializeResponse(response);
-				std::string response_str(buffer.begin(), buffer.end());
-				sendMessage(clientSocket, response_str);
-			}
-			else if (message_code == RequestCodes::Signup)
-			{
-				SignupRequest signupRequest = JsonRequestPacketDeserializer::deserializeSignupRequest(buffer);
-				//Handle Signup request
-				SignupResponse response;
-				response.status = StatusCodes::SIGNUP_SUCCESSFUL;
-				std::vector<unsigned char> buffer = JsonRequestPacketSerializer::serializeResponse(response);
-				std::string response_str(buffer.begin(), buffer.end());
-				sendMessage(clientSocket, response_str);
+				case RequestCodes::Login:
+				{
+					LoginRequest loginRequest = JsonRequestPacketDeserializer::deserializeLoginRequest(requestInfo.buffer);
+					LoginRequestHandler* requestHandler = m_handlerFactory.createLoginRequestHandler();
+					RequestResult requestResult = requestHandler->handleRequest(requestInfo);
+
+					sendMessage(clientSocket, requestResult.responseBuffer);
+					delete requestHandler;
+					break;
+				}	
+				case RequestCodes::Signup:
+				{
+					SignupRequest signupRequest = JsonRequestPacketDeserializer::deserializeSignupRequest(requestInfo.buffer);
+					LoginRequestHandler* requestHandler = m_handlerFactory.createLoginRequestHandler();
+					RequestResult requestResult = requestHandler->handleRequest(requestInfo);
+
+					sendMessage(clientSocket, requestResult.responseBuffer);
+					delete requestHandler;
+					break;
+				}
 			}
 		}
 		catch (const std::exception& e)
@@ -147,14 +142,17 @@ int Communicator::getRequestCodeFromRequest(const SOCKET socket)
 	return static_cast<int>(buffer[0]);
 }
 
-void Communicator::sendMessage(const SOCKET socket, const std::string& message)
+void Communicator::sendMessage(const SOCKET socket, const std::vector<unsigned char>& message) const
 {
-	const char* data = message.c_str();
-	if (send(socket, data, message.size(), 0) == INVALID_SOCKET) throw std::exception("Error in connection. Logging out client...");
+	const char* buffer = reinterpret_cast<const char*>(message.data());
+	if (send(socket, buffer, message.size(), 0) == INVALID_SOCKET) throw std::exception("Error in connection. Logging out client...");
 }
 
-std::string Communicator::getMessage(const SOCKET socket)
+RequestInfo Communicator::getRequest(const SOCKET socket)
 {
+	RequestInfo requestInfo;
+	requestInfo.code = getRequestCodeFromRequest(socket);
+
 	// Receive the message from the client
 	char data_size_buffer[4] = { 0 };
 	int bytesReceived = recv(socket, data_size_buffer, 4, 0);
@@ -166,10 +164,12 @@ std::string Communicator::getMessage(const SOCKET socket)
 	int bytesReceived2 = recv(socket, buffer, data_size, 0);
 	if (bytesReceived2 < 0) throw std::exception("Error in connection. Logging out client...");
 
-	std::string receivedMessage(buffer, data_size);
-
+	time_t current_time;
+	time(&current_time);
+	requestInfo.arrival_time = current_time;
+	requestInfo.buffer = std::vector<unsigned char>(buffer, buffer + data_size);
+	
 	delete[] buffer;
 
-	return receivedMessage;
-
+	return requestInfo;
 }
