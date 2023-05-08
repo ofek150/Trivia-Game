@@ -26,7 +26,7 @@ private:
 
 
 	// Private constructor to prevent instantiation from outside
-	LoginManager() {}
+	LoginManager() : m_database(&SqliteDataBase::getInstance()) {}
 
 	// Private copy constructor to prevent cloning
 	LoginManager(const LoginManager&);

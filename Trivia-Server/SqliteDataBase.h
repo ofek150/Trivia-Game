@@ -24,7 +24,7 @@ public:
 private: 
 	sqlite3* db;
 	// Private constructor to prevent instantiation from outside
-	SqliteDataBase() {}
+	SqliteDataBase() { open(); };
 
 	// Private copy constructor to prevent cloning
 	SqliteDataBase(const SqliteDataBase&);

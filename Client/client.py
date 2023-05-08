@@ -2,6 +2,7 @@ import socket
 import json
 
 SERVER_ADDR = '127.0.0.1'
+SERVER_PORT = 6969
 
 # Define codes for login and registration
 LOGIN_CODE = b'\x01'
@@ -83,32 +84,51 @@ def registration(client_socket, username, password, email):
     print(f"Response code: {response_code}")
     print(f"Response data: {response_data}")
 
-def main():
-    port = get_port()
-    client_socket = connect_to_server(port)
+def generate_new_connection() -> socket:
+    client_socket = connect_to_server(SERVER_PORT)
     if client_socket == -1:
-        return 0
+        exit(0)  
+    return client_socket
 
+def check_edge_cases():
+    client_socket = generate_new_connection()
     #case 1 : login with user that is not signed up
-    #login(client_socket, "user0000",  "00000")
+    login(client_socket, "user1",  "00000")
+    client_socket.close()
+    
     #case 1 fixed: sign up and then log in
-    #registration(client_socket, "user0000", "00000", "user00000@gmail.com")
-    #login(client_socket, "user0000",  "00000")
+    client_socket = generate_new_connection()
+    registration(client_socket, "user2", "00000", "user00000@gmail.com")
+    login(client_socket, "user2",  "00000")
+    client_socket.close()
 
     #case 2 : user cant register twice in a row
-    #registration(client_socket, "user0000", "00000", "user00000@gmail.com")
-    #registration(client_socket, "user0000", "00000", "user00000@gmail.com")
+    client_socket = generate_new_connection()
+    registration(client_socket, "user3", "00000", "user00000@gmail.com")
+    registration(client_socket, "user3", "00000", "user00000@gmail.com")
+    client_socket.close()
 
     #case 3 : user cant login twice in a row
-    #registration(client_socket, "user0000", "00000", "user00000@gmail.com")
-    #login(client_socket, "user0000",  "00000")
-    #login(client_socket, "user0000",  "00000")
+    client_socket = generate_new_connection()
+    registration(client_socket, "user4", "00000", "user00000@gmail.com")
+    login(client_socket, "user4",  "00000")
+    login(client_socket, "user4",  "00000")
+    client_socket.close()
 
     #case 4 : user have to use valid username
-    registration(client_socket, "!user0000", "00000", "user00000@gmail.com")
-
-
+    client_socket = generate_new_connection()
+    registration(client_socket, "!user5", "00000", "user00000@gmail.com")
     client_socket.close()
+    
+
+def main():
+    #port = get_port()
+    # client_socket = connect_to_server(SERVER_PORT)
+    # if client_socket == -1:
+    #     return 0
+    check_edge_cases()
+
+    # client_socket.close()
 
 if __name__ == "__main__":
     main()

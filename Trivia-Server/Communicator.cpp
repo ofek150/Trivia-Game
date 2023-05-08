@@ -82,12 +82,9 @@ void Communicator::clientHandler(SOCKET clientSocket)
 	{
 		try
 		{
-			//Extracting message code
-			int message_code = getRequestCodeFromRequest(clientSocket);
-
 			RequestInfo requestInfo = getRequest(clientSocket);
 
-			switch (message_code)
+			switch (requestInfo.code)
 			{
 				case RequestCodes::Login:
 				{
@@ -114,6 +111,7 @@ void Communicator::clientHandler(SOCKET clientSocket)
 		catch (const std::exception& e)
 		{
 			std::cerr << e.what() << std::endl;
+			
 			logOutClient(clientSocket);
 			return;
 		}
