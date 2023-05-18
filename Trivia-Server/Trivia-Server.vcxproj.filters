@@ -70,6 +70,11 @@
     <ClInclude Include="ResponseCodes.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="Room.h" />
+    <ClInclude Include="RoomData.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="RoomManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Headers">
@@ -119,5 +124,7 @@
     <ClCompile Include="MenuRequestHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Room.cpp" />
+    <ClCompile Include="RoomManager.cpp" />
   </ItemGroup>
 </Project>

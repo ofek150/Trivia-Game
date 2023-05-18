@@ -5,11 +5,11 @@
 class RoomManager
 {
 public:
-	void createRoom(LoggedUser user, RoomData roomData);
-	void deleteRoom(int ID);
-	unsigned int getRoomState(int ID);
-	const std::vector<RoomData>& getRooms();
-	Room& getRoom(int ID);
+	void createRoom(const LoggedUser& user, const RoomData& roomData);
+	void deleteRoom(unsigned int ID);
+	unsigned int getRoomState(unsigned int ID) const;
+	const std::map<unsigned int, Room>& getRooms() const;
+	const Room& getRoom(unsigned int ID) const;
 private:
 	std::map<unsigned int, Room> m_rooms;
 };
