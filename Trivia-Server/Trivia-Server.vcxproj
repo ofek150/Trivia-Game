@@ -20,7 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Communicator.h" />
-    <ClInclude Include="ErrorResponse.h" />
     <ClInclude Include="IDatabase.h" />
     <ClInclude Include="IRequestHandler.h" />
     <ClInclude Include="json.hpp" />
@@ -28,19 +27,17 @@
     <ClInclude Include="JsonRequestPacketSerializer.h" />
     <ClInclude Include="LoggedUser.h" />
     <ClInclude Include="LoginManager.h" />
-    <ClInclude Include="LoginRequest.h" />
     <ClInclude Include="LoginRequestHandler.h" />
-    <ClInclude Include="LoginResponse.h" />
     <ClInclude Include="MenuRequestHandler.h" />
     <ClInclude Include="RequestCodes.h" />
     <ClInclude Include="RequestHandlerFactory.h" />
+    <ClInclude Include="Requests.h" />
     <ClInclude Include="ResponseCodes.h" />
+    <ClInclude Include="Responses.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="RoomData.h" />
     <ClInclude Include="RoomManager.h" />
     <ClInclude Include="Server.h" />
-    <ClInclude Include="SignupRequest.h" />
-    <ClInclude Include="SignupResponse.h" />
     <ClInclude Include="sqlite3.h" />
     <ClInclude Include="SqliteDataBase.h" />
     <ClInclude Include="StatusCodes.h" />

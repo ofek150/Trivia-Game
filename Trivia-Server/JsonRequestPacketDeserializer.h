@@ -1,7 +1,6 @@
 #pragma once
 
-#include "LoginRequest.h"
-#include "SignupRequest.h"
+#include "Requests.h"
 #include "json.hpp"
 #include <ctime>
 #include <iostream>
