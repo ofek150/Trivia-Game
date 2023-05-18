@@ -2,34 +2,74 @@
 
 LoginRequest JsonRequestPacketDeserializer::deserializeLoginRequest(const std::vector<unsigned char>& buffer)
 {
-    std::string buffer_str(buffer.begin(), buffer.end());
+    nlohmann::json json_data = parseJsonData(buffer);
 
-    std::string json_str = buffer_str.substr(buffer_str.find('{')); // Get only the JSON part in the buffer
-    nlohmann::json json_data = nlohmann::json::parse(json_str);
-
-    LoginRequest login_request;
+    LoginRequest request;
     if (json_data.contains("username") && json_data.contains("password")) {
-        login_request.username = json_data["username"].get<std::string>();
-        login_request.password = json_data["password"].get<std::string>();
+        request.username = json_data["username"].get<std::string>();
+        request.password = json_data["password"].get<std::string>();
     }
 
-    return login_request;
+    return request;
 
 }
 
 SignupRequest JsonRequestPacketDeserializer::deserializeSignupRequest(const std::vector<unsigned char>& buffer)
 {
-    std::string buffer_str(buffer.begin(), buffer.end());
+    nlohmann::json json_data = parseJsonData(buffer);
 
-    std::string json_str = buffer_str.substr(buffer_str.find('{')); // Get only the JSON part in the buffer
-    nlohmann::json json_data = nlohmann::json::parse(json_str);
-
-    SignupRequest signup_request;
+    SignupRequest request;
     if (json_data.contains("username") && json_data.contains("password") && json_data.contains("email")) {
-        signup_request.username = json_data["username"].get<std::string>();
-        signup_request.password = json_data["password"].get<std::string>();
-        signup_request.email = json_data["email"].get<std::string>();;
+        request.username = json_data["username"].get<std::string>();
+        request.password = json_data["password"].get<std::string>();
+        request.email = json_data["email"].get<std::string>();
     }
 
-    return signup_request;
+    return request;
+}
+
+GetPlayersInRoomRequest JsonRequestPacketDeserializer::deserializeGetPlayersInRoomRequest(const std::vector<unsigned char>& buffer)
+{
+    nlohmann::json json_data = parseJsonData(buffer);
+
+    GetPlayersInRoomRequest request;
+    if (json_data.contains("roomId")) {
+        request.roomId = json_data["roomId"].get<unsigned int>();
+    }
+
+    return request;
+}
+
+JoinRoomRequest JsonRequestPacketDeserializer::deserializeJoinRoomRequest(const std::vector<unsigned char>& buffer)
+{
+    nlohmann::json json_data = parseJsonData(buffer);
+
+    JoinRoomRequest request;
+    if (json_data.contains("roomId")) {
+        request.roomId = json_data["roomId"].get<unsigned int>();
+    }
+
+    return request;
+}
+
+CreateRoomRequest JsonRequestPacketDeserializer::deserializeCreateRoomRequest(const std::vector<unsigned char>& buffer)
+{
+    nlohmann::json json_data = parseJsonData(buffer);
+
+    CreateRoomRequest request;
+    if (json_data.contains("roomName") && json_data.contains("maxUsers") && json_data.contains("questionCount") && json_data.contains("answerTimeout")) {
+        request.roomName = json_data["roomName"].get<std::string>();
+        request.maxUsers = json_data["maxUsers"].get<unsigned int>();
+        request.questionCount = json_data["questionCount"].get<unsigned int>();
+        request.answerTimeout = json_data["answerTimeout"].get<unsigned int>();
+    }
+
+    return request;
+}
+
+nlohmann::json JsonRequestPacketDeserializer::parseJsonData(const std::vector<unsigned char>& buffer)
+{
+    std::string buffer_str(buffer.begin(), buffer.end());
+    std::string json_str = buffer_str.substr(buffer_str.find('{')); // Get only the JSON part in the buffer
+    return nlohmann::json::parse(json_str);
 }

@@ -22,10 +22,14 @@ public:
     // Public member functions for serializing responses
     static LoginRequest deserializeLoginRequest(const std::vector<unsigned char>& buffer);
     static SignupRequest deserializeSignupRequest(const std::vector<unsigned char>& buffer);
-
+    static GetPlayersInRoomRequest deserializeGetPlayersInRoomRequest(const std::vector<unsigned char>& buffer);
+    static JoinRoomRequest deserializeJoinRoomRequest(const std::vector<unsigned char>& buffer);
+    static CreateRoomRequest deserializeCreateRoomRequest(const std::vector<unsigned char>& buffer);
 
 
 private:
+
+    static nlohmann::json parseJsonData(const std::vector<unsigned char>& buffer);
 
     // Private constructor to prevent instantiation from outside
     JsonRequestPacketDeserializer() {}
