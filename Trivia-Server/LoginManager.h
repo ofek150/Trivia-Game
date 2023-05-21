@@ -1,6 +1,7 @@
 #pragma once
 #include "SqliteDataBase.h"
 #include <vector>
+#include <mutex>
 #include "LoggedUser.h"
 
 class LoginManager
@@ -22,6 +23,7 @@ private:
 	bool isUserInLoggedUser(const std::string& username);
 
 	std::vector<LoggedUser> m_loggedUsers;
+	std::mutex loggedUsers_mutex;
 	IDatabase* m_database;
 
 

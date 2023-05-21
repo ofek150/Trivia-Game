@@ -1,7 +1,5 @@
 #include "Room.h"
 
-Room::Room(const RoomData& metadata) : m_metadata(metadata) {}
-
 void Room::addUser(const LoggedUser& user)
 {
 	m_users.push_back(user);
@@ -26,4 +24,9 @@ const std::vector<LoggedUser>& Room::getAllUsers() const
 const unsigned int Room::getRoomState() const
 {
     return m_metadata.isActive;
+}
+
+RoomData Room::getRoomData() const
+{
+    return m_metadata;
 }

@@ -24,6 +24,15 @@ const std::map<unsigned int, Room>& RoomManager::getRooms() const
 	return m_rooms;
 }
 
+const std::vector<RoomData> RoomManager::getRoomsDatas() const
+{
+	std::vector<RoomData> rooms;
+	for (auto room : m_rooms)
+		rooms.push_back(room.second.getRoomData());
+
+	return rooms;
+}
+
 const Room& RoomManager::getRoom(unsigned int ID) const
 {
 	return m_rooms.at(ID);

@@ -13,6 +13,7 @@
 #include <iostream>
 #include <string>
 #include "LoginRequestHandler.h"
+#include "MenuRequestHandler.h"
 #include "RequestHandlerFactory.h"
 #include "StatusCodes.h"
 
@@ -44,6 +45,9 @@ private:
 	int getRequestCodeFromRequest(const SOCKET socket); // Parses the request code from the buffer and returns it
 	void sendMessage(const SOCKET socket, const std::vector<unsigned char>& message) const; // Send a message to the client
 	RequestInfo getRequest(const SOCKET socket); // Gets a request from the client
+
+	void insertNewClient(SOCKET clientSocket);
+	void sendErrorResponse(SOCKET clientSocket);
 
 	SOCKET m_serverSocket;
 	std::map<SOCKET, IRequestHandler*> m_clients;

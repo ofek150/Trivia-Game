@@ -28,7 +28,7 @@ struct GetPlayersInRoomResponse {
     std::vector<std::string> players;
 };
 
-struct GetHighScoreInRoomResponse {
+struct GetHighScoreRoomResponse {
     unsigned int status;
     std::vector<std::string> statistics;
 };

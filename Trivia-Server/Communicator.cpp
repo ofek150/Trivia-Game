@@ -55,22 +55,14 @@ void Communicator::handleNewClient()
 {
 	// this accepts the client and create a specific socket from server to this client
 	// the process will not continue until a client connects to the server
-	SOCKET client_socket = accept(m_serverSocket, NULL, NULL);
-	if (client_socket == INVALID_SOCKET)
+	SOCKET clientSocket = accept(m_serverSocket, NULL, NULL);
+	if (clientSocket == INVALID_SOCKET)
 		throw std::exception(__FUNCTION__);
-
-
-	//Adding users to the clients map
-	std::unique_lock<std::mutex> clients_lock(this->clients_mutex);
-	LoginRequestHandler* loginRequestHandler = new LoginRequestHandler();
-
-	this->m_clients.emplace(client_socket, loginRequestHandler);
-	clients_lock.unlock();
-
+	insertNewClient(clientSocket);
 
 	std::cout << "Client accepted. Server and client can speak" << std::endl;
 	// the function that handle the conversation with the client
-	std::thread clientThread(&Communicator::clientHandler, this, client_socket);
+	std::thread clientThread(&Communicator::clientHandler, this, clientSocket);
 	clientThread.detach();
 
 
@@ -84,34 +76,18 @@ void Communicator::clientHandler(SOCKET clientSocket)
 		{
 			RequestInfo requestInfo = getRequest(clientSocket);
 
-			switch (requestInfo.code)
+			IRequestHandler* handler = m_clients[clientSocket];
+			if (handler->isRequestRelevant(requestInfo))
 			{
-				case RequestCodes::Login:
-				{
-					LoginRequest loginRequest = JsonRequestPacketDeserializer::deserializeLoginRequest(requestInfo.buffer);
-					LoginRequestHandler* requestHandler = m_handlerFactory.createLoginRequestHandler();
-					RequestResult requestResult = requestHandler->handleRequest(requestInfo);
-
-					sendMessage(clientSocket, requestResult.responseBuffer);
-					delete requestHandler;
-					break;
-				}	
-				case RequestCodes::Signup:
-				{
-					SignupRequest signupRequest = JsonRequestPacketDeserializer::deserializeSignupRequest(requestInfo.buffer);
-					LoginRequestHandler* requestHandler = m_handlerFactory.createLoginRequestHandler();
-					RequestResult requestResult = requestHandler->handleRequest(requestInfo);
-
-					sendMessage(clientSocket, requestResult.responseBuffer);
-					delete requestHandler;
-					break;
-				}
+				RequestResult requestResult = handler->handleRequest(requestInfo);
+				m_clients[clientSocket] = requestResult.newHandler;
+				sendMessage(clientSocket, requestResult.responseBuffer);
 			}
+			delete handler;
 		}
 		catch (const std::exception& e)
 		{
 			std::cerr << e.what() << std::endl;
-			
 			logOutClient(clientSocket);
 			return;
 		}
@@ -124,6 +100,11 @@ void Communicator::logOutClient(SOCKET clientSocket)
 	{
 		std::lock_guard<std::mutex> clients_lock(clients_mutex);
 		closesocket(clientSocket);
+		MenuRequestHandler* handler = dynamic_cast<MenuRequestHandler*>(m_clients[clientSocket]);
+		if (handler)
+		{
+			LoginManager::getInstance().logout(handler->getUser().getUsername());
+		}
 		delete m_clients[clientSocket];
 		m_clients.erase(clientSocket);
 		std::cout << "Removed a user from the connected users list" << std::endl;
@@ -170,4 +151,19 @@ RequestInfo Communicator::getRequest(const SOCKET socket)
 	delete[] buffer;
 
 	return requestInfo;
+}
+
+void Communicator::insertNewClient(SOCKET clientSocket)
+{
+	std::unique_lock<std::mutex> clients_lock(this->clients_mutex);
+	LoginRequestHandler* loginRequestHandler = new LoginRequestHandler();
+	m_clients[clientSocket] = loginRequestHandler;
+	clients_lock.unlock();
+}
+
+void Communicator::sendErrorResponse(SOCKET clientSocket)
+{
+	ErrorResponse errorResponse;
+	errorResponse.errorMessage = "Invalid request code";
+	sendMessage(clientSocket, JsonRequestPacketSerializer::getInstance().serializeResponse(errorResponse));
 }

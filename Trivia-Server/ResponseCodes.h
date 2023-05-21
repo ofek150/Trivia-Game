@@ -8,6 +8,6 @@ enum ResponseCodes
 	GetRoomsResponseCode = 3,
 	GetPlayersInRoomResponseCode = 5,
 	CreateRoomResponseCode = 6,
-	GetHighScoreInRoomResponseCode = 7,
+	GetHighScoreResponseCode = 7,
 	GetPersonalStatsResponseCode = 8
 };

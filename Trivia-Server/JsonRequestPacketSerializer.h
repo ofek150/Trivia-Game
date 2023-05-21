@@ -25,7 +25,7 @@ public:
     static const std::vector<unsigned char> serializeResponse(const GetPlayersInRoomResponse& response);
     static const std::vector<unsigned char> serializeResponse(const JoinRoomResponse& response);
     static const std::vector<unsigned char> serializeResponse(const CreateRoomResponse& response);
-    static const std::vector<unsigned char> serializeResponse(const GetHighScoreInRoomResponse& response);
+    static const std::vector<unsigned char> serializeResponse(const GetHighScoreRoomResponse& response);
     static const std::vector<unsigned char> serializeResponse(const GetPersonalStatsResponse& response);
     
 private:
