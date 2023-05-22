@@ -21,6 +21,10 @@ public:
 	bool doesUserExist(const std::string& username) override;
 	bool isPasswordValid(const std::string& username, const std::string& password) override;
 	void insertUserIntoDB(const std::string& username, const std::string& password, const std::string& email) override;
+	int getNumOfPlayerGames(const std::string username);
+	int getNumOfTotalAnswers(const std::string username);
+	int getNumOfCorrectAnswers(const std::string username);
+	double getPlayerAverageAnswerTime(const std::string username);
 private: 
 	sqlite3* db;
 	// Private constructor to prevent instantiation from outside
