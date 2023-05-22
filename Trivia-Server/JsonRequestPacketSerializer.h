@@ -1,8 +1,5 @@
 #pragma once
-
-#include "ErrorResponse.h"
-#include "LoginResponse.h"
-#include "SignupResponse.h"
+#include "Responses.h"
 #include "ResponseCodes.h"
 #include "json.hpp"
 #include <vector>
@@ -23,7 +20,13 @@ public:
     static const std::vector<unsigned char> serializeResponse(const ErrorResponse& response);
     static const std::vector<unsigned char> serializeResponse(const LoginResponse& response);
     static const std::vector<unsigned char> serializeResponse(const SignupResponse& response);
-
+    static const std::vector<unsigned char> serializeResponse(const LogoutResponse& response);
+    static const std::vector<unsigned char> serializeResponse(const GetRoomsResponse& response);
+    static const std::vector<unsigned char> serializeResponse(const GetPlayersInRoomResponse& response);
+    static const std::vector<unsigned char> serializeResponse(const JoinRoomResponse& response);
+    static const std::vector<unsigned char> serializeResponse(const CreateRoomResponse& response);
+    static const std::vector<unsigned char> serializeResponse(const GetHighScoreRoomResponse& response);
+    static const std::vector<unsigned char> serializeResponse(const GetPersonalStatsResponse& response);
     
 private:
     static const std::vector<unsigned char> constructPacket(int response_code, std::string json_dump); // Constructs the packet from
