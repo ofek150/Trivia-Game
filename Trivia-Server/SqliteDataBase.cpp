@@ -29,7 +29,14 @@ bool SqliteDataBase::open()
     std::string sqlStatement;
     if (fileExist != 0)
     {
-        sqlStatement = "CREATE TABLE USERS(USERNAME TEXT NOT NULL PRIMARY KEY UNIQUE, PASSWORD TEXT NOT NULL, EMAIL TEXT NOT NULL) ";
+        sqlStatement = "CREATE TABLE USERS (USERNAME TEXT NOT NULL PRIMARY KEY UNIQUE, PASSWORD TEXT NOT NULL, EMAIL TEXT NOT NULL)";
+        res = sqlite3_exec(db, sqlStatement.c_str(), nullptr, nullptr, &errMessage);
+        if (res != SQLITE_OK)
+        {
+            std::cerr << errMessage << std::endl;
+            return false;
+        }
+        sqlStatement = "CREATE TABLE QUESTIONS (ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, CATEGORY TEXT NOT NULL, QUESTIONS TEXT NOT NULL UNIQUE, A TEXT NOT NULL, B TEXT NOT NULL, C TEXT NOT NULL, D TEXT NOT NULL, ANSWER INTEGER NOT NULL)";
         res = sqlite3_exec(db, sqlStatement.c_str(), nullptr, nullptr, &errMessage);
         if (res != SQLITE_OK)
         {
@@ -39,6 +46,7 @@ bool SqliteDataBase::open()
     }
     return true;
 }
+
 
 void SqliteDataBase::close()
 {
