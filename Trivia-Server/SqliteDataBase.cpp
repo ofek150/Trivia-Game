@@ -94,7 +94,7 @@ bool SqliteDataBase::isPasswordValid(const std::string& username, const std::str
     char* errMessage = nullptr;
     int res = sqlite3_exec(db, sqlStatement.c_str(), callbackString, &UserPassword, &errMessage);
     if (res != SQLITE_OK) std::cerr << errMessage << std::endl;
-    return password == UserPassword;
+    return password == UserPassword; 
 }
 
 void SqliteDataBase::insertUserIntoDB(const std::string& username, const std::string& password, const std::string& email)
@@ -143,4 +143,26 @@ double SqliteDataBase::getPlayerAverageAnswerTime(const std::string username)
     int res = sqlite3_exec(db, sqlStatement.c_str(), callbackFloat, &avg_time, &errMessage);
     if (res != SQLITE_OK) std::cerr << errMessage << std::endl;
     return avg_time;
+}
+std::vector<std::string> SqliteDataBase::getTopUserGrades() const
+{
+    std::vector<std::string> userGrades;
+    std::string sqlStatement = "SELECT USERNAME, (((CORRECT_ANSWERS * 1.0) / (CORRECT_ANSWERS + WRONG_ANSWERS)) * AVG_TIME) * 10 AS grade "
+        "FROM STATISTICS "
+        "ORDER BY grade DESC "
+        "LIMIT 5;";
+    char* errMessage = nullptr;
+    int res = sqlite3_exec(db, sqlStatement.c_str(), [](void* data, int argc, char** argv, char** azColName) {
+        std::vector<std::string>* userGrades = static_cast<std::vector<std::string>*>(data);
+        if (argc == 2) {
+            std::string username = argv[0];
+            std::string grade = argv[1];
+            userGrades->push_back(username + " : " + grade);
+        }
+        return 0;
+        }, &userGrades, &errMessage);
+    if (res != SQLITE_OK) {
+        std::cerr << errMessage << std::endl;
+    }
+    return userGrades;
 }
