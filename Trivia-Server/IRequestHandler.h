@@ -25,5 +25,7 @@ class IRequestHandler
 public:
 	virtual bool isRequestRelevant(const RequestInfo& requestInfo) const = 0;
 	virtual RequestResult handleRequest(const RequestInfo& requestInfo) const = 0;
+protected:
+	RequestResult ErrorResult(std::exception e) const;
 };
 

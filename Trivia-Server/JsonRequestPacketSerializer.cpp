@@ -21,7 +21,7 @@ const std::vector<unsigned char> JsonRequestPacketSerializer::serializeResponse(
 const std::vector<unsigned char> JsonRequestPacketSerializer::serializeResponse(const LogoutResponse& response)
 {
     nlohmann::json json_data = { {"status", response.status} };
-    return constructPacket(ResponseCodes::SignupResponseCode, json_data.dump());
+    return constructPacket(ResponseCodes::LogoutResponseCode, json_data.dump());
 }
 
 const std::vector<unsigned char> JsonRequestPacketSerializer::serializeResponse(const GetRoomsResponse& response)
@@ -101,6 +101,7 @@ const std::vector<unsigned char> JsonRequestPacketSerializer::constructPacket(in
 
     // Add the JSON data length to the buffer
     unsigned int json_length = json_dump.length();
+ 
     buffer.insert(buffer.end(), reinterpret_cast<const unsigned char*>(&json_length), reinterpret_cast<const unsigned char*>(&json_length) + sizeof(unsigned int));
 
     // Add the JSON data to the buffer

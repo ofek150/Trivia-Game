@@ -35,11 +35,7 @@ RequestResult LoginRequestHandler::login(const RequestInfo& requestInfo) const
     }
     catch (const std::exception& e)
     {
-        ErrorResponse errorResponse;
-        errorResponse.errorMessage = e.what();
-        std::cerr << e.what() << std::endl;
-        requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(errorResponse);
-        requestResult.newHandler = m_handlerFactory.createLoginRequestHandler();
+        requestResult = ErrorResult(e);
     }
 
     return requestResult;
@@ -63,11 +59,7 @@ RequestResult LoginRequestHandler::signup(const RequestInfo& requestInfo) const
     }
     catch (const std::exception& e)
     {
-        ErrorResponse errorResponse;
-        errorResponse.errorMessage = e.what();
-        std::cerr << e.what() << std::endl;
-        requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(errorResponse);
-        requestResult.newHandler = m_handlerFactory.createLoginRequestHandler();
+        requestResult = ErrorResult(e);
     }
 
     return requestResult;

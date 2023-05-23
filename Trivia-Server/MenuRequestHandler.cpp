@@ -1,12 +1,13 @@
 #include "MenuRequestHandler.h"
 #include "RequestHandlerFactory.h"
+#include "LoginRequestHandler.h"
 #include "StatusCodes.h"
 
 bool MenuRequestHandler::isRequestRelevant(const RequestInfo& requestInfo) const
 {
 	return requestInfo.code == RequestCodes::CreateRoomRequestCode || requestInfo.code == RequestCodes::GetRoomsRequestCode
 		|| requestInfo.code == RequestCodes::GetPlayersInRoomRequestCode || requestInfo.code == RequestCodes::JoinRoomRequestCode
-		|| requestInfo.code == RequestCodes::GetHighScoreRequestCode || requestInfo.code == RequestCodes::GetHighScoreRequestCode
+		|| requestInfo.code == RequestCodes::GetHighScoreRequestCode || requestInfo.code == RequestCodes::GetPersonalStatsRequestCode
 		|| requestInfo.code == RequestCodes::LogoutRequestCode;
 }
 
@@ -38,7 +39,8 @@ RequestResult MenuRequestHandler::signout(const RequestInfo& requestInfo) const
 {
 	RequestResult requestResult;
 	LogoutResponse logoutResponse;
-	requestResult.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
+	requestResult.newHandler = requestResult.newHandler = m_handlerFactory.createLoginRequestHandler();
+
 	try {
 		LoginManager& loginManager = m_handlerFactory.getLoginManager();
 		loginManager.logout(m_user.getUsername());
@@ -48,10 +50,7 @@ RequestResult MenuRequestHandler::signout(const RequestInfo& requestInfo) const
 	}
 	catch (const std::exception& e)
 	{
-		ErrorResponse errorResponse;
-		errorResponse.errorMessage = e.what();
-		std::cerr << e.what() << std::endl;
-		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(errorResponse);
+		requestResult = ErrorResult(e);
 	}
 
 	return requestResult;
@@ -69,10 +68,7 @@ RequestResult MenuRequestHandler::getRooms(const RequestInfo& requestInfo) const
 	}
 	catch (const std::exception& e)
 	{
-		ErrorResponse errorResponse;
-		errorResponse.errorMessage = e.what();
-		std::cerr << e.what() << std::endl;
-		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(errorResponse);
+		requestResult = ErrorResult(e);
 	}
 
 	return requestResult;
@@ -85,8 +81,6 @@ RequestResult MenuRequestHandler::getPlayersInRoom(const RequestInfo& requestInf
 	requestResult.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
 	try {
 		std::vector<std::string> players;
-		std::map<unsigned int, Room> rooms = m_roomManager.getRooms();
-		
 		GetPlayersInRoomRequest getPlayersInRoomRequest = JsonRequestPacketDeserializer::getInstance().deserializeGetPlayersInRoomRequest(requestInfo.buffer);
 		std::vector<LoggedUser> users =  m_roomManager.getRoom(getPlayersInRoomRequest.roomId).getAllUsers();
 		for (auto user : users)
@@ -99,10 +93,7 @@ RequestResult MenuRequestHandler::getPlayersInRoom(const RequestInfo& requestInf
 	}
 	catch (const std::exception& e)
 	{
-		ErrorResponse errorResponse;
-		errorResponse.errorMessage = e.what();
-		std::cerr << e.what() << std::endl;
-		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(errorResponse);
+		requestResult = ErrorResult(e);
 	}
 
 	return requestResult;
@@ -121,10 +112,7 @@ RequestResult MenuRequestHandler::getPersonalStats(const RequestInfo& requestInf
 	}
 	catch (const std::exception& e)
 	{
-		ErrorResponse errorResponse;
-		errorResponse.errorMessage = e.what();
-		std::cerr << e.what() << std::endl;
-		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(errorResponse);
+		requestResult = ErrorResult(e);
 	}
 
 	return requestResult;
@@ -143,10 +131,7 @@ RequestResult MenuRequestHandler::getHighScore(const RequestInfo& requestInfo) c
 	}
 	catch (const std::exception& e)
 	{
-		ErrorResponse errorResponse;
-		errorResponse.errorMessage = e.what();
-		std::cerr << e.what() << std::endl;
-		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(errorResponse);
+		requestResult = ErrorResult(e);
 	}
 
 	return requestResult;
@@ -159,20 +144,18 @@ RequestResult MenuRequestHandler::joinRoom(const RequestInfo& requestInfo) const
 	requestResult.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
 	try {
 		std::vector<std::string> players;
-		std::map<unsigned int, Room> rooms = m_roomManager.getRooms();
+		std::map<unsigned int, Room>* rooms = m_roomManager.getRooms();
 		JoinRoomRequest joinRoomRequest = JsonRequestPacketDeserializer::getInstance().deserializeJoinRoomRequest(requestInfo.buffer);
+		
 		LoggedUser user(m_user);
-		rooms[joinRoomRequest.roomId].addUser(user);
+		m_roomManager.JoinRoom(user, joinRoomRequest.roomId);
 		joinRoomResponse.status = StatusCodes::SUCCESSFUL;
 
 		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(joinRoomResponse);
 	}
 	catch (const std::exception& e)
 	{
-		ErrorResponse errorResponse;
-		errorResponse.errorMessage = e.what();
-		std::cerr << e.what() << std::endl;
-		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(errorResponse);
+		requestResult = ErrorResult(e);
 	}
 
 	return requestResult;
@@ -185,9 +168,11 @@ RequestResult MenuRequestHandler::createRoom(const RequestInfo& requestInfo) con
 	requestResult.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
 	try {
 		std::vector<std::string> players;
-		int roomCount = m_roomManager.getRooms().size();
+		int roomCount = m_roomManager.getRooms()->size();
 		CreateRoomRequest createRoomRequest = JsonRequestPacketDeserializer::getInstance().deserializeCreateRoomRequest(requestInfo.buffer);
 		LoggedUser user(m_user);
+
+		
 		RoomData roomData;
 		roomData.name = createRoomRequest.roomName;
 		roomData.timePerQuestion = createRoomRequest.answerTimeout;
@@ -202,10 +187,7 @@ RequestResult MenuRequestHandler::createRoom(const RequestInfo& requestInfo) con
 	}
 	catch (const std::exception& e)
 	{
-		ErrorResponse errorResponse;
-		errorResponse.errorMessage = e.what();
-		std::cerr << e.what() << std::endl;
-		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(errorResponse);
+		requestResult = ErrorResult(e);
 	}
 
 	return requestResult;

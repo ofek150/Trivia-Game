@@ -2,13 +2,13 @@
 
 enum RequestCodes 
 {
-	SignupRequestCode = 0,
 	LoginRequestCode = 1,
-	LogoutRequestCode = 2,
-	GetRoomsRequestCode = 3,
-	JoinRoomRequestCode = 4,
-	GetPlayersInRoomRequestCode = 5,
-	CreateRoomRequestCode = 6,
-	GetHighScoreRequestCode = 7,
-	GetPersonalStatsRequestCode = 8
+	SignupRequestCode = 2,
+	LogoutRequestCode = 3,
+	GetRoomsRequestCode = 4,
+	JoinRoomRequestCode = 5,
+	GetPlayersInRoomRequestCode = 6,
+	CreateRoomRequestCode = 7,
+	GetHighScoreRequestCode = 8,
+	GetPersonalStatsRequestCode = 9
 };

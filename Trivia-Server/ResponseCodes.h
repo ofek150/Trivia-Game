@@ -5,9 +5,11 @@ enum ResponseCodes
 	ErrorResponseCode = 0,
 	LoginResponseCode = 1,
 	SignupResponseCode = 2,
-	GetRoomsResponseCode = 3,
-	GetPlayersInRoomResponseCode = 5,
-	CreateRoomResponseCode = 6,
-	GetHighScoreResponseCode = 7,
-	GetPersonalStatsResponseCode = 8
+	LogoutResponseCode = 3,
+	JoinRoomResponseCode = 4,
+	GetRoomsResponseCode = 5,
+	GetPlayersInRoomResponseCode = 6,
+	CreateRoomResponseCode = 7,
+	GetHighScoreResponseCode = 8,
+	GetPersonalStatsResponseCode = 9
 };

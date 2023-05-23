@@ -12,6 +12,7 @@ void Room::removeUser(const LoggedUser& user)
 
     if (it != m_users.end())
     {
+        if(user.getUsername() == admin.getUsername()) // Notify players to leave the server
         m_users.erase(it);
     }
 }

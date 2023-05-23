@@ -46,6 +46,7 @@ def receive_msg(client_socket):
         header = client_socket.recv(5)
         response_code = header[0]
         data_length = int.from_bytes(header[1:], byteorder='big')
+        print("Data length: ", data_length)
 
         # Then receive the JSON data
         data = client_socket.recv(data_length).decode('utf-8')
@@ -118,6 +119,11 @@ def check_edge_cases():
     #case 4 : user have to use valid username
     client_socket = generate_new_connection()
     registration(client_socket, "!user5", "00000", "user00000@gmail.com")
+    client_socket.close()
+    
+    
+    client_socket = generate_new_connection()
+    login(client_socket, "daniel",  "12345")
     client_socket.close()
     
 

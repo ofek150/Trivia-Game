@@ -1,15 +1,20 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../App";
+import useClient from "../services/client";
 
 const MainMenu: React.FC = () => {
   const navigate = useNavigate();
+  const { logout } = useClient();
   const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+  
 
-  const handleLogout = () => {
-    // Update the loggedIn state to false when logging out
-    setIsLoggedIn(false);
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

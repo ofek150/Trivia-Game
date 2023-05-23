@@ -80,14 +80,28 @@ void Communicator::clientHandler(SOCKET clientSocket)
 			if (handler->isRequestRelevant(requestInfo))
 			{
 				RequestResult requestResult = handler->handleRequest(requestInfo);
-				m_clients[clientSocket] = requestResult.newHandler;
+				if (requestResult.responseBuffer[0] == ResponseCodes::ErrorResponseCode)
+				{
+					requestResult.newHandler = m_clients[clientSocket];
+				}
+				else
+				{
+					delete handler;
+					std::unique_lock<std::mutex> clients_lock(this->clients_mutex);
+					m_clients[clientSocket] = requestResult.newHandler;
+					clients_lock.unlock();
+				}
 				sendMessage(clientSocket, requestResult.responseBuffer);
 			}
-			delete handler;
 		}
 		catch (const std::exception& e)
 		{
 			std::cerr << e.what() << std::endl;
+			logOutClient(clientSocket);
+			return;
+		}
+		catch (...)
+		{
 			logOutClient(clientSocket);
 			return;
 		}
@@ -123,8 +137,9 @@ int Communicator::getRequestCodeFromRequest(const SOCKET socket)
 
 void Communicator::sendMessage(const SOCKET socket, const std::vector<unsigned char>& message) const
 {
-	const char* buffer = reinterpret_cast<const char*>(message.data());
-	if (send(socket, buffer, message.size(), 0) == INVALID_SOCKET) throw std::exception("Error in connection. Logging out client...");
+	const unsigned char* buffer = reinterpret_cast<const unsigned char*>(message.data());
+
+	if(send(socket, reinterpret_cast<const char*>(buffer), message.size(), 0) == SOCKET_ERROR) throw std::exception("Error in connection. Logging out client...");
 }
 
 RequestInfo Communicator::getRequest(const SOCKET socket)
