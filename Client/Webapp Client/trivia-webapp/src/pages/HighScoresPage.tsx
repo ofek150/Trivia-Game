@@ -1,10 +1,10 @@
 import React from "react"
-import HighScore from "../components/HighScore";
+import HighScores from "../components/HighScores";
 
-const HighScorePage: React.FC = () => {
+const HighScoresPage: React.FC = () => {
     return (
-        <HighScore/>
+        <HighScores/>
     );
 };
 
-export default HighScorePage;
+export default HighScoresPage;
