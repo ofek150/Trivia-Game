@@ -29,6 +29,7 @@ wss.on("connection", (ws) => {
     console.log("WebSocket connection error", err);
 
     // Close the corresponding socket connection to the server
+    console.log("Closing connection due to error...");
     socketClient.end();
   });
 

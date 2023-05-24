@@ -132,6 +132,7 @@ int Communicator::getRequestCodeFromRequest(const SOCKET socket)
 	char buffer[1] = { 0 };
 	int bytesReceived = recv(socket, buffer, 1, 0);
 	if (bytesReceived < 0) throw std::exception("Error in connection. Logging out client...");
+	if (bytesReceived == 0) throw std::exception("Client has closed the connection");
 	return static_cast<int>(buffer[0]);
 }
 
