@@ -119,6 +119,8 @@ void Communicator::logOutClient(SOCKET clientSocket)
 		{
 			LoginManager::getInstance().logout(handler->getUser().getUsername());
 		}
+
+		std::lock_guard<std::mutex>clients_lock(this->clients_mutex);
 		delete m_clients[clientSocket];
 		m_clients.erase(clientSocket);
 		std::cout << "Removed a user from the connected users list" << std::endl;
@@ -171,10 +173,9 @@ RequestInfo Communicator::getRequest(const SOCKET socket)
 
 void Communicator::insertNewClient(SOCKET clientSocket)
 {
-	std::unique_lock<std::mutex> clients_lock(this->clients_mutex);
+	std::lock_guard<std::mutex>clients_lock(this->clients_mutex);
 	LoginRequestHandler* loginRequestHandler = new LoginRequestHandler();
 	m_clients[clientSocket] = loginRequestHandler;
-	clients_lock.unlock();
 }
 
 void Communicator::sendErrorResponse(SOCKET clientSocket)

@@ -22,6 +22,7 @@ void LoginManager::logout(std::string username)
 	std::lock_guard<std::mutex> users_lock(loggedUsers_mutex);
 	auto it = std::remove_if(m_loggedUsers.begin(), m_loggedUsers.end(), 
 		[username](LoggedUser& user) {return user.getUsername() == username;});
+
 	if (it != m_loggedUsers.end()) 
 		m_loggedUsers.erase(it, m_loggedUsers.end());
 	
