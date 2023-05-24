@@ -2,7 +2,7 @@
 #include "RequestHandlerFactory.h"
 #include "MenuRequestHandler.h"
 
-LoginRequestHandler::LoginRequestHandler() : m_handlerFactory(RequestHandlerFactory::getInstance()) {}
+LoginRequestHandler::LoginRequestHandler() : m_handlerFactory(RequestHandlerFactory::getInstance()), IRequestHandler("") {}
 
 bool LoginRequestHandler::isRequestRelevant(const RequestInfo& requestInfo) const
 {
@@ -28,6 +28,8 @@ RequestResult LoginRequestHandler::login(const RequestInfo& requestInfo) const
     try {
         LoginManager& loginManager = m_handlerFactory.getLoginManager();
         LoginRequest loginRequest = JsonRequestPacketDeserializer::getInstance().deserializeLoginRequest(requestInfo.buffer);
+        if (loginRequest.username == "") throw std::exception("Username can't be empty!");
+        if (loginRequest.password == "") throw std::exception("Password can't be empty!");
         loginManager.login(loginRequest.username, loginRequest.password);
         loginResponse.status = StatusCodes::SUCCESSFUL;
         requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(loginResponse);
@@ -50,6 +52,8 @@ RequestResult LoginRequestHandler::signup(const RequestInfo& requestInfo) const
         LoginManager& loginManager = m_handlerFactory.getLoginManager();
 
         SignupRequest signupRequest = JsonRequestPacketDeserializer::getInstance().deserializeSignupRequest(requestInfo.buffer);
+        if (signupRequest.username == "") throw std::exception("Username can't be empty!");
+        if (signupRequest.password == "") throw std::exception("Password can't be empty!");
         loginManager.signup(signupRequest.username, signupRequest.password, signupRequest.email);
 
         requestResult.newHandler = m_handlerFactory.createMenuRequestHandler(signupRequest.username);

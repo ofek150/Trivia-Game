@@ -5,6 +5,7 @@
 #include "JsonRequestPacketSerializer.h"
 #include "StatusCodes.h"
 #include "RequestCodes.h"
+#include "LoggedUser.h"
 
 class IRequestHandler;
 
@@ -23,9 +24,12 @@ struct RequestInfo {
 class IRequestHandler
 {
 public:
+	IRequestHandler(const std::string& username) : m_user(username) {}
 	virtual bool isRequestRelevant(const RequestInfo& requestInfo) const = 0;
 	virtual RequestResult handleRequest(const RequestInfo& requestInfo) const = 0;
+	const LoggedUser& getUser() const;
 protected:
+	LoggedUser m_user;
 	RequestResult ErrorResult(std::exception e) const;
 };
 

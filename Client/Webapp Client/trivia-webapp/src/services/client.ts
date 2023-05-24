@@ -59,7 +59,6 @@ const useClient = () => {
     socket.binaryType = "arraybuffer";
 
     socket.onmessage = (event) => {
-      //console.log(event.data);
       // Parse the server response
       console.log(event.data);
       const response = new Uint8Array(event.data);

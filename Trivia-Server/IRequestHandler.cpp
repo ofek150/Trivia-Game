@@ -1,5 +1,10 @@
 #include "IRequestHandler.h"
 
+const LoggedUser& IRequestHandler::getUser() const
+{
+    return m_user;
+}
+
 RequestResult IRequestHandler::ErrorResult(std::exception e) const
 {
     RequestResult requestResult;
