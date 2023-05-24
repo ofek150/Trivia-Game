@@ -1,12 +1,15 @@
-.createRoomContainer {
+.signupContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1em;
     width: 15vw;
-}
+  }
 
-  input {
+  .usernameInput,
+  .passwordInput, 
+  .emailInput
+   {
     padding: 0.5em;
     font-size: 1em;
     color: #494949;
@@ -17,13 +20,14 @@
     transition: all 0.3s ease;
     outline: none;
   }
+  
+  .usernameInput::placeholder,
+  .passwordInput::placeholder,
+  .emailInput::placeholder {
+    color: #888;
+  }
 
-  input:focus {
-    /*...other properties...*/
-    transform: scale(1.02); /* New transform property */
-    }
-
-  .createRoomButton {
+  .signupButton {
     padding: 0.8em 2em;
     font-size: 1.6em;
     width: 40vw;
@@ -31,11 +35,20 @@
     border: none;
     border-radius: 15px;
     transition: all 0.3s ease;
-    background-color: #288CFF;
+  }
+
+  .usernameInput:focus, .passwordInput:focus {
+    /*...other properties...*/
+    transform: scale(1.02); /* New transform property */
+    }
+
+  .signupButton {
+    background-color: #1df5aa;
   }
   
-  .createRoomButton:hover {
-    background-color: #1A63A8;
+
+  .signupButton:hover {
+    background-color: #20c89c;
     transform: scale(1.05);
   }
   
@@ -47,13 +60,13 @@
 
   /* Larger screen adjustments */
   @media screen and (min-width: 768px) {
-    .createRoomButton {
+    .loginButton, .signupButton {
       font-size: 1.8em;
       padding: 0.5em 1.5em;
       width: 12vw;
     }
 
-    input {
+    .usernameInput, .passwordInput, .emailInput {
         font-size: 1.4em;
         width: 20vw;
     }

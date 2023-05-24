@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../App";
 import useClient from "../services/client";
+import styles from "../styles/modules/Login.module.css"
 
 const MainMenu: React.FC = () => {
   const navigate = useNavigate();
@@ -20,9 +21,10 @@ const MainMenu: React.FC = () => {
     navigate("/statistics");
   }
   return (
-    <div className="main_menu-container">
+    <div className={styles.loginContainer}>
       <button onClick={() => navigate("/room-list")}>rooms</button>
-      <button onClick={handleStatisticsBtn}>statistics</button>
+      <button onClick={() => navigate("/create-room")}>Create Room</button>
+      <button onClick={() => navigate("/statistics")}>statistics</button>
       <button onClick={handleLogout}>Logout</button>
     </div>
   );

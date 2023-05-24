@@ -1,6 +1,7 @@
 import { Console, error } from "console";
 import { useEffect, useRef, useContext } from "react";
 import { AuthContext } from "../App";
+import { RoomDataContext } from "../contexts/RoomDataContext";
 import { useNavigate } from "react-router-dom";
 import { json } from "stream/consumers";
 import { ResponseContext } from "../contexts/ResponseContext";
@@ -46,6 +47,7 @@ const useClient = () => {
   const navigate = useNavigate();
   const { setResponseMessage } = useContext(ResponseContext);
   const { setIsLoggedIn } = useContext(AuthContext);
+  const { setRoomData } = useContext(RoomDataContext);
 
   useEffect(() => {
     console.log(socket);
@@ -96,6 +98,7 @@ const useClient = () => {
           console.log(data);
           break;
         case ResponseCodes.CreateRoomResponseCode:
+          navigate("/room-list/room");
           console.log(data);
           break;
         case ResponseCodes.GetHighScoreResponseCode:
@@ -198,6 +201,8 @@ const useClient = () => {
 
   const createRoom = (request: CreateRoomRequest) => {
     sendDataToServer(RequestCodes.CreateRoomRequestCode, request);
+    console.log(request);
+    setRoomData(request);
   };
 
 

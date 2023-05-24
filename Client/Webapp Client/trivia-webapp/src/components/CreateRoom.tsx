@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ResponseContext } from "../contexts/ResponseContext";
 import useClient from "../services/client";
 import styles from "../styles/modules/CreateRoom.module.css"
+import GoBackBtn from "./GoBackBtn";
 
 const CreateRoom: React.FC = () => {
   const [roomName, setRoomName] = useState("");
@@ -18,6 +19,7 @@ const CreateRoom: React.FC = () => {
 
   return (
       <div className={styles.createRoomContainer}>
+        <GoBackBtn/>
         <input
           type="text"
           placeholder="Room name"
@@ -40,6 +42,14 @@ const CreateRoom: React.FC = () => {
           onChange={(e) => setQuestionCount(parseInt(e.target.value, 10))}
           min={5}
           max={10}
+        />
+        <input
+          type="number"
+          placeholder="Time for each question"
+          value={answerTimeout}
+          onChange={(e) => setAnswerTimeout(parseInt(e.target.value, 10))}
+          min={1}
+          max={60}
         />
         <div className={styles.responseMessage}>{responseMessage}</div>
         <button onClick={handleCreateRoom} className={styles.createRoomButton}>Create Room</button>

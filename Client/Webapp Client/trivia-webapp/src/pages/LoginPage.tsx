@@ -3,7 +3,7 @@ import styles from '../styles/modules/LoginPage.module.css'
 
 const LoginPage: React.FC = () => {
     return (
-        <div className={styles.pageContainer}>
+        <div>
             <Login/>
         </div>
     );

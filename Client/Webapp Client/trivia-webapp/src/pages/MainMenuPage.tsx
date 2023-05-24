@@ -11,7 +11,9 @@ const MainMenuPage: React.FC = () => {
     }, []);
 
     return (
-        <MainMenu/>
+        <div>
+          <MainMenu/>
+        </div>
     );
 };
 

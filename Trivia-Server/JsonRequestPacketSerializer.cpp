@@ -64,13 +64,13 @@ const std::vector<unsigned char> JsonRequestPacketSerializer::serializeResponse(
 const std::vector<unsigned char> JsonRequestPacketSerializer::serializeResponse(const JoinRoomResponse& response)
 {
     nlohmann::json json_data = { {"status", response.status} };
-    return constructPacket(ResponseCodes::SignupResponseCode, json_data.dump());
+    return constructPacket(ResponseCodes::JoinRoomResponseCode, json_data.dump());
 }
 
 const std::vector<unsigned char> JsonRequestPacketSerializer::serializeResponse(const CreateRoomResponse& response)
 {
     nlohmann::json json_data = { {"status", response.status} };
-    return constructPacket(ResponseCodes::SignupResponseCode, json_data.dump());
+    return constructPacket(ResponseCodes::CreateRoomResponseCode, json_data.dump());
 }
 
 const std::vector<unsigned char> JsonRequestPacketSerializer::serializeResponse(const GetHighScoreRoomResponse& response)

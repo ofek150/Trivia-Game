@@ -28,3 +28,10 @@ export interface ParsedResponse {
   responseCode: number;
   data: any;
 }
+
+export interface RoomData {
+  roomName: string;
+  maxUsers: number;
+  questionCount: number;
+  answerTimeout: number;
+}

@@ -3,7 +3,10 @@ import CreateRoom from "../components/CreateRoom";
 
 const CreateRoomPage: React.FC = () => {
     return (
-        <CreateRoom/>
+        <div>
+            <CreateRoom/>
+        </div>
+        
     );
 };
 
