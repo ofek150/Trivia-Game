@@ -21,8 +21,8 @@ const App: React.FC = () => {
   const { socket } = useContext(WebSocketContext);
 
   return (
-    <ResponseProvider>
-      <WebSocketProvider>
+    <WebSocketProvider>
+      <ResponseProvider>
         <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
           <Router>
             <Routes>
@@ -36,8 +36,8 @@ const App: React.FC = () => {
             </Routes>
           </Router>
         </AuthContext.Provider>
-      </WebSocketProvider>
-    </ResponseProvider>
+      </ResponseProvider>
+    </WebSocketProvider>
   );
 };
 
