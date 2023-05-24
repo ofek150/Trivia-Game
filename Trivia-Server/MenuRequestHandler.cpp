@@ -30,6 +30,11 @@ RequestResult MenuRequestHandler::handleRequest(const RequestInfo& requestInfo) 
 	}
 }
 
+const LoggedUser& MenuRequestHandler::getUser() const
+{
+	return m_user;
+}
+
 RequestResult MenuRequestHandler::signout(const RequestInfo& requestInfo) const
 {
 	RequestResult requestResult;

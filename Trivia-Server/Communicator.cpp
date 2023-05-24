@@ -113,11 +113,12 @@ void Communicator::logOutClient(SOCKET clientSocket)
 	try
 	{
 		closesocket(clientSocket);
+		IRequestHandler* handler = m_clients[clientSocket];
 
-		if (m_clients[clientSocket] && dynamic_cast<LoginRequestHandler*>(m_clients[clientSocket]))
+		if (dynamic_cast<MenuRequestHandler*>(handler))
 		{
-			RequestInfo requestInfo;
-			LoginManager::getInstance().logout(m_clients[clientSocket]->getUser().getUsername());
+			MenuRequestHandler* menuRequestHandler = dynamic_cast<MenuRequestHandler*>(m_clients[clientSocket]);
+			LoginManager::getInstance().logout(menuRequestHandler->getUser().getUsername());
 		}
 
 		std::lock_guard<std::mutex>clients_lock(this->clients_mutex);
