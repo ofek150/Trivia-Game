@@ -44,6 +44,11 @@ const App: React.FC = () => {
 =======
               <Route path="/create-room" element={isLoggedIn? <CreateRoomPage /> : <Navigate to = "/login" />} />
 >>>>>>> Stashed changes
+              
+              <Route path="/statistics" element={isLoggedIn ? <StatisticsPage /> : <Navigate to="/login" />} />
+              <Route path="/statistics/highscores" element={isLoggedIn? <HighScoresPage /> : <Navigate to = "/login" />} />
+              <Route path="/statistics/personal" element={isLoggedIn ? <PersonalStatisticsPage /> : <Navigate to="/login" />} />
+              
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Router>
