@@ -1,0 +1,76 @@
+.loginContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1em;
+    width: 15vw;
+  }
+  
+  .usernameInput,
+  .passwordInput {
+    padding: 0.5em;
+    font-size: 1em;
+    border: 1px solid #888;
+    height: 4vh;
+    border-radius: 15px;
+    width: 100%;
+    transition: all 0.3s ease;
+    outline: none;
+  }
+  
+  .usernameInput::placeholder,
+  .passwordInput::placeholder {
+    color: #888;
+  }
+
+  .signupButton, .loginButton {
+    padding: 0.8em 2em;
+    font-size: 1.6em;
+    width: 40vw;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+  }
+
+  .usernameInput:focus, .passwordInput:focus {
+    /*...other properties...*/
+    transform: scale(1.02); /* New transform property */
+    }
+
+  .signupButton{
+    background-color: #1df5aa;
+  }
+
+  .loginButton{
+    background-color: #288CFF;
+    margin-top: 2em;
+  }
+  
+  .loginButton:hover {
+    background-color: #1A63A8;
+    transform: scale(1.05);
+  }
+
+  .signupButton:hover {
+    background-color: #20c89c;
+    transform: scale(1.05);
+  }
+  
+
+
+  /* Larger screen adjustments */
+  @media screen and (min-width: 768px) {
+    .loginButton, .signupButton {
+      font-size: 1.8em;
+      padding: 0.5em 1.5em;
+      width: 12vw;
+    }
+
+    .usernameInput, .passwordInput {
+        font-size: 1.4em;
+        width: 20vw;
+        margin-bottom: ;
+    }
+  }
+  
