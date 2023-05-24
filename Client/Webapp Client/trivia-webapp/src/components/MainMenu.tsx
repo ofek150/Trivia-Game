@@ -8,7 +8,6 @@ const MainMenu: React.FC = () => {
   const { logout } = useClient();
   const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
   
-
   const handleLogout = async () => {
     try {
       await logout();
@@ -17,9 +16,13 @@ const MainMenu: React.FC = () => {
     }
   };
 
+  const handleStatisticsBtn = () => {
+    navigate("/statistics");
+  }
   return (
     <div className="main_menu-container">
       <button onClick={() => navigate("/room-list")}>rooms</button>
+      <button onClick={handleStatisticsBtn}>statistics</button>
       <button onClick={handleLogout}>Logout</button>
     </div>
   );
