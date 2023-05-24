@@ -10,7 +10,7 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
-  const { setResponseMessage } = useContext(ResponseContext);
+  const { responseMessage, setResponseMessage } = useContext(ResponseContext);
 
   const handleLogin = async () => {
     try {
@@ -41,6 +41,7 @@ const Login: React.FC = () => {
         onChange={(e) => setPassword(e.target.value)}
         className={styles.passwordInput}
       />
+      <div className={styles.responseMessage}>{responseMessage}</div>
       <button onClick={handleLogin} className={styles.loginButton}>Login</button>
       <button onClick={ handleSignup } className={styles.signupButton}>Signup</button>
     </div>

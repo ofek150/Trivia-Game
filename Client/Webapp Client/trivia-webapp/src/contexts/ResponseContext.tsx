@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useState,  ReactNode } from 'react';
 
 export const ResponseContext = createContext<{
   responseMessage: string;
@@ -15,9 +15,6 @@ interface ResponseProviderProps {
   export const ResponseProvider: React.FC<ResponseProviderProps> = ({ children }) => {
     const [responseMessage, setResponseMessage] = useState('');
     
-    useEffect(() => {
-      }, [responseMessage]);
-
     const responseContextValue = {
       responseMessage: responseMessage,
       setResponseMessage: setResponseMessage,
@@ -26,7 +23,7 @@ interface ResponseProviderProps {
     return (
       <ResponseContext.Provider value={responseContextValue}>
         {children}
-        {responseMessage && <div>{responseMessage}</div>}
+        {/* {responseMessage && <div>{responseMessage}</div>} */}
       </ResponseContext.Provider>
     );
   };

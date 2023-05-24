@@ -5,7 +5,7 @@
     gap: 1em;
     width: 15vw;
   }
-  
+
   .usernameInput,
   .passwordInput {
     padding: 0.5em;
@@ -59,6 +59,12 @@
   
 
 
+  .responseMessage{
+    color:rgb(255, 0, 0);
+    height: 1.3em;
+    font-size: 1.3em;
+  }
+
   /* Larger screen adjustments */
   @media screen and (min-width: 768px) {
     .loginButton, .signupButton {
@@ -70,7 +76,6 @@
     .usernameInput, .passwordInput {
         font-size: 1.4em;
         width: 20vw;
-        margin-bottom: ;
     }
   }
   
