@@ -88,7 +88,6 @@ bool SqliteDataBase::doesUserExist(const std::string& username)
 
 bool SqliteDataBase::isPasswordValid(const std::string& username, const std::string& password)
 {
-    if(!doesUserExist(username)) return false;
     std::string UserPassword= "";
     std::string sqlStatement = "SELECT PASSWORD FROM USERS WHERE USERNAME = '" + username + "';";
     char* errMessage = nullptr;

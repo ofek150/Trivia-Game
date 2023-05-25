@@ -2,15 +2,22 @@
 
 void LoginManager::signup(std::string username, std::string password, std::string email)
 {
-	if (this->m_database->doesUserExist(username)) throw std::exception("Username already exists");;
+	if (username.empty()) throw std::exception("Username can't be empty!");
+	if (email.empty()) throw std::exception("Email can't be empty!");
+	if (password.empty()) throw std::exception("Password can't be empty!");
+
+	if (this->m_database->doesUserExist(username)) throw std::exception("A user with that username already exists!");;
 	m_database->insertUserIntoDB(username, password, email);
 }
 
 void LoginManager::login(std::string username, std::string password)
 {
-	if(isUserInLoggedUser(username)) throw std::exception("User is already logged in");
-	if (!this->m_database->doesUserExist(username)) throw std::exception("Username doesn't exist");
-	if (!this->m_database->isPasswordValid(username, password)) throw std::exception("Invalid password");
+	if (username.empty()) throw std::exception("Username can't be empty!");
+	if (password.empty()) throw std::exception("Password can't be empty!");
+
+	if(isUserInLoggedUser(username)) throw std::exception("That user is already logged in!");
+	if (!this->m_database->doesUserExist(username)) throw std::exception("Username doesn't exist!");
+	if (!this->m_database->isPasswordValid(username, password)) throw std::exception("Invalid password!");
 
 	std::lock_guard<std::mutex> users_lock(loggedUsers_mutex);
 	LoggedUser newUser(username);
