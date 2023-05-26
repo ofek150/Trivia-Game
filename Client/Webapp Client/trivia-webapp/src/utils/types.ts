@@ -35,3 +35,7 @@ export interface RoomData {
   questionCount: number;
   answerTimeout: number;
 }
+
+export interface Highscores {
+  highscores : Object;
+}

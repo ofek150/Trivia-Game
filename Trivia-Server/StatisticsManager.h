@@ -21,7 +21,7 @@ private:
 	IDatabase* m_database;
 
 	// Private constructor to prevent instantiation from outside
-	StatisticsManager() {}
+	StatisticsManager() : m_database(&SqliteDataBase::getInstance()) {}
 
 	// Private copy constructor to prevent cloning
 	StatisticsManager(const StatisticsManager&);

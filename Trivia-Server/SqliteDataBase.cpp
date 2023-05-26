@@ -146,7 +146,7 @@ double SqliteDataBase::getPlayerAverageAnswerTime(const std::string username)
 std::vector<std::string> SqliteDataBase::getTopUserGrades() const
 {
     std::vector<std::string> userGrades;
-    std::string sqlStatement = "SELECT USERNAME, (((CORRECT_ANSWERS * 1.0) / (CORRECT_ANSWERS + WRONG_ANSWERS)) * AVG_TIME) * 10 AS grade "
+    std::string sqlStatement = "SELECT USERNAME, ((CORRECT_ANSWERS * 1.0) / (CORRECT_ANSWERS + WRONG_ANSWERS)) / AVG_TIME * 10 AS grade "
         "FROM STATISTICS "
         "ORDER BY grade DESC "
         "LIMIT 5;";

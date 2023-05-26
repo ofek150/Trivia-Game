@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { json } from "stream/consumers";
 import { ResponseContext } from "../contexts/ResponseContext";
 import WebSocketContext from "../contexts/WebSocketContext";
+import { HighscoresContext } from "../contexts/HighscoresContext";
 import {
   LoginRequest,
   SignupRequest,
@@ -48,6 +49,7 @@ const useClient = () => {
   const { setResponseMessage } = useContext(ResponseContext);
   const { setIsLoggedIn } = useContext(AuthContext);
   const { setRoomData } = useContext(RoomDataContext);
+  const { setHighscores } = useContext(HighscoresContext);
 
   useEffect(() => {
     console.log(socket);
@@ -102,6 +104,7 @@ const useClient = () => {
           console.log(data);
           break;
         case ResponseCodes.GetHighScoreResponseCode:
+          data["HighScores"] ? setHighscores(data["HighScores"]) : console.log(data["HighScores"]);  
           console.log(data);
           break;
         case ResponseCodes.GetPersonalStatsResponseCode:
@@ -205,8 +208,11 @@ const useClient = () => {
     setRoomData(request);
   };
 
+  const getHighscores = () => {
+    sendDataToServer(RequestCodes.GetHighScoreRequestCode, "");
+  }
 
-  return { login, signup, logout, joinRoom, createRoom };
+  return { login, signup, logout, joinRoom, createRoom, getHighscores };
 };
 
 export default useClient;

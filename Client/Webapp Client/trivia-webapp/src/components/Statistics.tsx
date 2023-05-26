@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { useNavigate } from "react-router-dom";
 import styles from "../styles/modules/Statistics.module.css"
+import GoBackBtn from "./GoBackBtn";
 const Statistics: React.FC = () => {
   const navigate = useNavigate();
   const handleHighScoreBtn = () => {
@@ -10,10 +11,10 @@ const Statistics: React.FC = () => {
     navigate("/statistics/personal");
   }
   return (
-    <div>
-      <h1 className={styles.title}>Statistics Page:</h1>
-      <button onClick={handleHighScoreBtn}></button>
-      <button onClick={handlePersonalStatisticsBtn}></button>
+    <div className={styles.statisticsContainer}>
+      <GoBackBtn />
+      <button onClick={handleHighScoreBtn}>Highscores</button>
+      <button onClick={handlePersonalStatisticsBtn}>Personal Statistics</button>
     </div>
   );
 };
