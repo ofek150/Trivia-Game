@@ -17,7 +17,7 @@ interface HighscoresProviderProps {
     
     const HighscoresContextValue = {
       Highscores: Highscores,
-      setHighscores: setHighscores,
+      setHighscores: setHighscores
     };
 
     return (

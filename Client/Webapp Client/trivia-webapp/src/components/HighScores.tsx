@@ -17,7 +17,7 @@ const HighScores: React.FC = () => {
       <div>
         <ol>
           {Object.entries(Highscores).map(([key, value]) => {
-            const [name, score] = value.split(" : ");
+            const [name, score] = value.split(": ");
             return <li key={key}>{name}</li>;
           })}
         </ol>

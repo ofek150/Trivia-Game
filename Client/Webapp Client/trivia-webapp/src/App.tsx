@@ -16,6 +16,7 @@ import HighScoresPage from "./pages/HighScoresPage";
 import PersonalStatisticsPage from "./pages/PersonalStatisticsPage";
 import RoomPage from "./pages/RoomPage";
 import { HighscoresProvider } from "./contexts/HighscoresContext";
+import { PersonalStatisticsProvider } from "./contexts/PersonalStatisticsContext";
 
 export const AuthContext = React.createContext<{
   isLoggedIn: boolean;
@@ -31,21 +32,23 @@ const App: React.FC = () => {
       <ResponseProvider>
         <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
           <HighscoresProvider>
-            <Router>
-              <Routes>
-                <Route path="/" element={<Navigate to="/login" />} />
-                <Route path="/main-menu" element={isLoggedIn ? <MainMenuPage /> : <Navigate to="/login" />} />
-                <Route path="/login" element={isLoggedIn? <Navigate to = "/main-menu" /> : <LoginPage />} />
-                <Route path="/signup" element={isLoggedIn? <Navigate to = "/main-menu" /> : <SignupPage />} />
-                <Route path="/room-list" element={isLoggedIn? <JoinRoomPage /> : <Navigate to = "/login" />} />
-                <Route path="/room-list/room" element={isLoggedIn? <RoomPage /> : <Navigate to = "/login" />} />
-                <Route path="/statistics" element={isLoggedIn ? <StatisticsPage /> : <Navigate to="/login" />} />
-                <Route path="/statistics/highscores" element={isLoggedIn? <HighScoresPage /> : <Navigate to = "/login" />} />
-                <Route path="/statistics/personal" element={isLoggedIn ? <PersonalStatisticsPage /> : <Navigate to="/login" />} />
-                <Route path="/create-room" element={isLoggedIn? <CreateRoomPage /> : <Navigate to = "/login" />} />
-                <Route path="*" element={<NotFoundPage />} />
-              </Routes>
-            </Router>
+            <PersonalStatisticsProvider>
+              <Router>
+                <Routes>
+                  <Route path="/" element={<Navigate to="/login" />} />
+                  <Route path="/main-menu" element={isLoggedIn ? <MainMenuPage /> : <Navigate to="/login" />} />
+                  <Route path="/login" element={isLoggedIn? <Navigate to = "/main-menu" /> : <LoginPage />} />
+                  <Route path="/signup" element={isLoggedIn? <Navigate to = "/main-menu" /> : <SignupPage />} />
+                  <Route path="/room-list" element={isLoggedIn? <JoinRoomPage /> : <Navigate to = "/login" />} />
+                  <Route path="/room-list/room" element={isLoggedIn? <RoomPage /> : <Navigate to = "/login" />} />
+                  <Route path="/statistics" element={isLoggedIn ? <StatisticsPage /> : <Navigate to="/login" />} />
+                  <Route path="/statistics/highscores" element={isLoggedIn? <HighScoresPage /> : <Navigate to = "/login" />} />
+                  <Route path="/statistics/personal" element={isLoggedIn ? <PersonalStatisticsPage /> : <Navigate to="/login" />} />
+                  <Route path="/create-room" element={isLoggedIn? <CreateRoomPage /> : <Navigate to = "/login" />} />
+                  <Route path="*" element={<NotFoundPage />} />
+                </Routes>
+              </Router>
+            </PersonalStatisticsProvider>
           </HighscoresProvider>
         </AuthContext.Provider>
       </ResponseProvider>

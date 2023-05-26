@@ -25,6 +25,8 @@ RequestResult MenuRequestHandler::handleRequest(const RequestInfo& requestInfo) 
 		return joinRoom(requestInfo);
 	case RequestCodes::GetHighScoreRequestCode:
 		return getHighScore(requestInfo);
+	case RequestCodes::GetPersonalStatsRequestCode:
+		return getPersonalStats(requestInfo);
 	case RequestCodes::LogoutRequestCode:
 		return signout(requestInfo);
 	}

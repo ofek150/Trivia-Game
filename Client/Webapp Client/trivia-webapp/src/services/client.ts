@@ -7,6 +7,7 @@ import { json } from "stream/consumers";
 import { ResponseContext } from "../contexts/ResponseContext";
 import WebSocketContext from "../contexts/WebSocketContext";
 import { HighscoresContext } from "../contexts/HighscoresContext";
+import { PersonalStatisticsContext } from "../contexts/PersonalStatisticsContext";
 import {
   LoginRequest,
   SignupRequest,
@@ -50,7 +51,7 @@ const useClient = () => {
   const { setIsLoggedIn } = useContext(AuthContext);
   const { setRoomData } = useContext(RoomDataContext);
   const { setHighscores } = useContext(HighscoresContext);
-
+  const { personalStatistics, setPersonalStatistics } = useContext(PersonalStatisticsContext);
   useEffect(() => {
     console.log(socket);
     console.log(socket?.readyState);
@@ -108,7 +109,8 @@ const useClient = () => {
           console.log(data);
           break;
         case ResponseCodes.GetPersonalStatsResponseCode:
-          console.log(data);
+          data["UserStatistics"] ? setPersonalStatistics(data["UserStatistics"]) : console.log(data["UserStatistics"]);    
+          console.log(personalStatistics);
           break;
         //Handle unknown response code
         default:
@@ -209,10 +211,13 @@ const useClient = () => {
   };
 
   const getHighscores = () => {
-    sendDataToServer(RequestCodes.GetHighScoreRequestCode, "");
+    sendDataToServer(RequestCodes.GetHighScoreRequestCode, {});
   }
 
-  return { login, signup, logout, joinRoom, createRoom, getHighscores };
+  const getPersonalStatistics = () => {
+    sendDataToServer(RequestCodes.GetPersonalStatsRequestCode, {});
+  }
+  return { login, signup, logout, joinRoom, createRoom, getHighscores, getPersonalStatistics};
 };
 
 export default useClient;
