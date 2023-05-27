@@ -12,9 +12,14 @@ const Statistics: React.FC = () => {
   }
   return (
     <div className={styles.statisticsContainer}>
-      <GoBackBtn />
-      <button onClick={handleHighScoreBtn}>Highscores</button>
-      <button onClick={handlePersonalStatisticsBtn}>Personal Statistics</button>
+      <div className={styles.title}>
+        <h1>What would you like to know?<span>Trivia statistics</span></h1>
+      </div>
+      
+      <div className={styles.btnDiv}>
+        <button className={styles.navigateBtn} onClick={handleHighScoreBtn}>Highscores</button>
+        <button className={styles.navigateBtn} onClick={handlePersonalStatisticsBtn}>Personal Statistics</button>
+      </div>
     </div>
   );
 };
