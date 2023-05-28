@@ -1,0 +1,78 @@
+.HighScoresContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1em;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .title h1 {
+    text-align: center;
+        font-size:30px; font-weight:300; color:#222; letter-spacing:1px;
+        text-transform: uppercase;
+    
+        display: grid;
+        grid-template-columns: 1fr max-content 1fr;
+        grid-template-rows: 27px 0;
+        grid-gap: 20px;
+        align-items: center;
+    }
+    
+    .title h1:after,.title h1:before {
+        content: "👑";
+        display: block;
+        border-bottom: 1px solid #c50000;
+        border-top: 1px solid #c50000;
+        height: 5px;
+      background-color:#f8f8f8;
+    }
+  
+  .highscoresList {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    width: 100%;
+    display: flex;
+    flex-direction: column; /* Add this line */
+    align-items: center; /* Add this line */
+  }
+  
+  .highscoresList li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #444;
+    text-align: center; /* Add this line */
+    width: 100%; /* Add this line */
+    justify-content: center; /* Add this line */
+  }
+  
+  .medalIcon {
+    margin-right: 10px;
+    font-size: 20px;
+  }
+  
+  .medalIcon:first-child {
+    color: #c50000; /* 🏆 - First Place - Red */
+  }
+  
+  .medalIcon:nth-child(2) {
+    color: gold; /* 🥇 - Second Place - Gold */
+  }
+  
+  .medalIcon:nth-child(3) {
+    color: silver; /* 🥈 - Third Place - Silver */
+  }
+  
+  .medalIcon:nth-child(4) {
+    color: #cd7f32; /* 🥉 - Fourth Place - Bronze */
+  }
+  
+  .medalIcon:nth-child(5) {
+    color: #888; /* ⁉️ - Fifth Place - Gray */
+  }
+  
