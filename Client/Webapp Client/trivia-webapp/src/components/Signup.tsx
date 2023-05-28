@@ -24,6 +24,13 @@ const Signup: React.FC = () => {
     <div className={styles.signupContainer}>
       <GoBackBtn/>
       <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className={styles.emailInput}
+      />
+      <input
         type="text"
         placeholder="Username"
         value={username}
@@ -36,13 +43,6 @@ const Signup: React.FC = () => {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         className={styles.passwordInput}
-      />
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className={styles.emailInput}
       />
       <div className={styles.responseMessage}>{responseMessage}</div>
       <button onClick={handleSignup} className={styles.signupButton}>Signup</button>

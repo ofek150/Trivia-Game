@@ -30,8 +30,14 @@ export interface ParsedResponse {
 }
 
 export interface RoomData {
+  roomId: number,
   roomName: string;
   maxUsers: number;
   questionCount: number;
   answerTimeout: number;
+  isActive: number;
+}
+
+export interface Rooms {
+  rooms: Map<number, RoomData>;
 }

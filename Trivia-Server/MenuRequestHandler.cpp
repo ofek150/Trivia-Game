@@ -144,7 +144,7 @@ RequestResult MenuRequestHandler::joinRoom(const RequestInfo& requestInfo) const
 	requestResult.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
 	try {
 		std::vector<std::string> players;
-		std::map<unsigned int, Room>* rooms = m_roomManager.getRooms();
+		//std::map<unsigned int, Room>* rooms = m_roomManager.getRooms();
 		JoinRoomRequest joinRoomRequest = JsonRequestPacketDeserializer::getInstance().deserializeJoinRoomRequest(requestInfo.buffer);
 		
 		LoggedUser user(m_user);
@@ -179,9 +179,11 @@ RequestResult MenuRequestHandler::createRoom(const RequestInfo& requestInfo) con
 		roomData.numOfQuestionsInGame = createRoomRequest.questionCount;
 		roomData.maxPlayers = createRoomRequest.maxUsers;
 		roomData.id = roomCount;
+		roomData.isActive = 0;
 
 		m_roomManager.createRoom(user, roomData);
 		createRoomResponse.status = StatusCodes::SUCCESSFUL;
+		createRoomResponse.roomId = roomData.id;
 
 		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(createRoomResponse);
 	}

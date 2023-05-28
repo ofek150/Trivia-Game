@@ -1,28 +1,29 @@
-import { Console, error } from "console";
-import { useEffect, useRef, useContext } from "react";
+import { useEffect, useContext} from "react";
 import { AuthContext } from "../App";
-import { RoomDataContext } from "../contexts/RoomDataContext";
+import { RoomListContext } from "../contexts/RoomListContext";
+import { CurrentRoomDataContext } from "../contexts/CurrentRoomDataContext";
 import { useNavigate } from "react-router-dom";
-import { json } from "stream/consumers";
 import { ResponseContext } from "../contexts/ResponseContext";
 import WebSocketContext from "../contexts/WebSocketContext";
+import { SelectedRoomIdContext } from "../contexts/SelectedRoomContext";
 import {
   LoginRequest,
   SignupRequest,
   GetPlayersInRoomRequest,
   JoinRoomRequest,
   CreateRoomRequest,
-  ParsedResponse
+  ParsedResponse,
+  Rooms
 } from "../utils/types";
-import { Socket } from "dgram";
+import { RoomData } from "../utils/types";
 
 const SERVER_URL = "ws://127.0.0.1:9696";
 const RequestCodes = {
   LoginRequestCode: 1,
   SignupRequestCode: 2,
   LogoutRequestCode: 3,
-  GetRoomsRequestCode: 4,
-  JoinRoomRequestCode: 5,
+  JoinRoomRequestCode: 4,
+  GetRoomsRequestCode: 5,
   GetPlayersInRoomRequestCode: 6,
   CreateRoomRequestCode: 7,
   GetHighScoreRequestCode: 8,
@@ -47,11 +48,11 @@ const useClient = () => {
   const navigate = useNavigate();
   const { setResponseMessage } = useContext(ResponseContext);
   const { setIsLoggedIn } = useContext(AuthContext);
-  const { setRoomData } = useContext(RoomDataContext);
+  const { setConnectedUsers } = useContext(CurrentRoomDataContext);
+  const { setSelectedRoomId } = useContext(SelectedRoomIdContext);
+  const { setRoomList } = useContext(RoomListContext);
 
   useEffect(() => {
-    console.log(socket);
-    console.log(socket?.readyState);
     if (!socket || !connectionEstablished)
     {
       console.log("Error in connection");
@@ -92,14 +93,44 @@ const useClient = () => {
           console.log("Logged out");
           break;
         case ResponseCodes.GetRoomsResponseCode:
-          console.log(data);
+          if(!data["Rooms"] || data["Rooms"].length === 0)
+          {
+            console.log(data);
+            return;
+          }
+          const updatedRoomsData: Map<number, RoomData> = new Map();
+
+          data["Rooms"].forEach((item: any, index: number) => {
+            updatedRoomsData.set(index, {
+              roomId: index,
+              roomName: item.name,
+              maxUsers: item.maxPlayers,
+              questionCount: item.numOfQuestionsInGame,
+              answerTimeout: item.timePerQuestion,
+              isActive: item.isActive
+            });
+          });
+
+          const updatedRoomList: Rooms = {
+            rooms: updatedRoomsData
+          };
+
+          setRoomList(updatedRoomList);
           break;
         case ResponseCodes.GetPlayersInRoomResponseCode:
+          if(!data["PlayersInRoom"]) return;
+          const connectedUsers: string[] = data["PlayersInRoom"].split(", ");
+          setConnectedUsers(connectedUsers);
           console.log(data);
           break;
         case ResponseCodes.CreateRoomResponseCode:
+          console.log("Created room with the id: " + data["roomId"]);
+          if(!data["roomId"]) return;
+          setSelectedRoomId(data["roomId"])
           navigate("/room-list/room");
-          console.log(data);
+          break;
+        case ResponseCodes.JoinRoomResponseCode:
+            navigate("/room-list/room");
           break;
         case ResponseCodes.GetHighScoreResponseCode:
           console.log(data);
@@ -196,17 +227,24 @@ const useClient = () => {
   };
 
   const joinRoom = (request: JoinRoomRequest) => {
+    console.log("Joining room with the id: " + request.roomId);
+    setSelectedRoomId(request.roomId);
     sendDataToServer(RequestCodes.JoinRoomRequestCode, request);
   };
 
   const createRoom = (request: CreateRoomRequest) => {
     sendDataToServer(RequestCodes.CreateRoomRequestCode, request);
-    console.log(request);
-    setRoomData(request);
   };
 
+  const getPlayersInRoom = (request: GetPlayersInRoomRequest) => {
+    sendDataToServer(RequestCodes.GetPlayersInRoomRequestCode, request);
+  };
 
-  return { login, signup, logout, joinRoom, createRoom };
+  const getRooms = () => {
+    sendDataToServer(RequestCodes.GetRoomsRequestCode, {});
+  };
+
+  return { login, signup, logout, joinRoom, createRoom, getPlayersInRoom, getRooms };
 };
 
 export default useClient;

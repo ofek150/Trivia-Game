@@ -23,7 +23,6 @@ interface ResponseProviderProps {
     return (
       <ResponseContext.Provider value={responseContextValue}>
         {children}
-        {/* {responseMessage && <div>{responseMessage}</div>} */}
       </ResponseContext.Provider>
     );
   };

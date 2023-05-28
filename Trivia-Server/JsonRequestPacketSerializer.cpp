@@ -1,4 +1,5 @@
 #include "JsonRequestPacketSerializer.h"
+#include <iostream>
 
 const std::vector<unsigned char> JsonRequestPacketSerializer::serializeResponse(const ErrorResponse& response)
 {
@@ -29,19 +30,25 @@ const std::vector<unsigned char> JsonRequestPacketSerializer::serializeResponse(
     nlohmann::json json_data;
 
     json_data["status"] = response.status;
+    json_data["Rooms"] = {};  // Initialize "Rooms" as an empty array
 
-    // Serialize the rooms as a single string
-    std::string roomsString;
     for (const auto& room : response.rooms)
     {
-        if (!roomsString.empty())
-            roomsString += ", ";
-        roomsString += room.name;
-    }
-    json_data["Rooms"] = roomsString;
+        nlohmann::json room_data;
+        room_data["isActive"] = room.isActive;
+        room_data["timePerQuestion"] = room.timePerQuestion;
+        room_data["numOfQuestionsInGame"] = room.numOfQuestionsInGame;
+        room_data["maxPlayers"] = room.maxPlayers;
+        room_data["name"] = room.name;
+        json_data["Rooms"][room.id] = room_data;
 
+       //json_data["Rooms"].push_back(room_data);
+    }
+
+    std::cout << json_data.dump() << std::endl;
     return constructPacket(ResponseCodes::GetRoomsResponseCode, json_data.dump());
 }
+
 
 const std::vector<unsigned char> JsonRequestPacketSerializer::serializeResponse(const GetPlayersInRoomResponse& response)
 {
@@ -69,7 +76,9 @@ const std::vector<unsigned char> JsonRequestPacketSerializer::serializeResponse(
 
 const std::vector<unsigned char> JsonRequestPacketSerializer::serializeResponse(const CreateRoomResponse& response)
 {
-    nlohmann::json json_data = { {"status", response.status} };
+    nlohmann::json json_data;
+    json_data["status"] = response.status;
+    json_data["roomId"] = response.roomId;
     return constructPacket(ResponseCodes::CreateRoomResponseCode, json_data.dump());
 }
 

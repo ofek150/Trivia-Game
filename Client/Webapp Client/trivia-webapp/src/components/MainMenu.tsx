@@ -22,9 +22,9 @@ const MainMenu: React.FC = () => {
   }
   return (
     <div className={styles.loginContainer}>
-      <button onClick={() => navigate("/room-list")}>rooms</button>
+      <button onClick={() => navigate("/room-list")}>Rooms</button>
       <button onClick={() => navigate("/create-room")}>Create Room</button>
-      <button onClick={() => navigate("/statistics")}>statistics</button>
+      <button onClick={() => navigate("/statistics")}>Statistics</button>
       <button onClick={handleLogout}>Logout</button>
     </div>
   );

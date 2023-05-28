@@ -3,6 +3,15 @@
 
 void RoomManager::createRoom(const LoggedUser& user, const RoomData& roomData)
 {
+	if (roomData.maxPlayers < 2 || roomData.maxPlayers > 5) throw std::exception("Max players has be between 2 and 5.");
+	if (roomData.numOfQuestionsInGame < 1 || roomData.numOfQuestionsInGame > 40) throw std::exception("The number of questions has to be between 1 and 40.");
+	if (roomData.timePerQuestion < 1 || roomData.timePerQuestion > 120) throw std::exception("The time for each question has to be between 1 and 120 seconds.");
+	if (roomData.name.length() <= 2) throw std::exception("The room's name has to be at least 2 characters long.");
+	for (const auto& room : m_rooms)
+	{
+		if(room.second.getRoomData().name == roomData.name) throw std::exception("The room's name is already taken.");
+	}
+
 	Room newRoom(user, roomData);
 	newRoom.addUser(user);
 	m_rooms.emplace(roomData.id, newRoom);

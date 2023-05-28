@@ -1,19 +1,49 @@
 import React, { useContext, useEffect } from "react";
-import { RoomDataContext } from "../contexts/RoomDataContext";
+import useClient from "../services/client";
+import { CurrentRoomDataContext } from "../contexts/CurrentRoomDataContext";
+import { RoomListContext } from "../contexts/RoomListContext";
+import { SelectedRoomIdContext } from "../contexts/SelectedRoomContext";
 
 const Room: React.FC = () => {
-  const { roomData, setRoomData } = useContext(RoomDataContext);
-  const { connectedUsers } = useContext(RoomDataContext);
-  return (
+  const { currentRoomData, setCurrentRoomData } = useContext(CurrentRoomDataContext);
+  const { roomList } = useContext(RoomListContext);
+  const { connectedUsers } = useContext(CurrentRoomDataContext);
+  const { getPlayersInRoom, getRooms } = useClient();
+  const { selectedRoomId } = useContext(SelectedRoomIdContext);
+
+  useEffect(() => {
+    getRooms();
+  }, []);
+  
+  useEffect(() => {
+    console.log("selectedRoomId: " + selectedRoomId + " Room list: " + roomList);
+  
+    if (roomList) {
+      const room = roomList.rooms.get(selectedRoomId);
+      setCurrentRoomData(room !== undefined ? room : null);
+    }
+  }, [roomList, selectedRoomId]);
+  
+  useEffect(() => {
+    if(currentRoomData)
+    {
+      getPlayersInRoom({ roomId: currentRoomData.roomId });
+    }
+  }, [currentRoomData]);
+
+  if(!currentRoomData) return <div>Empty room data</div>
+
+  return (  
     <div>
-      <div>Room name: {roomData?.roomName}</div>
+      <div>Room name: {currentRoomData.roomName}</div>
       <div>
         Connected users:
-        <ul>
-          {connectedUsers.map((user, index) => (
-            <li key={index}>{user}</li>
+        <ol>
+          {connectedUsers.map((username) => (
+            <li>{username}</li>
           ))}
-        </ul>
+        </ol>
+        <h3>Admin: {connectedUsers.length > 0 ? connectedUsers[0] : "Error"}</h3>
       </div>
     </div>
   );
