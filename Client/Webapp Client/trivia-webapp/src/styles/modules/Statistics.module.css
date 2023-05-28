@@ -7,12 +7,12 @@
 }
 .title h1 {
     text-align:center; font-size:50px; text-transform:uppercase; color:#222; letter-spacing:1px;
-    font-family:"Playfair Display", serif; font-weight:400;
+    font-weight:400;
 }
 .title h1 span {
     margin-top: 5px;
     font-size:15px; color:#444; word-spacing:2px; font-weight:normal; letter-spacing:2px;
-    text-transform: uppercase; font-family:"Raleway", sans-serif; font-weight:500;
+    text-transform: uppercase; font-weight:600;
     display: grid;
     grid-template-columns: 3fr max-content 3fr;
     grid-template-rows: 27px 0;

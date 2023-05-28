@@ -20,6 +20,8 @@ const Statistics: React.FC = () => {
         <button className={styles.navigateBtn} onClick={handleHighScoreBtn}>Highscores</button>
         <button className={styles.navigateBtn} onClick={handlePersonalStatisticsBtn}>Personal Statistics</button>
       </div>
+      <GoBackBtn></GoBackBtn>
+      
     </div>
   );
 };

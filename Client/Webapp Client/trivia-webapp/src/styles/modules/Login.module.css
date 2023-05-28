@@ -79,4 +79,77 @@
         width: 20vw;
     }
   }
+  .statisticsContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1em;
+    width: 15vw;
+}
+.title h1 {
+    text-align:center; font-size:50px; text-transform:uppercase; color:#222; letter-spacing:1px;
+    font-weight:400;
+}
+.title h1 span {
+    margin-top: 5px;
+    font-size:15px; color:#444; word-spacing:2px; font-weight:normal; letter-spacing:2px;
+    text-transform: uppercase; font-weight:600;
+    display: grid;
+    grid-template-columns: 3fr max-content 3fr;
+    grid-template-rows: 27px 0;
+    grid-gap: 20px;
+    align-items: center;
+}
   
+.title h1 span:after,.title h1 span:before {
+    content: " ";
+    display: inline-block;
+    border-bottom: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    height: 5px;
+    background-color:#f8f8f8;
+}
+
+.btnDiv {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .navigateBtn {
+    width: 150px; 
+    height: 60px; 
+    padding: 10px;
+    border-radius: 30px;
+    background-color: #f8f8f8;
+    color: #333;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .navigateBtn:hover {
+    transform: scale(1.1);
+    background-color: #e1e1e1;
+    color: #222;
+  }
+  .logOutBtn {
+    width: 150px; 
+    height: 60px; 
+    padding: 10px;
+    border-radius: 30px;
+    background-color: #f8f8f8;
+    color: #333;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .logOutBtn:hover {
+    transform: scale(3);
+    background-color: lightcoral;
+    color: #222;
+  }

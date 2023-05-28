@@ -1,7 +1,7 @@
 import React, {useContext} from "react"
 import { useNavigate} from "react-router-dom";
 import { ResponseContext } from "../contexts/ResponseContext";
-
+import styles from "../styles/modules/GoBackBtn.module.css"
 const GoBackBtn: React.FC = () => {
     const navigate = useNavigate();
     const { setResponseMessage } = useContext(ResponseContext);
@@ -11,8 +11,8 @@ const GoBackBtn: React.FC = () => {
     };
 
     return (
-    <button className="back-arrow-button" onClick={handleGoBack}>
-        <span className="back-arrow-icon">&#8592;</span>
+    <button className={styles.btnGoBack} onClick={handleGoBack}>
+        Go back
       </button>
     );
   };
