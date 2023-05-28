@@ -1,14 +1,24 @@
-import React, { useState } from "react"
-import GoBackBtn from "./GoBackBtn";
-
+import React, { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import useClient from "../services/client";
+import { PersonalStatisticsContext } from "../contexts/PersonalStatisticsContext";
+import styles from "../styles/modules/PersonalStatistics.module.css"
 const PersonalStatistics: React.FC = () => {
-    return (
+  const { personalStatistics } = useContext(PersonalStatisticsContext);
+  const { getPersonalStatistics } = useClient();
+  useEffect(() => {
+    getPersonalStatistics();
+  }, []);
+  return (
       <div>
-        <GoBackBtn /> 
-        Personal statistics
+        <h1>Your statistics:</h1>
+        <ul>
+        {personalStatistics.map((stat: string) => (
+          <li>{stat}</li>
+          ))}
+        </ul>
       </div>
 
     );
   };
-
 export default PersonalStatistics;

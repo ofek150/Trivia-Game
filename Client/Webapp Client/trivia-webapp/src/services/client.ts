@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { ResponseContext } from "../contexts/ResponseContext";
 import WebSocketContext from "../contexts/WebSocketContext";
 import { SelectedRoomIdContext } from "../contexts/SelectedRoomContext";
+import { HighscoresContext } from "../contexts/HighscoresContext";
+import { PersonalStatisticsContext } from "../contexts/PersonalStatisticsContext";
 import {
   LoginRequest,
   SignupRequest,
@@ -51,7 +53,9 @@ const useClient = () => {
   const { setConnectedUsers } = useContext(CurrentRoomDataContext);
   const { setSelectedRoomId } = useContext(SelectedRoomIdContext);
   const { setRoomList } = useContext(RoomListContext);
-
+  const { setHighscores } = useContext(HighscoresContext);
+  const { personalStatistics, setPersonalStatistics } = useContext(PersonalStatisticsContext);
+  
   useEffect(() => {
     if (!socket || !connectionEstablished)
     {
@@ -133,10 +137,12 @@ const useClient = () => {
             navigate("/room-list/room");
           break;
         case ResponseCodes.GetHighScoreResponseCode:
+          data["HighScores"] ? setHighscores(data["HighScores"]) : console.log(data["HighScores"]);  
           console.log(data);
           break;
         case ResponseCodes.GetPersonalStatsResponseCode:
-          console.log(data);
+          data["UserStatistics"] ? setPersonalStatistics(data["UserStatistics"]) : console.log(data["UserStatistics"]);    
+          console.log(personalStatistics);
           break;
         //Handle unknown response code
         default:
@@ -245,6 +251,15 @@ const useClient = () => {
   };
 
   return { login, signup, logout, joinRoom, createRoom, getPlayersInRoom, getRooms };
+  const getHighscores = () => {
+    sendDataToServer(RequestCodes.GetHighScoreRequestCode, {});
+  }
+
+  const getPersonalStatistics = () => {
+    sendDataToServer(RequestCodes.GetPersonalStatsRequestCode, {});
+  }
+
+  return { login, signup, logout, joinRoom, createRoom, getHighscores, getPersonalStatistics, getPlayersInRoom, getRooms};
 };
 
 export default useClient;

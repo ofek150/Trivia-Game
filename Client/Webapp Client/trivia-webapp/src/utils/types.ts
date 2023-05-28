@@ -41,3 +41,7 @@ export interface RoomData {
 export interface Rooms {
   rooms: Map<number, RoomData>;
 }
+
+export interface Highscores {
+  highscores : Object;
+}

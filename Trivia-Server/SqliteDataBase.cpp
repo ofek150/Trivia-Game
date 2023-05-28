@@ -14,10 +14,10 @@ int callbackInteger(void* data, int argc, char** argv, char** azColName)
     return 0;
 }
 
-int callbackFloat(void* data, int argc, char** argv, char** azColName)
+int callbackDouble(void* data, int argc, char** argv, char** azColName)
 {
-    float* num = static_cast<float*>(data);
-    if (argc > 0) *num = atof(argv[0]);
+    double* num = static_cast<double*>(data);
+    if (argc > 0) *num = strtod(argv[0], nullptr);
     return 0;
 }
 
@@ -139,14 +139,14 @@ double SqliteDataBase::getPlayerAverageAnswerTime(const std::string username)
     double avg_time = 0;
     std::string sqlStatement = "SELECT AVG_TIME FROM STATISTICS WHERE USERNAME = '" + username + "';";
     char* errMessage = nullptr;
-    int res = sqlite3_exec(db, sqlStatement.c_str(), callbackFloat, &avg_time, &errMessage);
+    int res = sqlite3_exec(db, sqlStatement.c_str(), callbackDouble, &avg_time, &errMessage);
     if (res != SQLITE_OK) std::cerr << errMessage << std::endl;
     return avg_time;
 }
 std::vector<std::string> SqliteDataBase::getTopUserGrades() const
 {
     std::vector<std::string> userGrades;
-    std::string sqlStatement = "SELECT USERNAME, (((CORRECT_ANSWERS * 1.0) / (CORRECT_ANSWERS + WRONG_ANSWERS)) * AVG_TIME) * 10 AS grade "
+    std::string sqlStatement = "SELECT USERNAME, ((CORRECT_ANSWERS * 1.0) / (CORRECT_ANSWERS + WRONG_ANSWERS)) / AVG_TIME * 10 AS grade "
         "FROM STATISTICS "
         "ORDER BY grade DESC "
         "LIMIT 5;";
@@ -156,7 +156,7 @@ std::vector<std::string> SqliteDataBase::getTopUserGrades() const
         if (argc == 2) {
             std::string username = argv[0];
             std::string grade = argv[1];
-            userGrades->push_back(username + " : " + grade);
+            userGrades->push_back(username + ": " + grade);
         }
         return 0;
         }, &userGrades, &errMessage);

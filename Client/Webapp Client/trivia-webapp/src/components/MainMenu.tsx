@@ -22,10 +22,15 @@ const MainMenu: React.FC = () => {
   }
   return (
     <div className={styles.loginContainer}>
-      <button onClick={() => navigate("/room-list")}>Rooms</button>
-      <button onClick={() => navigate("/create-room")}>Create Room</button>
-      <button onClick={() => navigate("/statistics")}>Statistics</button>
-      <button onClick={handleLogout}>Logout</button>
+      <div className={styles.title}>
+        <h1>Trivia Game <span>Have fun!😊</span></h1>
+      </div>
+      <div className={styles.btnDiv}>
+        <button className={styles.navigateBtn} onClick={() => navigate("/room-list")}>rooms</button> 
+        <button className={styles.navigateBtn} onClick={() => navigate("/create-room")}>Create Room</button>
+        <button className={styles.navigateBtn} onClick={() => navigate("/statistics")}>statistics</button>
+      </div>
+      <button className={styles.logOutBtn} onClick={handleLogout}>Logout</button>
     </div>
   );
 };

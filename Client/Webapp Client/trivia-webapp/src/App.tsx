@@ -15,6 +15,8 @@ import RoomPage from "./pages/RoomPage";
 import { RoomListProvider } from "./contexts/RoomListContext";
 import { CurrentRoomDataProvider } from "./contexts/CurrentRoomDataContext";
 import { SelectedRoomIdProvider } from "./contexts/SelectedRoomContext";
+import { HighscoresProvider } from "./contexts/HighscoresContext";
+import { PersonalStatisticsProvider } from "./contexts/PersonalStatisticsContext";
 
 export const AuthContext = React.createContext<{
   isLoggedIn: boolean;
@@ -28,27 +30,31 @@ const App: React.FC = () => {
     <WebSocketProvider>
       <ResponseProvider>
         <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
-          <RoomListProvider>
-            <SelectedRoomIdProvider>
-              <CurrentRoomDataProvider>
-                <Router>
-                  <Routes>
-                    <Route path="/" element={<Navigate to="/login" />} />
-                    <Route path="/main-menu" element={isLoggedIn ? <MainMenuPage /> : <Navigate to="/login" />} />
-                    <Route path="/login" element={isLoggedIn? <Navigate to = "/main-menu" /> : <LoginPage />} />
-                    <Route path="/signup" element={isLoggedIn? <Navigate to = "/main-menu" /> : <SignupPage />} />
-                    <Route path="/room-list" element={isLoggedIn? <RoomListPage /> : <Navigate to = "/login" />} />
-                    <Route path="/room-list/room" element={isLoggedIn? <RoomPage /> : <Navigate to = "/login" />} />
-                    <Route path="/statistics" element={isLoggedIn ? <StatisticsPage /> : <Navigate to="/login" />} />
-                    <Route path="/statistics/highscores" element={isLoggedIn? <HighScoresPage /> : <Navigate to = "/login" />} />
-                    <Route path="/statistics/personal" element={isLoggedIn ? <PersonalStatisticsPage /> : <Navigate to="/login" />} />
-                    <Route path="/create-room" element={isLoggedIn? <CreateRoomPage /> : <Navigate to = "/login" />} />
-                    <Route path="*" element={<NotFoundPage />} />
-                  </Routes>
-                </Router>
-              </CurrentRoomDataProvider>
-            </SelectedRoomIdProvider>  
-          </RoomListProvider>
+          <HighscoresProvider>
+            <PersonalStatisticsProvider>
+              <RoomListProvider>
+                <SelectedRoomIdProvider>
+                  <CurrentRoomDataProvider>
+                    <Router>
+                      <Routes>
+                        <Route path="/" element={<Navigate to="/login" />} />
+                        <Route path="/main-menu" element={isLoggedIn ? <MainMenuPage /> : <Navigate to="/login" />} />
+                        <Route path="/login" element={isLoggedIn? <Navigate to = "/main-menu" /> : <LoginPage />} />
+                        <Route path="/signup" element={isLoggedIn? <Navigate to = "/main-menu" /> : <SignupPage />} />
+                        <Route path="/room-list" element={isLoggedIn? <RoomListPage /> : <Navigate to = "/login" />} />
+                        <Route path="/room-list/room" element={isLoggedIn? <RoomPage /> : <Navigate to = "/login" />} />
+                        <Route path="/statistics" element={isLoggedIn ? <StatisticsPage /> : <Navigate to="/login" />} />
+                        <Route path="/statistics/highscores" element={isLoggedIn? <HighScoresPage /> : <Navigate to = "/login" />} />
+                        <Route path="/statistics/personal" element={isLoggedIn ? <PersonalStatisticsPage /> : <Navigate to="/login" />} />
+                        <Route path="/create-room" element={isLoggedIn? <CreateRoomPage /> : <Navigate to = "/login" />} />
+                        <Route path="*" element={<NotFoundPage />} />
+                      </Routes>
+                    </Router>
+                  </CurrentRoomDataProvider>
+                </SelectedRoomIdProvider>  
+              </RoomListProvider>
+            </PersonalStatisticsProvider>
+          </HighscoresProvider>
         </AuthContext.Provider>
       </ResponseProvider>
     </WebSocketProvider>
