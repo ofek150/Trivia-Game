@@ -22,7 +22,7 @@ const HighScores: React.FC = () => {
 
   return (
     <div className={styles.HighScoresContainer}>
-      <h1 className={styles.title}>The Top 5 Players in the World</h1>
+      <h1 className={styles.title}>The Top 5 Players in the World:</h1>
       <ol className={styles.highscoresList}>
         {Object.entries(Highscores).map(([key, value], index) => {
           const [name, score] = value.split(": ");
