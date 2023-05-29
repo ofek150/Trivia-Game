@@ -152,6 +152,7 @@ RequestResult MenuRequestHandler::joinRoom(const RequestInfo& requestInfo) const
 		LoggedUser user(m_user);
 		m_roomManager.JoinRoom(user, joinRoomRequest.roomId);
 		joinRoomResponse.status = StatusCodes::SUCCESSFUL;
+		joinRoomResponse.roomId = joinRoomRequest.roomId;
 
 		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(joinRoomResponse);
 	}

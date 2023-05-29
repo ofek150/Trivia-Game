@@ -40,6 +40,7 @@ struct GetPersonalStatsResponse {
 
 struct JoinRoomResponse {
     unsigned int status;
+    unsigned int roomId;
 };
 
 struct CreateRoomResponse {

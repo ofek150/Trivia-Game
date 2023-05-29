@@ -70,7 +70,9 @@ const std::vector<unsigned char> JsonRequestPacketSerializer::serializeResponse(
 
 const std::vector<unsigned char> JsonRequestPacketSerializer::serializeResponse(const JoinRoomResponse& response)
 {
-    nlohmann::json json_data = { {"status", response.status} };
+    nlohmann::json json_data;
+    json_data["status"] = response.status;
+    json_data["roomId"] = response.roomId;
     return constructPacket(ResponseCodes::JoinRoomResponseCode, json_data.dump());
 }
 
