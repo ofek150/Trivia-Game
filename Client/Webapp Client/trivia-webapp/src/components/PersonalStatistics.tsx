@@ -9,7 +9,10 @@ const PersonalStatistics: React.FC = () => {
   const { getPersonalStatistics } = useClient();
 
   useEffect(() => {
-    getPersonalStatistics();
+    if(getPersonalStatistics)
+    {
+      getPersonalStatistics();
+    }
   }, []);
 
   return (

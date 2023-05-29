@@ -118,7 +118,7 @@ const useClient = () => {
           const updatedRoomList: Rooms = {
             rooms: updatedRoomsData
           };
-
+          console.log(updatedRoomList);
           setRoomList(updatedRoomList);
           break;
         case ResponseCodes.GetPlayersInRoomResponseCode:
@@ -129,9 +129,9 @@ const useClient = () => {
           break;
         case ResponseCodes.CreateRoomResponseCode:
           console.log("Created room with the id: " + data["roomId"]);
-          if(!data["roomId"]) return;
-          setSelectedRoomId(data["roomId"])
+          //if(!data["roomId"]) return;
           navigate("/room-list/room");
+          setSelectedRoomId(data["roomId"])
           break;
         case ResponseCodes.JoinRoomResponseCode:
             navigate("/room-list/room");

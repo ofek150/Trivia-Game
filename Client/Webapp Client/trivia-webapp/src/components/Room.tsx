@@ -13,16 +13,15 @@ const Room: React.FC = () => {
 
   useEffect(() => {
     getRooms();
-  }, []);
+  }, [selectedRoomId]);
   
   useEffect(() => {
     console.log("selectedRoomId: " + selectedRoomId + " Room list: " + roomList);
-  
     if (roomList) {
       const room = roomList.rooms.get(selectedRoomId);
       setCurrentRoomData(room !== undefined ? room : null);
     }
-  }, [roomList, selectedRoomId]);
+  }, [roomList]);
   
   useEffect(() => {
     if(currentRoomData)

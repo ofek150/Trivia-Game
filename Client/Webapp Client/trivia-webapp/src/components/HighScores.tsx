@@ -9,7 +9,10 @@ const HighScores: React.FC = () => {
   const { getHighscores } = useClient();
 
   useEffect(() => {
-    getHighscores();
+    if(getHighscores)
+    {
+      getHighscores();
+    }
   }, []);
 
   const getMedalIcon = (index: number) => {
