@@ -10,5 +10,9 @@ enum RequestCodes
 	GetPlayersInRoomRequestCode = 6,
 	CreateRoomRequestCode = 7,
 	GetHighScoreRequestCode = 8,
-	GetPersonalStatsRequestCode = 9
+	GetPersonalStatsRequestCode = 9,
+	GetCloseRoomRequestCode = 10,
+	GetStartGameRequestCode = 11,
+	GetRoomStateRequestCode = 12,
+	GetLeaveRoomRequestCode = 13
 };

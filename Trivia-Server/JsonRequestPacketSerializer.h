@@ -27,6 +27,11 @@ public:
     static const std::vector<unsigned char> serializeResponse(const CreateRoomResponse& response);
     static const std::vector<unsigned char> serializeResponse(const GetHighScoreRoomResponse& response);
     static const std::vector<unsigned char> serializeResponse(const GetPersonalStatsResponse& response);
+
+    static const std::vector<unsigned char> serializeResponse(const CloseRoomResponse& response);
+    static const std::vector<unsigned char> serializeResponse(const StartGameResponse& response);
+    static const std::vector<unsigned char> serializeResponse(const GetRoomStateResponse& response);
+    static const std::vector<unsigned char> serializeResponse(const LeaveRoomResponse& response);
     
 private:
     static const std::vector<unsigned char> constructPacket(int response_code, std::string json_dump); // Constructs the packet from

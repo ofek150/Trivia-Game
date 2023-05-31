@@ -100,6 +100,34 @@ const std::vector<unsigned char> JsonRequestPacketSerializer::serializeResponse(
     return constructPacket(ResponseCodes::GetPersonalStatsResponseCode, json_data.dump());
 }
 
+const std::vector<unsigned char> JsonRequestPacketSerializer::serializeResponse(const CloseRoomResponse& response)
+{
+    nlohmann::json json_data = { {"status", response.status} };
+    return constructPacket(ResponseCodes::GetCloseRoomResponseCode, json_data.dump());
+}
+
+const std::vector<unsigned char> JsonRequestPacketSerializer::serializeResponse(const StartGameResponse& response)
+{
+    nlohmann::json json_data = { {"status", response.status} };
+    return constructPacket(ResponseCodes::GetStartGameResponseCode, json_data.dump());
+}
+
+const std::vector<unsigned char> JsonRequestPacketSerializer::serializeResponse(const GetRoomStateResponse& response)
+{
+    nlohmann::json json_data;
+    json_data["status"] = response.status;
+    json_data["hasGameBegun"] = response.hasGameBegun;
+    json_data["players"] = response.players;
+    json_data["AnswerCount"] = response.AnswerCount;
+    json_data["answerTimeOut"] = response.answerTimeOut;
+}
+
+const std::vector<unsigned char> JsonRequestPacketSerializer::serializeResponse(const LeaveRoomResponse& response)
+{
+    nlohmann::json json_data = { {"status", response.status} };
+    return constructPacket(ResponseCodes::GetLeaveRoomResponseCode, json_data.dump());
+}
+
 const std::vector<unsigned char> JsonRequestPacketSerializer::constructPacket(int response_code, std::string json_dump)
 {
     std::vector<unsigned char> buffer;

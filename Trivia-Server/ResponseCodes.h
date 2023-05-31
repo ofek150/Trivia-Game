@@ -11,5 +11,9 @@ enum ResponseCodes
 	GetPlayersInRoomResponseCode = 6,
 	CreateRoomResponseCode = 7,
 	GetHighScoreResponseCode = 8,
-	GetPersonalStatsResponseCode = 9
+	GetPersonalStatsResponseCode = 9,
+	GetCloseRoomResponseCode = 10,
+	GetStartGameResponseCode = 11,
+	GetRoomStateResponseCode = 12,
+	GetLeaveRoomResponseCode = 13 
 };
