@@ -15,7 +15,7 @@ void LoginManager::login(std::string username, std::string password)
 	if (username.empty()) throw std::exception("Username can't be empty!");
 	if (password.empty()) throw std::exception("Password can't be empty!");
 
-	if(isUserInLoggedUser(username)) throw std::exception("That user is already logged in!");
+	if(isUserInLoggedUsers(username)) throw std::exception("That user is already logged in!");
 	if (!this->m_database->doesUserExist(username)) throw std::exception("Username doesn't exist!");
 	if (!this->m_database->isPasswordValid(username, password)) throw std::exception("Invalid password!");
 
@@ -35,7 +35,7 @@ void LoginManager::logout(std::string username)
 	
 }
 
-bool LoginManager::isUserInLoggedUser(const std::string& username)
+bool LoginManager::isUserInLoggedUsers(const std::string& username)
 {
 	for (const LoggedUser& user : m_loggedUsers) {
 		if (user.getUsername() == username) {

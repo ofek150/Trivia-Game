@@ -1,5 +1,5 @@
 #include "MenuRequestHandler.h"
-#include "RequestHandlerFactory.h"
+//#include "RequestHandlerFactory.h"
 #include "LoginRequestHandler.h"
 #include "StatusCodes.h"
 
@@ -148,9 +148,8 @@ RequestResult MenuRequestHandler::joinRoom(const RequestInfo& requestInfo) const
 		std::vector<std::string> players;
 		//std::map<unsigned int, Room>* rooms = m_roomManager.getRooms();
 		JoinRoomRequest joinRoomRequest = JsonRequestPacketDeserializer::getInstance().deserializeJoinRoomRequest(requestInfo.buffer);
-		
-		LoggedUser user(m_user);
-		m_roomManager.JoinRoom(user, joinRoomRequest.roomId);
+
+		m_roomManager.joinRoom(m_user, joinRoomRequest.roomId);
 		joinRoomResponse.status = StatusCodes::SUCCESSFUL;
 
 		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(joinRoomResponse);
@@ -172,9 +171,7 @@ RequestResult MenuRequestHandler::createRoom(const RequestInfo& requestInfo) con
 		std::vector<std::string> players;
 		int roomCount = m_roomManager.getRooms()->size();
 		CreateRoomRequest createRoomRequest = JsonRequestPacketDeserializer::getInstance().deserializeCreateRoomRequest(requestInfo.buffer);
-		LoggedUser user(m_user);
 
-		
 		RoomData roomData;
 		roomData.name = createRoomRequest.roomName;
 		roomData.timePerQuestion = createRoomRequest.answerTimeout;
@@ -183,7 +180,7 @@ RequestResult MenuRequestHandler::createRoom(const RequestInfo& requestInfo) con
 		roomData.id = roomCount;
 		roomData.isActive = 0;
 
-		m_roomManager.createRoom(user, roomData);
+		m_roomManager.createRoom(m_user, roomData);
 		createRoomResponse.status = StatusCodes::SUCCESSFUL;
 		createRoomResponse.roomId = roomData.id;
 

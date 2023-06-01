@@ -14,21 +14,32 @@ void RoomManager::createRoom(const LoggedUser& user, const RoomData& roomData)
 
 	Room newRoom(user, roomData);
 	newRoom.addUser(user);
+
+	std::lock_guard<std::mutex> rooms_lock(rooms_mutex);
 	m_rooms.emplace(roomData.id, newRoom);
 }
 
 void RoomManager::deleteRoom(unsigned int ID)
 {
+	std::lock_guard<std::mutex> rooms_lock(rooms_mutex);
 	auto it = m_rooms.find(ID);
-	//Notify users to leave room
 	if (it != m_rooms.end()) m_rooms.erase(it);
 }
 
-void RoomManager::JoinRoom(const LoggedUser& user, unsigned int ID)
+void RoomManager::leaveRoom(const LoggedUser& user)
+{
+	int roomId = getRoomIdByUser(user);
+	m_rooms.at(roomId).removeUser(user);
+}
+
+void RoomManager::joinRoom(const LoggedUser& user, unsigned int ID)
 {
 	auto it = m_rooms.find(ID);
 	if (it == m_rooms.end()) throw std::exception("Invalid Room id!");
 	if (it->second.getRoomState()) throw std::exception("Game already started!");
+	if (it->second.getAllUsers().size() == it->second.getRoomData().maxPlayers) throw std::exception("The room is already full!");
+	if (it->second.isUserInRoom(user)) throw std::exception("You can't be in multiple rooms simultaneously!");
+	
 	it->second.addUser(user);
 }
 
@@ -46,13 +57,26 @@ std::map<unsigned int, Room>* RoomManager::getRooms()
 const std::vector<RoomData> RoomManager::getRoomsDatas() const
 {
 	std::vector<RoomData> rooms;
-	for (auto room : m_rooms)
+	for (const auto& room : m_rooms)
 		rooms.push_back(room.second.getRoomData());
 
 	return rooms;
 }
 
-const Room& RoomManager::getRoom(unsigned int ID) const
+Room& RoomManager::getRoom(unsigned int ID)
 {
 	return m_rooms.at(ID);
+}
+
+unsigned int RoomManager::getRoomIdByUser(const LoggedUser& user) const
+{
+	for (const auto& room : m_rooms)
+	{
+		if (room.second.isUserInRoom(user))
+		{
+			return room.second.getRoomData().id;
+		}
+	}
+
+	throw std::exception("The user isn't in any room!");
 }

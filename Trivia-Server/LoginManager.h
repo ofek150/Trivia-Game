@@ -20,7 +20,7 @@ public:
 	void login(std::string username, std::string password);
 	void logout(std::string username);
 private:
-	bool isUserInLoggedUser(const std::string& username);
+	bool isUserInLoggedUsers(const std::string& username);
 
 	std::vector<LoggedUser> m_loggedUsers;
 	std::mutex loggedUsers_mutex;

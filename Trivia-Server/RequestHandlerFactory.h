@@ -6,6 +6,7 @@
 
 class LoginRequestHandler;
 class MenuRequestHandler;
+class RoomAdminRequestHandler;
 
 class RequestHandlerFactory
 {
@@ -20,6 +21,9 @@ public:
 
     LoginRequestHandler* createLoginRequestHandler() const;
     MenuRequestHandler* createMenuRequestHandler(const std::string& username) const;
+    RoomAdminRequestHandler* createRoomAdminRequestHandler(const std::string& username) const;
+    //RoomMemberRequestHandler* createRoomMemberRequestHandler(const std::string& username) const;
+
 
     LoginManager& getLoginManager();
     RoomManager& getRoomManager();
@@ -32,7 +36,7 @@ private:
 
 
     // Private constructor to prevent instantiation from outside
-    RequestHandlerFactory() : m_loginManager(LoginManager::getInstance()), m_roomManager(RoomManager::getInstance()), m_statisticsManager(StatisticsManager::getInstance()) {}
+    RequestHandlerFactory() : m_loginManager(LoginManager::getInstance()), m_roomManager(RoomManager::getInstance()), m_statisticsManager(StatisticsManager::getInstance()), m_database(&SqliteDataBase::getInstance()) {}
     // Private copy constructor to prevent cloning
     RequestHandlerFactory(const RequestHandlerFactory&);
 };

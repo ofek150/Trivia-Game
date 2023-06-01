@@ -1,6 +1,7 @@
 #include "RequestHandlerFactory.h"
 #include "MenuRequestHandler.h"
 #include "LoginRequestHandler.h"
+#include "RoomAdminRequestHandler.h"
 
 LoginRequestHandler* RequestHandlerFactory::createLoginRequestHandler() const
 {
@@ -11,6 +12,12 @@ LoginRequestHandler* RequestHandlerFactory::createLoginRequestHandler() const
 MenuRequestHandler* RequestHandlerFactory::createMenuRequestHandler(const std::string& username) const
 {
     MenuRequestHandler* requestHandler = new MenuRequestHandler(username);
+    return requestHandler;
+}
+
+RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler(const std::string& username) const
+{
+    RoomAdminRequestHandler* requestHandler = new RoomAdminRequestHandler(username);
     return requestHandler;
 }
 
