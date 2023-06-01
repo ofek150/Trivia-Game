@@ -1,6 +1,6 @@
 #pragma once
 
-enum ResponseCodes 
+enum ResponseCodes
 {
 	ErrorResponseCode = 0,
 	LoginResponseCode = 1,
@@ -12,8 +12,8 @@ enum ResponseCodes
 	CreateRoomResponseCode = 7,
 	GetHighScoreResponseCode = 8,
 	GetPersonalStatsResponseCode = 9,
-	GetCloseRoomResponseCode = 10,
-	GetStartGameResponseCode = 11,
+	CloseRoomResponseCode = 10,
+	StartGameResponseCode = 11,
 	GetRoomStateResponseCode = 12,
 	GetLeaveRoomResponseCode = 13 
 };

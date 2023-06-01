@@ -1,6 +1,6 @@
 #pragma once
 
-enum RequestCodes 
+enum RequestCodes
 {
 	LoginRequestCode = 1,
 	SignupRequestCode = 2,
@@ -11,8 +11,8 @@ enum RequestCodes
 	CreateRoomRequestCode = 7,
 	GetHighScoreRequestCode = 8,
 	GetPersonalStatsRequestCode = 9,
-	GetCloseRoomRequestCode = 10,
-	GetStartGameRequestCode = 11,
+	CloseRoomRequestCode = 10,
+	StartGameRequestCode = 11,
 	GetRoomStateRequestCode = 12,
-	GetLeaveRoomRequestCode = 13
+	LeaveRoomRequestCode = 13
 };
