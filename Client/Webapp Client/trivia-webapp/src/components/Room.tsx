@@ -3,17 +3,39 @@ import useClient from "../services/client";
 import { CurrentRoomDataContext } from "../contexts/CurrentRoomDataContext";
 import { RoomListContext } from "../contexts/RoomListContext";
 import { SelectedRoomIdContext } from "../contexts/SelectedRoomContext";
+import { CurrentRoomStateContext  } from "../contexts/CurrentRoomStateContext";
+import { UserContext } from "../contexts/UserContext";
 
 const Room: React.FC = () => {
   const { currentRoomData, setCurrentRoomData } = useContext(CurrentRoomDataContext);
+  const { currentRoomState } = useContext(CurrentRoomStateContext);
   const { roomList } = useContext(RoomListContext);
-  const { connectedUsers } = useContext(CurrentRoomDataContext);
-  const { getPlayersInRoom, getRooms } = useClient();
+  const { getRoomState, leaveRoom, closeRoom, startGame } = useClient();
   const { selectedRoomId } = useContext(SelectedRoomIdContext);
+  const { username } = useContext(UserContext);
+
+
 
   useEffect(() => {
-    getRooms();
-  }, [selectedRoomId]);
+    console.log("Room data: ", currentRoomData);
+  }, [currentRoomData]);
+
+  const isRoomAdmin = () => {
+    return currentRoomState?.players[0] === username;
+  }
+
+  useEffect(() => {
+    let intervalId: number | undefined;
+    console.log("Current room data(room): ", currentRoomData);
+    if (currentRoomData) {
+      intervalId = window.setInterval(getRoomState, 2000);
+    }
+    return () => {
+      if (intervalId !== undefined) {
+        window.clearInterval(intervalId);
+      }
+    };
+  }, [currentRoomData]);
   
   useEffect(() => {
     console.log("selectedRoomId: " + selectedRoomId + " Room list: " + roomList);
@@ -22,28 +44,27 @@ const Room: React.FC = () => {
       setCurrentRoomData(room !== undefined ? room : null);
     }
   }, [roomList]);
-  
-  useEffect(() => {
-    if(currentRoomData)
-    {
-      getPlayersInRoom({ roomId: currentRoomData.roomId });
-    }
-  }, [currentRoomData]);
 
-  if(!currentRoomData) return <div>Empty room data</div>
+  if(!currentRoomData || !currentRoomState) return <div>Empty room data</div>
 
   return (  
     <div>
-      <div>Room name: {currentRoomData.roomName}</div>
+      {currentRoomState?.hasGameBegan ? <div>Game</div> : 
       <div>
-        Connected users:
-        <ol>
-          {connectedUsers.map((username) => (
-            <li>{username}</li>
-          ))}
-        </ol>
-        <h3>Admin: {connectedUsers.length > 0 ? connectedUsers[0] : "Error"}</h3>
+        <div>Room name: {currentRoomData.roomName}</div>
+        <div>
+          Connected users:
+          <ol>
+            {currentRoomState?.players.map((username) => (
+              <li>{username}</li>
+            ))}
+          </ol>
+          <h3>Admin: {currentRoomState?.players.length > 0 ? currentRoomState?.players[0] : "Error"}</h3>
+          {isRoomAdmin() ? <button onClick={closeRoom}>Close room</button> : <button onClick={leaveRoom}>Leave room</button>}
+          {isRoomAdmin() ? <button onClick={startGame}>Start game</button> : <></>}
+        </div>
       </div>
+      } 
     </div>
   );
 };

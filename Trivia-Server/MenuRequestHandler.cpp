@@ -1,6 +1,7 @@
 #include "MenuRequestHandler.h"
-//#include "RequestHandlerFactory.h"
 #include "LoginRequestHandler.h"
+#include "RoomMemberRequestHandler.h"
+#include "RoomAdminRequestHandler.h"
 #include "StatusCodes.h"
 
 bool MenuRequestHandler::isRequestRelevant(const RequestInfo& requestInfo) const
@@ -143,10 +144,9 @@ RequestResult MenuRequestHandler::joinRoom(const RequestInfo& requestInfo) const
 {
 	RequestResult requestResult;
 	JoinRoomResponse joinRoomResponse;
-	requestResult.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
+	requestResult.newHandler = m_handlerFactory.createRoomMemberRequestHandler(m_user.getUsername());
 	try {
 		std::vector<std::string> players;
-		//std::map<unsigned int, Room>* rooms = m_roomManager.getRooms();
 		JoinRoomRequest joinRoomRequest = JsonRequestPacketDeserializer::getInstance().deserializeJoinRoomRequest(requestInfo.buffer);
 
 		m_roomManager.joinRoom(m_user, joinRoomRequest.roomId);
@@ -166,7 +166,7 @@ RequestResult MenuRequestHandler::createRoom(const RequestInfo& requestInfo) con
 {
 	RequestResult requestResult;
 	CreateRoomResponse createRoomResponse;
-	requestResult.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
+	requestResult.newHandler = m_handlerFactory.createRoomAdminRequestHandler(m_user.getUsername());
 	try {
 		std::vector<std::string> players;
 		int roomCount = m_roomManager.getRooms()->size();

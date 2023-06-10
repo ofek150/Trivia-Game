@@ -1,5 +1,4 @@
 #include "MenuRequestHandler.h"
-#include "RequestHandlerFactory.h"
 #include "RoomMemberRequestHandler.h"
 
 bool RoomMemberRequestHandler::isRequestRelevant(const RequestInfo& requestInfo) const
@@ -29,7 +28,6 @@ RequestResult RoomMemberRequestHandler::leaveRoom(RequestInfo requestInfo) const
 	LeaveRoomResponse leaveRoomResponse;
 	requestResult.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
 	try {
-
 		m_roomManager.leaveRoom(m_user);
 		leaveRoomResponse.status = StatusCodes::SUCCESSFUL;
 		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(leaveRoomResponse);
@@ -38,15 +36,14 @@ RequestResult RoomMemberRequestHandler::leaveRoom(RequestInfo requestInfo) const
 	{
 		requestResult = ErrorResult(e);
 	}
-
+	return requestResult;
 }
 
 RequestResult RoomMemberRequestHandler::getRoomState(RequestInfo requestInfo) const
 {
 	RequestResult requestResult;
 	GetRoomStateResponse getRoomStateResponse;
-	// Change to game request handler
-	requestResult.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
+	requestResult.newHandler = m_handlerFactory.createRoomMemberRequestHandler(m_user.getUsername());
 	try {
 
 		unsigned int roomId = m_roomManager.getRoomIdByUser(m_user);
@@ -69,4 +66,6 @@ RequestResult RoomMemberRequestHandler::getRoomState(RequestInfo requestInfo) co
 	{
 		requestResult = ErrorResult(e);
 	}
+
+	return requestResult;
 }

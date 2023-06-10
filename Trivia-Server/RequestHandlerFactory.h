@@ -7,6 +7,7 @@
 class LoginRequestHandler;
 class MenuRequestHandler;
 class RoomAdminRequestHandler;
+class RoomMemberRequestHandler;
 
 class RequestHandlerFactory
 {
@@ -22,7 +23,7 @@ public:
     LoginRequestHandler* createLoginRequestHandler() const;
     MenuRequestHandler* createMenuRequestHandler(const std::string& username) const;
     RoomAdminRequestHandler* createRoomAdminRequestHandler(const std::string& username) const;
-    //RoomMemberRequestHandler* createRoomMemberRequestHandler(const std::string& username) const;
+    RoomMemberRequestHandler* createRoomMemberRequestHandler(const std::string& username) const;
 
 
     LoginManager& getLoginManager();

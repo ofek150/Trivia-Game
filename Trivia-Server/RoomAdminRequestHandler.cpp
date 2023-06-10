@@ -1,5 +1,4 @@
 #include "MenuRequestHandler.h"
-#include "RequestHandlerFactory.h"
 #include "RoomAdminRequestHandler.h"
 
 bool RoomAdminRequestHandler::isRequestRelevant(const RequestInfo& requestInfo) const
@@ -32,10 +31,9 @@ RequestResult RoomAdminRequestHandler::closeRoom(RequestInfo requestInfo) const
 	CloseRoomResponse closeRoomResponse;
 	requestResult.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
 	try {
-
 		unsigned int roomId = m_roomManager.getRoomIdByUser(m_user);
-		if (roomId == -1) throw std::exception("The user isn't in any room!");
 		if (m_roomManager.getRoom(roomId).getAdmin().getUsername() != m_user.getUsername()) throw std::exception("You are not authorized to close the room!");
+		m_roomManager.deleteRoom(roomId);
 		closeRoomResponse.status = StatusCodes::SUCCESSFUL;
 
 		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(closeRoomResponse);
@@ -44,7 +42,7 @@ RequestResult RoomAdminRequestHandler::closeRoom(RequestInfo requestInfo) const
 	{
 		requestResult = ErrorResult(e);
 	}
-
+	return requestResult;
 }
 
 RequestResult RoomAdminRequestHandler::startGame(RequestInfo requestInfo) const
@@ -52,11 +50,11 @@ RequestResult RoomAdminRequestHandler::startGame(RequestInfo requestInfo) const
 	RequestResult requestResult;
 	StartGameResponse startGameResponse;
 	// Change to game request handler
-	requestResult.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
+	requestResult.newHandler = m_handlerFactory.createRoomAdminRequestHandler(m_user.getUsername());
 	try {
 
 		unsigned int roomId = m_roomManager.getRoomIdByUser(m_user);
-		if (m_roomManager.getRoom(roomId).getAdmin().getUsername() != m_user.getUsername()) throw std::exception("You are not authorized to close the room!");
+		if (m_roomManager.getRoom(roomId).getAdmin().getUsername() != m_user.getUsername()) throw std::exception("You are not authorized to start the game!");
 		// Notify all users to start game
 		m_roomManager.getRoom(roomId).startGame();
 		startGameResponse.status = StatusCodes::SUCCESSFUL;
@@ -67,14 +65,15 @@ RequestResult RoomAdminRequestHandler::startGame(RequestInfo requestInfo) const
 	{
 		requestResult = ErrorResult(e);
 	}
+	return requestResult;
 }
 
 RequestResult RoomAdminRequestHandler::getRoomState(RequestInfo requestInfo) const
 {
 	RequestResult requestResult;
 	GetRoomStateResponse getRoomStateResponse;
-	// Change to game request handler
-	requestResult.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
+
+	requestResult.newHandler = m_handlerFactory.createRoomAdminRequestHandler(m_user.getUsername());
 	try {
 
 		unsigned int roomId = m_roomManager.getRoomIdByUser(m_user);
@@ -97,4 +96,6 @@ RequestResult RoomAdminRequestHandler::getRoomState(RequestInfo requestInfo) con
 	{
 		requestResult = ErrorResult(e);
 	}
+
+	return requestResult;
 }

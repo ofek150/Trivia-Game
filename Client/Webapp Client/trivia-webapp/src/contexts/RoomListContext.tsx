@@ -19,12 +19,8 @@ interface RoomListProviderProps {
 
 export const RoomListProvider: React.FC<RoomListProviderProps> = ({ children }) => {
   const [roomList, setRoomList] = useState<Rooms | null>(initialRoomList);
-
-  useEffect(() => {
-    console.log(roomList);
-  }, [roomList])
-
-  const roomListContextValue: RoomListContextProps = { // Specify the type for roomListContextValue
+  
+  const roomListContextValue: RoomListContextProps = {
     roomList: roomList,
     setRoomList: setRoomList,
   };

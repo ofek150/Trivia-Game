@@ -15,5 +15,5 @@ enum ResponseCodes
 	CloseRoomResponseCode = 10,
 	StartGameResponseCode = 11,
 	GetRoomStateResponseCode = 12,
-	GetLeaveRoomResponseCode = 13 
+	LeaveRoomResponseCode = 13 
 };

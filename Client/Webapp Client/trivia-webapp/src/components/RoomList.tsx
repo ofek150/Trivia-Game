@@ -8,20 +8,26 @@ import { RoomListContext } from "../contexts/RoomListContext";
 import { RoomData } from "../utils/types";
 
 const RoomList: React.FC = () => {
-  //const [selectedRoomId, setSelectedRoomId] = useState(0);
-  const [counter, setCounter] = useState(0);
   const { roomList } = useContext(RoomListContext);
   const { responseMessage, setResponseMessage } = useContext(ResponseContext);
   const { joinRoom, getRooms } = useClient();
 
-
   useEffect(() => {
+    console.log("Starting counter");
+    const intervalId = setInterval(func, 2000);
+
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const func = () => {
+    console.log("Rooms: ", roomList?.rooms);
     getRooms();
-  }, [])
+  }
 
   const handleRefreshRooms = () => {
+    console.log("Refreshing room manually");
     getRooms();
-    //setCounter(counter+1);
   }
 
   const handleJoinRoom = (roomId: number) => {

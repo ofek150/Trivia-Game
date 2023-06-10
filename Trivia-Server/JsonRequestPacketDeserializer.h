@@ -26,6 +26,8 @@ public:
     static JoinRoomRequest deserializeJoinRoomRequest(const std::vector<unsigned char>& buffer);
     static CreateRoomRequest deserializeCreateRoomRequest(const std::vector<unsigned char>& buffer);
 
+    static std::string deserializeErrorResponse(const std::vector<unsigned char>& buffer);
+
 
 private:
 

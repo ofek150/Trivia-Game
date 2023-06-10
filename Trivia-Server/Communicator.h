@@ -14,6 +14,8 @@
 #include <string>
 #include "LoginRequestHandler.h"
 #include "MenuRequestHandler.h"
+#include "RoomMemberRequestHandler.h"
+#include "RoomAdminRequestHandler.h"
 #include "RequestHandlerFactory.h"
 #include "StatusCodes.h"
 

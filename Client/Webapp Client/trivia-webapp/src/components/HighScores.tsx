@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useContext } from "react";
 import useClient from "../services/client";
 import { HighscoresContext } from "../contexts/HighscoresContext";
 import styles from "../styles/modules/HighScores.module.css";

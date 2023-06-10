@@ -42,6 +42,13 @@ export interface Rooms {
   rooms: Map<number, RoomData>;
 }
 
+export interface RoomState {
+  hasGameBegan: boolean,
+  players: String[],
+  questionCount: number,
+  answerTimeout: number
+}
+
 export interface Highscores {
   highscores : Object;
 }

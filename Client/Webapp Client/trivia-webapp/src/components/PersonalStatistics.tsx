@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useContext } from "react";
 import useClient from "../services/client";
 import { PersonalStatisticsContext } from "../contexts/PersonalStatisticsContext";
 import styles from "../styles/modules/PersonalStatistics.module.css";
@@ -9,10 +8,7 @@ const PersonalStatistics: React.FC = () => {
   const { getPersonalStatistics } = useClient();
 
   useEffect(() => {
-    if(getPersonalStatistics)
-    {
-      getPersonalStatistics();
-    }
+    getPersonalStatistics();
   }, []);
 
   return (

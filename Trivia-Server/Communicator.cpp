@@ -82,7 +82,9 @@ void Communicator::clientHandler(SOCKET clientSocket)
 				RequestResult requestResult = handler->handleRequest(requestInfo);
 				if (requestResult.responseBuffer[0] == ResponseCodes::ErrorResponseCode)
 				{
-					requestResult.newHandler = m_clients[clientSocket];
+					std::string errorMessage = JsonRequestPacketDeserializer::deserializeErrorResponse(requestResult.responseBuffer);
+					if(errorMessage == "The user isn't in any room!")
+						m_clients[clientSocket] = m_handlerFactory.createMenuRequestHandler((dynamic_cast<RoomMemberRequestHandler*>(m_clients[clientSocket]))->getUser().getUsername());		
 				}
 				else
 				{
@@ -119,6 +121,30 @@ void Communicator::logOutClient(SOCKET clientSocket)
 		{
 			MenuRequestHandler* menuRequestHandler = dynamic_cast<MenuRequestHandler*>(m_clients[clientSocket]);
 			LoginManager::getInstance().logout(menuRequestHandler->getUser().getUsername());
+		}
+		else if (dynamic_cast<RoomAdminRequestHandler*>(handler))
+		{
+			RoomAdminRequestHandler* roomAdminRequestHandler = dynamic_cast<RoomAdminRequestHandler*>(m_clients[clientSocket]);
+			const LoggedUser& user = roomAdminRequestHandler->getUser();
+			RoomManager& roomManagerInstance = RoomManager::getInstance();
+
+			unsigned int roomId = roomManagerInstance.getRoomIdByUser(user);
+			if (roomManagerInstance.getRoom(roomId).getAdmin().getUsername() == user.getUsername())
+				roomManagerInstance.deleteRoom(roomId);
+
+			LoginManager::getInstance().logout(user.getUsername());
+		}
+		else if (dynamic_cast<RoomMemberRequestHandler*>(handler))
+		{
+			RoomMemberRequestHandler* roomMemberRequestHandler = dynamic_cast<RoomMemberRequestHandler*>(m_clients[clientSocket]);
+			const LoggedUser& user = roomMemberRequestHandler->getUser();
+			RoomManager& roomManagerInstance = RoomManager::getInstance();
+
+			unsigned int roomId = roomManagerInstance.getRoomIdByUser(user);
+			if (roomManagerInstance.getRoom(roomId).getAdmin().getUsername() == user.getUsername())
+				roomManagerInstance.getRoom(roomId).removeUser(user);
+
+			LoginManager::getInstance().logout(user.getUsername());
 		}
 
 		std::lock_guard<std::mutex>clients_lock(this->clients_mutex);

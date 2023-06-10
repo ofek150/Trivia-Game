@@ -12,11 +12,12 @@ void RoomManager::createRoom(const LoggedUser& user, const RoomData& roomData)
 		if(room.second.getRoomData().name == roomData.name) throw std::exception("The room's name is already taken.");
 	}
 
-	Room newRoom(user, roomData);
-	newRoom.addUser(user);
+	/*Room newRoom(user, roomData);
+	newRoom.addUser(user);*/
 
 	std::lock_guard<std::mutex> rooms_lock(rooms_mutex);
-	m_rooms.emplace(roomData.id, newRoom);
+	m_rooms.emplace(roomData.id, Room(user, roomData));
+	m_rooms.at(roomData.id).addUser(user);
 }
 
 void RoomManager::deleteRoom(unsigned int ID)
@@ -70,6 +71,7 @@ Room& RoomManager::getRoom(unsigned int ID)
 
 unsigned int RoomManager::getRoomIdByUser(const LoggedUser& user) const
 {
+	if(m_rooms.size() == 0) throw std::exception("The user isn't in any room!");
 	for (const auto& room : m_rooms)
 	{
 		if (room.second.isUserInRoom(user))

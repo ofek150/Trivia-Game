@@ -20,7 +20,6 @@ private:
     RequestResult startGame(RequestInfo requestInfo) const;
     RequestResult getRoomState(RequestInfo requestInfo) const;
 
-    Room m_room;
     LoggedUser m_user;
     RequestHandlerFactory& m_handlerFactory;
     RoomManager& m_roomManager;

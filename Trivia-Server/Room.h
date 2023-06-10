@@ -8,6 +8,13 @@ class Room
 {
 public:
 	Room(const LoggedUser& user, const RoomData& metadata) : m_metadata(metadata), m_admin(user) {};
+	Room(Room&& other) noexcept
+		: m_metadata(std::move(other.m_metadata)),
+		m_users(std::move(other.m_users)),
+		m_admin(std::move(other.m_admin))
+	{
+	}
+
 	Room() = delete;
 	void addUser(const LoggedUser& user);
 	void removeUser(const LoggedUser& user);
