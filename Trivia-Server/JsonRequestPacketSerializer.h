@@ -3,7 +3,7 @@
 #include "ResponseCodes.h"
 #include "json.hpp"
 #include <vector>
-
+#include <sstream>
 
 class JsonRequestPacketSerializer {
 public:
@@ -27,15 +27,18 @@ public:
     static const std::vector<unsigned char> serializeResponse(const CreateRoomResponse& response);
     static const std::vector<unsigned char> serializeResponse(const GetHighScoreRoomResponse& response);
     static const std::vector<unsigned char> serializeResponse(const GetPersonalStatsResponse& response);
-
     static const std::vector<unsigned char> serializeResponse(const CloseRoomResponse& response);
     static const std::vector<unsigned char> serializeResponse(const StartGameResponse& response);
     static const std::vector<unsigned char> serializeResponse(const GetRoomStateResponse& response);
     static const std::vector<unsigned char> serializeResponse(const LeaveRoomResponse& response);
+    static const std::vector<unsigned char> serializeResponse(const GetGameResultsResponse& response);
+    static const std::vector<unsigned char> serializeResponse(const SubmitAnswerResponse& response);
+    static const std::vector<unsigned char> serializeResponse(const GetQuestionResponse& response);
+    static const std::vector<unsigned char> serializeResponse(const LeaveGameResponse& response);
     
 private:
     static const std::vector<unsigned char> constructPacket(int response_code, std::string json_dump); // Constructs the packet from
-    
+    static const std::string playerResultVectToStr(const std::vector<PlayerResults>& values);
 
     // Private constructor to prevent instantiation from outside
     JsonRequestPacketSerializer() {}

@@ -130,6 +130,39 @@ const std::vector<unsigned char> JsonRequestPacketSerializer::serializeResponse(
     return constructPacket(ResponseCodes::LeaveRoomResponseCode, json_data.dump());
 }
 
+const std::vector<unsigned char> JsonRequestPacketSerializer::serializeResponse(const GetGameResultsResponse& response)
+{
+    nlohmann::json json_data;
+    json_data["status"] = response.status;
+    std::string serializedResults = playerResultVectToStr(response.results);
+    json_data["results"] = serializedResults;
+    return constructPacket(ResponseCodes::GetGameResultsResponseCode, json_data.dump());
+}
+
+
+const std::vector<unsigned char> JsonRequestPacketSerializer::serializeResponse(const SubmitAnswerResponse& response)
+{
+    nlohmann::json json_data;
+    json_data["status"] = response.status;
+    json_data["correctsAnswerId"] = response.correctsAnswerId;
+    return constructPacket(ResponseCodes::SubmitAnswerResponseCode, json_data.dump());
+}
+
+const std::vector<unsigned char> JsonRequestPacketSerializer::serializeResponse(const GetQuestionResponse& response)
+{
+    nlohmann::json json_data;
+    json_data["status"] = response.status;
+    json_data["question"] = response.question;
+    json_data["answers"] = response.answers;
+    return constructPacket(ResponseCodes::GetQuestionResponseCode, json_data.dump());
+}
+
+const std::vector<unsigned char> JsonRequestPacketSerializer::serializeResponse(const LeaveGameResponse& response)
+{
+    nlohmann::json json_data = { {"status", response.status} };
+    return constructPacket(ResponseCodes::LeaveRoomResponseCode, json_data.dump());
+}
+
 const std::vector<unsigned char> JsonRequestPacketSerializer::constructPacket(int response_code, std::string json_dump)
 {
     std::vector<unsigned char> buffer;
@@ -147,4 +180,17 @@ const std::vector<unsigned char> JsonRequestPacketSerializer::constructPacket(in
     buffer.insert(buffer.end(), json_dump.begin(), json_dump.end());
 
     return buffer;
+}
+
+const std::string JsonRequestPacketSerializer::playerResultVectToStr(const std::vector<PlayerResults>& values)
+{
+    std::ostringstream oss;
+    if (!values.empty()) {
+        auto it = values.begin();
+        oss << it->averageAnswerTime << "," << it->correctAnswerCount << "," << it->wrongAnswerCount;
+        for (++it; it != values.end(); ++it) {
+            oss << "|" << it->averageAnswerTime << "," << it->correctAnswerCount << "," << it->wrongAnswerCount;
+        }
+    }
+    return oss.str();
 }
