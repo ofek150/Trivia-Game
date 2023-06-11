@@ -67,6 +67,14 @@ CreateRoomRequest JsonRequestPacketDeserializer::deserializeCreateRoomRequest(co
     return request;
 }
 
+SubmitAnswerRequest JsonRequestPacketDeserializer::deserializeSubmitAnswerRequest(const std::vector<unsigned char>& buffer)
+{
+    nlohmann::json json_data = parseJsonData(buffer);
+    SubmitAnswerRequest request;
+    if (json_data.contains("answerId")) request.answerId = json_data["answerId"].get<unsigned int>();
+    return request;
+}
+
 std::string JsonRequestPacketDeserializer::deserializeErrorResponse(const std::vector<unsigned char>& buffer)
 {
     nlohmann::json json_data = parseJsonData(buffer);
