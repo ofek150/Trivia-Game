@@ -17,7 +17,7 @@ const WaitingRoom: React.FC = () => {
     return currentRoomState?.players[0] === username;
   };
 
-  if (!currentRoomData || !currentRoomState) return <div>Empty room data</div>;
+  if (!currentRoomData || !currentRoomState) return null;
 
   return (
     <Container

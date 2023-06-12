@@ -23,8 +23,13 @@ const Room: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isInRoom) navigate("/main-menu");
-  }, [isInRoom]);
+    console.log("Rendering room");
+  } ,[]);
+
+
+  // useEffect(() => {
+  //   if (!currentRoomData) navigate("/main-menu");
+  // }, [currentRoomData]);
 
   const isRoomAdmin = () => {
     return currentRoomState?.players[0] === username;
@@ -73,8 +78,7 @@ const Room: React.FC = () => {
         minHeight: "100vh",
         display: "flex",
         justifyContent: "center",
-        alignItems: "center",
-        padding: theme.spacing(2),
+        alignItems: "center"
       }}
     >
       {currentRoomState?.hasGameBegan ? <Game /> : <WaitingRoom />}

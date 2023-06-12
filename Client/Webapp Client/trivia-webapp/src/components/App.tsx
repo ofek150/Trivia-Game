@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Routes, Route, BrowserRouter as Router, Navigate } from "react-router-dom";
+import React, { useState, useContext } from "react";
+import { Routes, Route, BrowserRouter as Router, Navigate, Outlet } from "react-router-dom";
 import MainMenuPage from "../pages/MainMenuPage";
 import LoginPage from "../pages/LoginPage";
 import NotFoundPage from "../pages/NotFoundPage";
@@ -21,11 +21,18 @@ import { CurrentRoomStateProvider } from "../contexts/CurrentRoomStateContext";
 import { UserProvider } from "../contexts/UserContext";
 import { ThemeProvider } from "@mui/material/styles";
 import { lightTheme, darkTheme } from "../theme";
+import RoomNavigator from "./RoomNavigator";
 
 export const AuthContext = React.createContext<{
   isLoggedIn: boolean;
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
 }>({ isLoggedIn: false, setIsLoggedIn: () => {} });
+
+const ProtectedRoute: React.FC<{ element: React.ReactElement }> = ({ element }) => {
+  const { isLoggedIn } = useContext(AuthContext);
+
+  return isLoggedIn ? element : <Navigate to="/login" />;
+};
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -51,23 +58,26 @@ const App: React.FC = () => {
                       <CurrentRoomDataProvider>
                         <CurrentRoomStateProvider>
                           <Router>
+                            <RoomNavigator />
                             <Routes>
-                              <Route path="/" element={<Navigate to="/login" />} />
-                              <Route path="/main-menu" element={isLoggedIn ? <MainMenuPage /> : <Navigate to="/login" />} />
-                              <Route path="/login" element={isLoggedIn? <Navigate to = "/main-menu" /> : <LoginPage />} />
-                              <Route path="/signup" element={isLoggedIn? <Navigate to = "/main-menu" /> : <SignupPage />} />
-                              <Route path="/room-list" element={isLoggedIn? <RoomListPage /> : <Navigate to = "/login" />} />
-                              <Route path="/room-list/*" element={isLoggedIn? <RoomPage /> : <Navigate to = "/login" />} />
-                              <Route path="/statistics" element={isLoggedIn ? <StatisticsPage /> : <Navigate to="/login" />} />
-                              <Route path="/statistics/highscores" element={isLoggedIn? <HighScoresPage /> : <Navigate to = "/login" />} />
-                              <Route path="/statistics/personal" element={isLoggedIn ? <PersonalStatisticsPage /> : <Navigate to="/login" />} />
-                              <Route path="/create-room" element={isLoggedIn? <CreateRoomPage /> : <Navigate to = "/login" />} />
+                              <Route path="/" element={<Navigate replace to="/login" />} />
+                              <Route path="/login" element={isLoggedIn ? <Navigate replace to="/main-menu" /> : <LoginPage />} />
+                              <Route path="/signup" element={isLoggedIn ? <Navigate replace to="/main-menu" /> : <SignupPage />} />
+                              <Route path="/main-menu" element={<ProtectedRoute element={<MainMenuPage />} />} />
+                              <Route path="/rooms" element={<ProtectedRoute element={<Outlet />} />}>
+                                <Route path="list" element={<ProtectedRoute element={<RoomListPage />} />} />
+                                <Route path=":roomId" element={<ProtectedRoute element={<RoomPage />} />} />
+                              </Route>
+                              <Route path="/statistics" element={<ProtectedRoute element={<StatisticsPage />} />} />
+                              <Route path="/statistics/highscores" element={<ProtectedRoute element={<HighScoresPage />} />} />
+                              <Route path="/statistics/personal" element={<ProtectedRoute element={<PersonalStatisticsPage />} />} />
+                              <Route path="/create-room" element={<ProtectedRoute element={<CreateRoomPage />} />} />
                               <Route path="*" element={<NotFoundPage />} />
                             </Routes>
                           </Router>
                         </CurrentRoomStateProvider>
                       </CurrentRoomDataProvider>
-                    </SelectedRoomIdProvider>  
+                    </SelectedRoomIdProvider>
                   </RoomListProvider>
                 </PersonalStatisticsProvider>
               </HighscoresProvider>

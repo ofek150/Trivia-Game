@@ -48,7 +48,7 @@ const MainMenu: React.FC = () => {
           variant="contained"
           color="secondary"
           size="large"
-          onClick={() => navigate("/room-list")}
+          onClick={() => navigate("/rooms/list")}
           sx={{ mt: 3, fontSize: "1.8rem" }}
         >
           Rooms

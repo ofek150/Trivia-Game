@@ -99,7 +99,7 @@ const useClient = () => {
             {
               setRoomList(null);
               setIsInRoom(false);
-              navigate("/room-list");
+              navigate("/rooms/list");
               return;
             }
             setResponseMessage(data["message"])
@@ -109,14 +109,12 @@ const useClient = () => {
           setResponseMessage("");
           setIsLoggedIn(true);
           setUsername(username);
-          navigate("/main-menu");
           break;
         case ResponseCodes.SignupResponseCode:
           break;
         case ResponseCodes.LogoutResponseCode:
           setIsLoggedIn(false);
           setIsInRoom(false);
-          navigate("/login");
           break;
         case ResponseCodes.GetRoomsResponseCode:
           if(!data["Rooms"] || data["Rooms"].length === 0)
@@ -148,11 +146,10 @@ const useClient = () => {
           console.log("Setting room data");
           setCurrentRoomData(newRoomData);
           setIsInRoom(true);
-          navigate("/room-list/" + newRoomData.roomId);
           break;
         case ResponseCodes.JoinRoomResponseCode:
             setIsInRoom(true);
-            navigate("/room-list/" + joinedRoomId);
+            navigate("/rooms/" + joinedRoomId);
           break;
         case ResponseCodes.GetHighScoreResponseCode:
           if(data["Highscores"]) setHighscores(data["HighScores"])
@@ -161,8 +158,9 @@ const useClient = () => {
           if(data["UserStatistics"]) setPersonalStatistics(data["UserStatistics"])  
           break;
         case ResponseCodes.CloseRoomResponseCode:
-          setIsInRoom(false);
-          navigate("/main-menu");
+          setCurrentRoomData(null);
+          //setIsInRoom(false);
+          
           break;
         case ResponseCodes.StartGameResponseCode:
           //Start game
@@ -179,7 +177,7 @@ const useClient = () => {
           break;
         case ResponseCodes.LeaveRoomResponseCode:
           setIsInRoom(false);
-          navigate("/room-list/");
+          navigate("/rooms/list");
           break;
         //Handle unknown response code
         default:
