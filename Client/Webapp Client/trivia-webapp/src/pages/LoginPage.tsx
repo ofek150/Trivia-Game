@@ -1,12 +1,23 @@
-import Login from "../components/Login"
-import styles from '../styles/modules/LoginPage.module.css'
+import React from "react";
+import { Box, useTheme } from "@mui/material";
+import Login from "../components/Login";
 
 const LoginPage: React.FC = () => {
-    return (
-        <div>
-            <Login/>
-        </div>
-    );
+  const theme = useTheme();
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        background: theme.palette.background.default,
+      }}
+    >
+      <Login />
+    </Box>
+  );
 };
 
 export default LoginPage;

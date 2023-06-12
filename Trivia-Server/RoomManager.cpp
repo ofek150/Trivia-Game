@@ -30,7 +30,8 @@ void RoomManager::deleteRoom(unsigned int ID)
 void RoomManager::leaveRoom(const LoggedUser& user)
 {
 	int roomId = getRoomIdByUser(user);
-	m_rooms.at(roomId).removeUser(user);
+	auto it = m_rooms.find(roomId);
+	if (it != m_rooms.end()) m_rooms.at(roomId).removeUser(user);
 }
 
 void RoomManager::joinRoom(const LoggedUser& user, unsigned int ID)

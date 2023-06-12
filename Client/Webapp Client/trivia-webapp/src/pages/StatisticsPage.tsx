@@ -1,13 +1,15 @@
-import React from "react"
+import React from "react";
 import Statistics from "../components/Statistics";
+import { Box, useTheme } from "@mui/material";
 
 const StatisticsPage: React.FC = () => {
-    return (
-        <div>
-            <Statistics/>
-        </div>
-        
-    );
+  const theme = useTheme();
+
+  return (
+    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", background: theme.palette.background.default }}>
+      <Statistics />
+    </Box>
+  );
 };
 
 export default StatisticsPage;

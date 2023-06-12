@@ -1,66 +1,99 @@
-import React, { useState, useContext } from "react"
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { ResponseContext } from "../contexts/ResponseContext";
+import { TextField, Button, Typography, Container, Box, useTheme, Stack } from "@mui/material";
 import useClient from "../services/client";
-import styles from "../styles/modules/CreateRoom.module.css"
 import GoBackBtn from "./GoBackBtn";
 
 const CreateRoom: React.FC = () => {
+  const { createRoom } = useClient();
   const [roomName, setRoomName] = useState("");
   const [maxUsers, setMaxUsers] = useState(0);
   const [questionCount, setQuestionCount] = useState(0);
   const [answerTimeout, setAnswerTimeout] = useState(0);
   const { responseMessage, setResponseMessage } = useContext(ResponseContext);
-  const { createRoom } = useClient();
-  
+  const navigate = useNavigate();
+  const theme = useTheme();
+
   const handleCreateRoom = () => {
-    if(roomName.length == 0 || maxUsers == 0 || questionCount == 0 || answerTimeout == 0)
-    {
+    if (roomName.length === 0 || maxUsers === 0 || questionCount === 0 || answerTimeout === 0) {
       setResponseMessage("Fields can't be empty!");
       return;
     }
     createRoom({ roomName, maxUsers, questionCount, answerTimeout });
-  }
-
-  const renderMaxUsersValue = maxUsers === 0 ? "" : maxUsers.toString();
-  const renderQuestionCountValue = questionCount === 0 ? "" : questionCount.toString();
-  const renderAnswerTimeoutValue = answerTimeout === 0 ? "" : answerTimeout.toString();
+  };
 
   return (
-    <div className={styles.createRoomContainer}>
-      <GoBackBtn />
-      <input
-        type="text"
-        placeholder="Room name"
-        value={roomName}
-        onChange={(e) => setRoomName(e.target.value)}
-      />
-      <input
-        type="number"
-        placeholder="Max players"
-        value={renderMaxUsersValue}
-        onChange={(e) => setMaxUsers(parseInt(e.target.value, 10))}
-        min={2}
-        max={5}
-      />
-      <input
-        type="number"
-        placeholder="Number of questions"
-        value={renderQuestionCountValue}
-        onChange={(e) => setQuestionCount(parseInt(e.target.value, 10))}
-        min={1}
-        max={40}
-      />
-      <input
-        type="number"
-        placeholder="Time for each question"
-        value={renderAnswerTimeoutValue}
-        onChange={(e) => setAnswerTimeout(parseInt(e.target.value, 10))}
-        min={1}
-        max={120}
-      />
-      <div className={styles.responseMessage}>{responseMessage}</div>
-      <button onClick={handleCreateRoom} className={styles.createRoomButton}>Create Room</button>
-    </div>
+    <Container maxWidth="sm">
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          mt: 4,
+          p: 4,
+          borderRadius: theme.shape.borderRadius,
+          boxShadow: theme.shadows[3],
+          background: theme.palette.background.paper,
+        }}
+      >
+        <GoBackBtn />
+
+        <Stack spacing={2} sx={{ width: "100%" }}>
+          <TextField
+            fullWidth
+            variant="outlined"
+            placeholder="Room name"
+            value={roomName}
+            onChange={(e) => setRoomName(e.target.value)}
+            inputProps={{ style: { fontSize: "1.6rem" } }}
+          />
+          <TextField
+            fullWidth
+            type="number"
+            variant="outlined"
+            placeholder="Max players"
+            value={maxUsers === 0 ? "" : maxUsers.toString()}
+            onChange={(e) => setMaxUsers(parseInt(e.target.value, 10))}
+            inputProps={{ min: 2, max: 5, style: { fontSize: "1.6rem" } }}
+          />
+          <TextField
+            fullWidth
+            type="number"
+            variant="outlined"
+            placeholder="Number of questions"
+            value={questionCount === 0 ? "" : questionCount.toString()}
+            onChange={(e) => setQuestionCount(parseInt(e.target.value, 10))}
+            inputProps={{ min: 1, max: 40, style: { fontSize: "1.6rem" } }}
+          />
+          <TextField
+            fullWidth
+            type="number"
+            variant="outlined"
+            placeholder="Time for each question"
+            value={answerTimeout === 0 ? "" : answerTimeout.toString()}
+            onChange={(e) => setAnswerTimeout(parseInt(e.target.value, 10))}
+            inputProps={{ min: 1, max: 120, style: { fontSize: "1.6rem" } }}
+          />
+          <Typography variant="subtitle1" color="error">
+            {responseMessage}
+          </Typography>
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            onClick={handleCreateRoom}
+            sx={{
+              height: "3em",
+              fontSize: "1.6rem",
+            }}
+          >
+            Create Room
+          </Button>
+        </Stack>
+      </Box>
+    </Container>
   );
 };
 
