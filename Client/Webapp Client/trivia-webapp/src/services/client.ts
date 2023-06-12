@@ -235,7 +235,6 @@ const useClient = () => {
   const parseServerResponse = (response: Uint8Array): ParsedResponse => {
     const responseCode: number = response[0];
     const dataLengthBytes: Uint8Array = response.slice(1, 5);
-    console.log(response);
     const dataLength: number =
       (dataLengthBytes[3] << 24) +
       (dataLengthBytes[2] << 16) +

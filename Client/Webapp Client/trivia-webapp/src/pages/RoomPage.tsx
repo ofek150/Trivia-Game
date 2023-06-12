@@ -17,9 +17,7 @@ const RoomPage: React.FC = () => {
         padding: theme.spacing(2),
       }}
     >
-      <CurrentRoomDataProvider>
         <Room />
-      </CurrentRoomDataProvider>
     </Box>
   );
 };

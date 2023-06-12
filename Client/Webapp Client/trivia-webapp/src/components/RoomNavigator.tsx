@@ -8,9 +8,10 @@ const RoomNavigator: React.FC = () => {
 
   useEffect(() => {
     if (currentRoomData) {
+      console.log("Navigator: currentRoomData: ", currentRoomData);
       navigate(`/rooms/${currentRoomData.roomId}`);
     }
-  }, [currentRoomData, navigate]);
+  }, [currentRoomData]);
 
   return null;
 };

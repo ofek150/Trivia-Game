@@ -22,10 +22,6 @@ const Room: React.FC = () => {
   const intervalId = useRef<number | undefined>(undefined);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    console.log("Rendering room");
-  } ,[]);
-
 
   // useEffect(() => {
   //   if (!currentRoomData) navigate("/main-menu");
@@ -67,7 +63,7 @@ const Room: React.FC = () => {
     }
   }, [roomList]);
 
-  console.log("CurrentRoomData: ", currentRoomData, " CurrentRoomState: ", currentRoomState);
+  //console.log("CurrentRoomData: ", currentRoomData, " CurrentRoomState: ", currentRoomState);
   if (!currentRoomData || !currentRoomState) return <div><Loading /></div>;
 
   return (

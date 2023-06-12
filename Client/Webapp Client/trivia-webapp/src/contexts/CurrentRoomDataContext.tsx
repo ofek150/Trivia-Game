@@ -19,9 +19,10 @@ interface RoomDataProviderProps {
 
 export const CurrentRoomDataProvider: React.FC<RoomDataProviderProps> = ({ children }) => {
   const [currentRoomData, setCurrentRoomData] = useState<RoomData | null>(initialCurrentRoomData);
+  
   useEffect(() => {
     console.log("currentRoomData(Context): ", currentRoomData);
-  }, [currentRoomData])
+  }, [currentRoomData]);
 
   const currentRoomDataContextValue = {
     currentRoomData: currentRoomData,

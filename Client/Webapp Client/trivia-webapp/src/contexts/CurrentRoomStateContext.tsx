@@ -20,10 +20,6 @@ interface RoomStateProviderProps {
 export const CurrentRoomStateProvider: React.FC<RoomStateProviderProps> = ({ children }) => {
   const [currentRoomState, setCurrentRoomState] = useState<RoomState | null>(initialCurrentRoomState);
 
-  useEffect(() => {
-    console.log(currentRoomState);
-  }, [currentRoomState])
-
   const currentRoomStateContextValue = {
     currentRoomState: currentRoomState,
     setCurrentRoomState: setCurrentRoomState,
