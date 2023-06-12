@@ -20,6 +20,10 @@ interface RoomListProviderProps {
 export const RoomListProvider: React.FC<RoomListProviderProps> = ({ children }) => {
   const [roomList, setRoomList] = useState<Rooms | null>(initialRoomList);
   
+  useEffect(() => {
+    console.log("Room list changed: ", roomList);
+  }, [roomList]);
+
   const roomListContextValue: RoomListContextProps = {
     roomList: roomList,
     setRoomList: setRoomList,

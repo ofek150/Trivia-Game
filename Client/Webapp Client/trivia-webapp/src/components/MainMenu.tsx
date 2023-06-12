@@ -1,14 +1,20 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../App";
+import { AuthContext } from "./App";
 import useClient from "../services/client";
-import styles from "../styles/modules/Login.module.css"
+import { Button, Typography, Box, useTheme, Container } from "@mui/material";
+import { UserContext } from "../contexts/UserContext";
+import { ResponseContext } from "../contexts/ResponseContext";
+import { RoomListContext } from "../contexts/RoomListContext";
 
 const MainMenu: React.FC = () => {
   const navigate = useNavigate();
-  const { logout } = useClient();
-  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
-  
+  const { logout, leaveRoom } = useClient();
+  const theme = useTheme();
+  const { username, isInRoom } = useContext(UserContext);
+  const { setResponseMessage } = useContext(ResponseContext);
+  const { setRoomList } = useContext(RoomListContext);
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -19,19 +25,66 @@ const MainMenu: React.FC = () => {
 
   const handleStatisticsBtn = () => {
     navigate("/statistics");
-  }
+  };
+
+  if(isInRoom)
+    {
+      setResponseMessage("User is currently in a room.");
+      setRoomList(null);
+      leaveRoom();
+    }
+
   return (
-    <div className={styles.loginContainer}>
-      <div className={styles.title}>
-        <h1>Trivia Game <span>Have fun!😊</span></h1>
-      </div>
-      <div className={styles.btnDiv}>
-        <button className={styles.navigateBtn} onClick={() => navigate("/room-list")}>rooms</button> 
-        <button className={styles.navigateBtn} onClick={() => navigate("/create-room")}>Create Room</button>
-        <button className={styles.navigateBtn} onClick={() => navigate("/statistics")}>statistics</button>
-      </div>
-      <button className={styles.logOutBtn} onClick={handleLogout}>Logout</button>
-    </div>
+    <Container maxWidth="sm" sx={{ mt: 4, minHeight: "60%" }}>
+      <Typography variant="h3" component="h1" gutterBottom sx={{ color: theme.palette.text.primary, textAlign: "center", fontSize: "3rem" }}>
+        <span role="img" aria-label="Crown">👑</span> Trivia Game <span role="img" aria-label="Crown">👑</span>
+      </Typography>
+      <Typography variant="h5" component="h2" sx={{ color: theme.palette.text.primary, mb: 6, textAlign: "center", fontSize: "2rem" }}>
+        Welcome {username}, have fun!
+      </Typography>
+      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <Button
+          fullWidth
+          variant="contained"
+          color="secondary"
+          size="large"
+          onClick={() => navigate("/room-list")}
+          sx={{ mt: 3, fontSize: "1.8rem" }}
+        >
+          Rooms
+        </Button>
+        <Button
+          fullWidth
+          variant="contained"
+          color="secondary"
+          size="large"
+          onClick={() => navigate("/create-room")}
+          sx={{ mt: 2, fontSize: "1.8rem" }}
+        >
+          Create Room
+        </Button>
+        <Button
+          fullWidth
+          variant="contained"
+          color="secondary"
+          size="large"
+          onClick={handleStatisticsBtn}
+          sx={{ mt: 2, fontSize: "1.8rem" }}
+        >
+          Statistics
+        </Button>
+        <Button
+          fullWidth
+          variant="outlined"
+          color="secondary"
+          size="large"
+          onClick={handleLogout}
+          sx={{ mt: 3, fontSize: "1.8rem" }}
+        >
+          Logout
+        </Button>
+      </Box>
+    </Container>
   );
 };
 

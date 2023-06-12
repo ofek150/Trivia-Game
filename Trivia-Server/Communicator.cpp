@@ -69,8 +69,7 @@ void Communicator::handleNewClient()
 }
 
 void Communicator::clientHandler(SOCKET clientSocket)
-{
-	while (true)
+{	while (true)
 	{
 		try
 		{

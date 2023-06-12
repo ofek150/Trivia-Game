@@ -10,6 +10,7 @@ int callbackString(void* data, int argc, char** argv, char** azColName)
 int callbackInteger(void* data, int argc, char** argv, char** azColName)
 {
     int* num = static_cast<int*>(data);
+    if (argv[0] == NULL) throw std::exception("Encountered an error while retrieving data");
     if (argc > 0) *num = atoi(argv[0]);
     return 0;
 }

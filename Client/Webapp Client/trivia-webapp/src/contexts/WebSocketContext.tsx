@@ -1,4 +1,5 @@
 import React, { createContext, useEffect, useState, FC, ReactNode, Dispatch, SetStateAction} from 'react';
+import Loading from '../components/Loading';
 
 type WebSocketContextType = {
   socket: WebSocket | null;
@@ -49,7 +50,7 @@ export const WebSocketProvider: FC<WebSocketProviderProps> = ({ children }) => {
   }, []);
 
   if (!connectionEstablished) {
-    return <div>Connecting...</div>  // replace with your own loading component or message
+    return <Loading />
   }
 
   return (

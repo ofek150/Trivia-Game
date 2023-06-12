@@ -1,71 +1,84 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import useClient from "../services/client";
 import { CurrentRoomDataContext } from "../contexts/CurrentRoomDataContext";
 import { RoomListContext } from "../contexts/RoomListContext";
 import { SelectedRoomIdContext } from "../contexts/SelectedRoomContext";
-import { CurrentRoomStateContext  } from "../contexts/CurrentRoomStateContext";
+import { CurrentRoomStateContext } from "../contexts/CurrentRoomStateContext";
 import { UserContext } from "../contexts/UserContext";
+import WaitingRoom from "./WaitingRoom";
+import Game from "./Game";
+import { useNavigate } from "react-router-dom";
+import Loading from "./Loading";
+import { Container, useTheme } from "@mui/material";
 
 const Room: React.FC = () => {
+  const theme = useTheme();
   const { currentRoomData, setCurrentRoomData } = useContext(CurrentRoomDataContext);
   const { currentRoomState } = useContext(CurrentRoomStateContext);
   const { roomList } = useContext(RoomListContext);
-  const { getRoomState, leaveRoom, closeRoom, startGame } = useClient();
+  const { getRoomState  } = useClient();
   const { selectedRoomId } = useContext(SelectedRoomIdContext);
-  const { username } = useContext(UserContext);
-
-
+  const { username, isInRoom } = useContext(UserContext);
+  const intervalId = useRef<number | undefined>(undefined);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("Room data: ", currentRoomData);
-  }, [currentRoomData]);
+    if (!isInRoom) navigate("/main-menu");
+  }, [isInRoom]);
 
   const isRoomAdmin = () => {
     return currentRoomState?.players[0] === username;
-  }
+  };
 
   useEffect(() => {
-    let intervalId: number | undefined;
     console.log("Current room data(room): ", currentRoomData);
+
     if (currentRoomData) {
-      intervalId = window.setInterval(getRoomState, 2000);
+      intervalId.current = window.setInterval(getRoomState, 2000);
+    } else if (intervalId.current !== undefined) {
+      window.clearInterval(intervalId.current);
+      intervalId.current = undefined;
     }
+
     return () => {
-      if (intervalId !== undefined) {
-        window.clearInterval(intervalId);
+      if (intervalId.current !== undefined) {
+        window.clearInterval(intervalId.current);
       }
     };
   }, [currentRoomData]);
-  
+
+  // This useEffect hook clears the interval when the game has begun
   useEffect(() => {
-    console.log("selectedRoomId: " + selectedRoomId + " Room list: " + roomList);
+    if (currentRoomState?.hasGameBegan && intervalId.current !== undefined) {
+      window.clearInterval(intervalId.current);
+      intervalId.current = undefined; // Reset the interval ID state
+    }
+  }, [currentRoomState?.hasGameBegan]);
+
+  useEffect(() => {
     if (roomList) {
       const room = roomList.rooms.get(selectedRoomId);
       setCurrentRoomData(room !== undefined ? room : null);
     }
   }, [roomList]);
 
-  if(!currentRoomData || !currentRoomState) return <div>Empty room data</div>
+  console.log("CurrentRoomData: ", currentRoomData, " CurrentRoomState: ", currentRoomState);
+  if (!currentRoomData || !currentRoomState) return <div><Loading /></div>;
 
-  return (  
-    <div>
-      {currentRoomState?.hasGameBegan ? <div>Game</div> : 
-      <div>
-        <div>Room name: {currentRoomData.roomName}</div>
-        <div>
-          Connected users:
-          <ol>
-            {currentRoomState?.players.map((username) => (
-              <li>{username}</li>
-            ))}
-          </ol>
-          <h3>Admin: {currentRoomState?.players.length > 0 ? currentRoomState?.players[0] : "Error"}</h3>
-          {isRoomAdmin() ? <button onClick={closeRoom}>Close room</button> : <button onClick={leaveRoom}>Leave room</button>}
-          {isRoomAdmin() ? <button onClick={startGame}>Start game</button> : <></>}
-        </div>
-      </div>
-      } 
-    </div>
+  return (
+    <Container
+      maxWidth="sm"
+      sx={{
+        backgroundColor: theme.palette.background.default,
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: theme.spacing(2),
+      }}
+    >
+      {currentRoomState?.hasGameBegan ? <Game /> : <WaitingRoom />}
+    </Container>
   );
 };
 

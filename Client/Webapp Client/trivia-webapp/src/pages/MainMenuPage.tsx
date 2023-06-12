@@ -1,20 +1,29 @@
-import React, {useEffect, useContext} from "react"
-import MainMenu from "../components/MainMenu"
+import React, { useEffect, useContext } from "react";
+import MainMenu from "../components/MainMenu";
 import { ResponseContext } from "../contexts/ResponseContext";
+import { Box, useTheme } from "@mui/material";
 
 const MainMenuPage: React.FC = () => {
+  const { setResponseMessage } = useContext(ResponseContext);
+  const theme = useTheme();
 
-    const { setResponseMessage } = useContext(ResponseContext);
-  
-    useEffect(() => {
-      setResponseMessage("");
-    }, []);
+  useEffect(() => {
+    setResponseMessage("");
+  }, []);
 
-    return (
-        <div>
-          <MainMenu/>
-        </div>
-    );
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        background: theme.palette.background.default,
+      }}
+    >
+      <MainMenu />
+    </Box>
+  );
 };
 
 export default MainMenuPage;

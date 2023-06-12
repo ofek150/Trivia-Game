@@ -1,17 +1,15 @@
 import React, { createContext, useState,  ReactNode } from 'react';
 
-// REMOVE isUserAdmin
-
 export const UserContext = createContext<{
   username: string;
   setUsername: React.Dispatch<React.SetStateAction<string>>;
-  isRoomAdmin: boolean;
-  setIsRoomAdmin: React.Dispatch<React.SetStateAction<boolean>>;
+  isInRoom: boolean;
+  setIsInRoom: React.Dispatch<React.SetStateAction<boolean>>;
 }>({
     username: '',
     setUsername: () => {},
-    isRoomAdmin: false,
-    setIsRoomAdmin: () => {}
+    isInRoom: false,
+    setIsInRoom: () => {}
 });
 
 interface ResponseProviderProps {
@@ -20,13 +18,13 @@ interface ResponseProviderProps {
 
   export const UserProvider: React.FC<ResponseProviderProps> = ({ children }) => {
     const [username, setUsername] = React.useState<string>('');
-    const [isRoomAdmin, setIsRoomAdmin] = React.useState<boolean>(false);
+    const [isInRoom, setIsInRoom] = React.useState<boolean>(false);
     
     const UserContextValue = {
       username: username,
       setUsername: setUsername,
-      isRoomAdmin: isRoomAdmin,
-      setIsRoomAdmin: setIsRoomAdmin
+      isInRoom: isInRoom,
+      setIsInRoom: setIsInRoom
     };
 
     return (

@@ -1,5 +1,5 @@
-import { useEffect, useContext, useRef} from "react";
-import { AuthContext } from "../App";
+import { useEffect, useContext } from "react";
+import { AuthContext } from "../components/App";
 import { RoomListContext } from "../contexts/RoomListContext";
 import { CurrentRoomDataContext } from "../contexts/CurrentRoomDataContext";
 import { useNavigate } from "react-router-dom";
@@ -71,8 +71,8 @@ const useClient = () => {
   const { setHighscores } = useContext(HighscoresContext);
   const { setPersonalStatistics } = useContext(PersonalStatisticsContext);
   const { setCurrentRoomState } = useContext(CurrentRoomStateContext);
-  const { setUsername, setIsRoomAdmin } = useContext(UserContext);
   const { setCurrentRoomData } = useContext(CurrentRoomDataContext);
+  const { setIsInRoom, setUsername } = useContext(UserContext);
   
   useEffect(() => {
     if (!socket || !connectionEstablished)
@@ -84,25 +84,21 @@ const useClient = () => {
     socket.binaryType = "arraybuffer";
 
     socket.onmessage = (event) => {
-      console.log("Got message from server.");
-      //console.log(event.data);
       // Parse the server response
-      console.log(event.data);
       const response = new Uint8Array(event.data);
       const parsedResponse = parseServerResponse(response);
 
       // Extract the response code and data from the parsed response
       const { responseCode, data } = parsedResponse;
-      console.log("Response code: ", responseCode);
-
       //Use a switch statement to handle the response differently based on the response code
       switch (responseCode) {
         case ResponseCodes.ErrorResponseCode:
           if(data["message"])
           {
-            console.log(data["message"]);
             if(data["message"] === "The user isn't in any room!")
             {
+              setRoomList(null);
+              setIsInRoom(false);
               navigate("/room-list");
               return;
             }
@@ -110,33 +106,28 @@ const useClient = () => {
           }
           break;
         case ResponseCodes.LoginResponseCode:
-          console.log("User is now logged in");
           setResponseMessage("");
           setIsLoggedIn(true);
           setUsername(username);
           navigate("/main-menu");
           break;
         case ResponseCodes.SignupResponseCode:
-          console.log("Signup successful");
           break;
         case ResponseCodes.LogoutResponseCode:
           setIsLoggedIn(false);
+          setIsInRoom(false);
           navigate("/login");
-          console.log("Logged out");
           break;
         case ResponseCodes.GetRoomsResponseCode:
-          console.log("Data: " + data);
           if(!data["Rooms"] || data["Rooms"].length === 0)
           {
             setRoomList(null);
-            console.log(data);
             return;
           }
 
           const updatedRoomsData: Map<number, RoomData> = new Map();
-
-          Object.entries(data["Rooms"]).forEach(([roomId, item]: [string, any]) => {
-            const numericRoomId = Number(roomId);
+          Object.entries(data["Rooms"]).forEach(([index, item]: [string, any]) => {
+            const numericRoomId = Number(item.roomId);
             updatedRoomsData.set(numericRoomId, {
                 roomId: numericRoomId,
                 roomName: item.name,
@@ -149,27 +140,28 @@ const useClient = () => {
           const updatedRoomList: Rooms = {
             rooms: updatedRoomsData
           };
-          console.log(updatedRoomList);
           setRoomList(updatedRoomList);
           break;
         case ResponseCodes.CreateRoomResponseCode:
           setSelectedRoomId(data["roomId"]);
           newRoomData.roomId = Number(data["roomId"]);
+          console.log("Setting room data");
           setCurrentRoomData(newRoomData);
-          setIsRoomAdmin(true);
+          setIsInRoom(true);
           navigate("/room-list/" + newRoomData.roomId);
           break;
         case ResponseCodes.JoinRoomResponseCode:
-            setIsRoomAdmin(false);
+            setIsInRoom(true);
             navigate("/room-list/" + joinedRoomId);
           break;
         case ResponseCodes.GetHighScoreResponseCode:
-          data["HighScores"] ? setHighscores(data["HighScores"]) : console.log(data["HighScores"]);  
+          if(data["Highscores"]) setHighscores(data["HighScores"])
           break;
         case ResponseCodes.GetPersonalStatsResponseCode:
-          data["UserStatistics"] ? setPersonalStatistics(data["UserStatistics"]) : console.log(data["UserStatistics"]);    
+          if(data["UserStatistics"]) setPersonalStatistics(data["UserStatistics"])  
           break;
         case ResponseCodes.CloseRoomResponseCode:
+          setIsInRoom(false);
           navigate("/main-menu");
           break;
         case ResponseCodes.StartGameResponseCode:
@@ -186,6 +178,7 @@ const useClient = () => {
           setCurrentRoomState(updatedRoomState);
           break;
         case ResponseCodes.LeaveRoomResponseCode:
+          setIsInRoom(false);
           navigate("/room-list/");
           break;
         //Handle unknown response code
@@ -238,8 +231,6 @@ const useClient = () => {
 
       // Finally, send the payload over the WebSocket connection
       socket.send(payload.buffer);
-
-      console.log("Buffer" + payload.buffer);
     }
   };
 
@@ -278,7 +269,7 @@ const useClient = () => {
   };
 
   const joinRoom = (request: JoinRoomRequest) => {
-    console.log("Joining room with the id: " + request.roomId);
+    //console.log("Joining room with the id: " + request.roomId);
     setSelectedRoomId(request.roomId);
     joinedRoomId = request.roomId;
     sendDataToServer(RequestCodes.JoinRoomRequestCode, request);
@@ -325,6 +316,7 @@ const useClient = () => {
   }
 
   const leaveRoom = () => {
+    //console.log("Leaving room!");
     sendDataToServer(RequestCodes.LeaveRoomRequestCode, {});
   }
 
