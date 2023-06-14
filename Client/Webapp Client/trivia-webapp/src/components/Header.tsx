@@ -1,33 +1,35 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Switch, IconButton, useTheme } from '@mui/material';
-import { useThemeMode } from '../contexts/CustomHooks';
-import BrightnessHighIcon from '@mui/icons-material/BrightnessHigh';
-import NightsStayIcon from '@mui/icons-material/NightsStay';
-import { Box } from '@mui/system';
+import { AppBar, Toolbar, Typography, Box } from '@mui/material';
+import ThemeToggleSwitch from './ThemeToggleSwitch';
 
-const Header = () => {
-  const { themeMode, toggleThemeMode } = useThemeMode();
-  const theme = useTheme();
-
+const Header: React.FC = () => {
   return (
-    <AppBar position="static" sx={{ height: "10vh", display: "flex", alignItems: "center", justifyContent: "center"}}>
-      <Toolbar sx={{ width: "100%"}}>
-        <Box sx={{ margin: "0 auto" }}>
-          <Typography variant="h2" component="div" sx={{ fontWeight: "700" }}>
-            <span role="img" aria-label="Crown">👑</span> Trivia Game <span role="img" aria-label="Crown">👑</span>
-          </Typography>
+    <AppBar position="static" sx={{ height: 'auto', py: 1 }}>
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: { xs: 'column', md: 'row' }, 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        textAlign: 'center'
+      }}>
+        <Box sx={{ order: { xs: 2, md: 1 }, display: { xs: 'none', md: 'flex' }}}>
+          <Toolbar>
+            <Box sx={{ width: 50 }} />  {/* Adjust the width to match the switch's width */}
+          </Toolbar>
         </Box>
-      </Toolbar>
-      
-      <Toolbar sx={{position: "absolute", top: theme.spacing(2), right: theme.spacing(2),}}>
-        <IconButton edge="start" color="inherit" aria-label="mode">
-          <BrightnessHighIcon />
-        </IconButton>
-        <Switch checked={themeMode === 'dark'} onChange={toggleThemeMode} />
-        <IconButton edge="end" color="inherit" aria-label="mode">
-          <NightsStayIcon />
-        </IconButton>
-      </Toolbar>
+        <Box sx={{ flexGrow: 1, order: { xs: 1, md: 2 } }}>
+          <Toolbar>
+            <Typography variant="h2" sx={{ fontWeight: 700 }}>
+              Trivia Game
+            </Typography>
+          </Toolbar>
+        </Box>
+        <Box sx={{ order: { xs: 2, md: 3 } }}>
+          <Toolbar>
+            <ThemeToggleSwitch />
+          </Toolbar>
+        </Box>
+      </Box>
     </AppBar>
   );
 };

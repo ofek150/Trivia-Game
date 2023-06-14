@@ -29,7 +29,7 @@ const GoBackBtn: React.FC = () => {
         height: "48px",
       }}
     >
-      <ArrowBackIcon sx={{ fontSize: "28px" }} />
+      <ArrowBackIcon sx={{ fontSize: "1.7em" }} />
     </IconButton>
   );
 };
