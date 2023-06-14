@@ -12,11 +12,11 @@ export const UserContext = createContext<{
     setIsInRoom: () => {}
 });
 
-interface ResponseProviderProps {
+interface UserProviderProps {
     children: ReactNode;
   }
 
-  export const UserProvider: React.FC<ResponseProviderProps> = ({ children }) => {
+  export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     const [username, setUsername] = React.useState<string>('');
     const [isInRoom, setIsInRoom] = React.useState<boolean>(false);
     

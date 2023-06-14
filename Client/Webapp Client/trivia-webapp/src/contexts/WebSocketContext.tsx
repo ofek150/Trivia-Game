@@ -7,7 +7,7 @@ type WebSocketContextType = {
   connectionEstablished: boolean;
 };
 
-const WebSocketContext = createContext<WebSocketContextType>({
+export const WebSocketContext = createContext<WebSocketContextType>({
   socket: null,
   setSocket: () => {},
   connectionEstablished: false,
@@ -59,6 +59,3 @@ export const WebSocketProvider: FC<WebSocketProviderProps> = ({ children }) => {
     </WebSocketContext.Provider>
   );
 };
-
-
-export default WebSocketContext;

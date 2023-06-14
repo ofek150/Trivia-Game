@@ -1,4 +1,4 @@
-import React, { createContext, useState, ReactNode, useEffect } from "react";
+import React, { createContext, useState, ReactNode, useEffect, useContext } from "react";
 import { RoomData } from "../utils/types";
 
 interface CurrentRoomDataContextProps {

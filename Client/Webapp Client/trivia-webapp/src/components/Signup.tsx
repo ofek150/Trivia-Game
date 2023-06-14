@@ -1,7 +1,7 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TextField, Typography, Container, Box, useTheme, Button, Stack } from "@mui/material";
-import { ResponseContext } from "../contexts/ResponseContext";
+import { useResponse } from "../contexts/CustomHooks";
 import useClient from "../services/client";
 import GoBackBtn from "./GoBackBtn";
 
@@ -10,7 +10,7 @@ const Signup: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const { responseMessage } = useContext(ResponseContext);
+  const { responseMessage } = useResponse();
   const theme = useTheme();
   const navigate = useNavigate();
 
@@ -20,6 +20,10 @@ const Signup: React.FC = () => {
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleLogin = () => {
+    navigate("/login");
   };
 
   return (
@@ -85,7 +89,7 @@ const Signup: React.FC = () => {
               },
             }}
           />
-          <Typography variant="subtitle1" color="textPrimary" sx={{ color: theme.palette.text.secondary }}>
+          <Typography variant="subtitle1" color="error" sx={{ textAlign: "center", fontSize: "1.4em" }}>
             {responseMessage}
           </Typography>
           <Button
@@ -104,6 +108,24 @@ const Signup: React.FC = () => {
           >
             Signup
           </Button>
+          <Typography variant="subtitle1" color="text.primary" sx={{ textAlign: "center", fontSize: "1.2em" }}>
+            Already have an account?{" "}
+            <Button
+              color="secondary"
+              onClick={handleLogin}
+              sx={{
+                fontSize: "1.2em",
+                textTransform: "none",
+                borderRadius: theme.shape.borderRadius,
+                "&:hover": {
+                  color: theme.palette.secondary.main,
+                  bgcolor: "transparent",
+                },
+              }}
+            >
+              Login
+            </Button>
+          </Typography>
         </Stack>
       </Box>
     </Container>

@@ -1,13 +1,12 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect } from "react";
 import useClient from "../services/client";
-import { PersonalStatisticsContext } from "../contexts/PersonalStatisticsContext";
+import { useUser, usePersonalStatistics } from "../contexts/CustomHooks";
 import { Typography, Box, useTheme, Container } from "@mui/material";
-import { UserContext } from "../contexts/UserContext";
 
 const PersonalStatistics: React.FC = () => {
-  const { personalStatistics } = useContext(PersonalStatisticsContext);
+  const { personalStatistics } = usePersonalStatistics();
   const { getPersonalStatistics } = useClient();
-  const { username } = useContext(UserContext);
+  const { username } = useUser();
   const theme = useTheme();
 
   useEffect(() => {

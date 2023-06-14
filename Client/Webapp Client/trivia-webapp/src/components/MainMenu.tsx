@@ -1,19 +1,15 @@
-import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "./App";
 import useClient from "../services/client";
 import { Button, Typography, Box, useTheme, Container } from "@mui/material";
-import { UserContext } from "../contexts/UserContext";
-import { ResponseContext } from "../contexts/ResponseContext";
-import { RoomListContext } from "../contexts/RoomListContext";
+import { useRoomList, useUser, useResponse } from "../contexts/CustomHooks";
 
 const MainMenu: React.FC = () => {
   const navigate = useNavigate();
   const { logout, leaveRoom } = useClient();
   const theme = useTheme();
-  const { username, isInRoom } = useContext(UserContext);
-  const { setResponseMessage } = useContext(ResponseContext);
-  const { setRoomList } = useContext(RoomListContext);
+  const { username, isInRoom } = useUser();
+  const { setResponseMessage } = useResponse();
+  const { setRoomList } = useRoomList();
 
   const handleLogout = async () => {
     try {
@@ -36,13 +32,13 @@ const MainMenu: React.FC = () => {
 
   return (
     <Container maxWidth="sm" sx={{ mt: 4, minHeight: "60%" }}>
-      <Typography variant="h3" component="h1" gutterBottom sx={{ color: theme.palette.text.primary, textAlign: "center", fontSize: "3rem" }}>
+      {/* <Typography variant="h3" component="h1" gutterBottom sx={{ color: theme.palette.text.primary, textAlign: "center", fontSize: "4em" }}>
         <span role="img" aria-label="Crown">👑</span> Trivia Game <span role="img" aria-label="Crown">👑</span>
-      </Typography>
-      <Typography variant="h5" component="h2" sx={{ color: theme.palette.text.primary, mb: 6, textAlign: "center", fontSize: "2rem" }}>
+      </Typography> */}
+      <Typography variant="h5" component="h2" sx={{ color: theme.palette.text.primary, mb: 6, textAlign: "center", fontSize: "2em" }}>
         Welcome {username}, have fun!
       </Typography>
-      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
         <Button
           fullWidth
           variant="contained"

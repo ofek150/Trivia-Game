@@ -1,6 +1,5 @@
 import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import { ResponseContext } from "../contexts/ResponseContext";
+import { useResponse } from "../contexts/CustomHooks";
 import { TextField, Button, Typography, Container, Box, useTheme, Stack } from "@mui/material";
 import useClient from "../services/client";
 import GoBackBtn from "./GoBackBtn";
@@ -11,8 +10,7 @@ const CreateRoom: React.FC = () => {
   const [maxUsers, setMaxUsers] = useState(0);
   const [questionCount, setQuestionCount] = useState(0);
   const [answerTimeout, setAnswerTimeout] = useState(0);
-  const { responseMessage, setResponseMessage } = useContext(ResponseContext);
-  const navigate = useNavigate();
+  const { responseMessage, setResponseMessage } = useResponse();
   const theme = useTheme();
 
   const handleCreateRoom = () => {
@@ -76,7 +74,7 @@ const CreateRoom: React.FC = () => {
             onChange={(e) => setAnswerTimeout(parseInt(e.target.value, 10))}
             inputProps={{ min: 1, max: 120, style: { fontSize: "1.6rem" } }}
           />
-          <Typography variant="subtitle1" color="error">
+          <Typography variant="subtitle1" color="error" sx={{ textAlign: "center", fontSize: "1.4em" }}>
             {responseMessage}
           </Typography>
           <Button

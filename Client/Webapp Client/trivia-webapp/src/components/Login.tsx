@@ -1,15 +1,15 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useClient from "../services/client";
-import { ResponseContext } from "../contexts/ResponseContext";
 import { TextField, Button, Typography, Container, Box, useTheme, Stack } from "@mui/material";
+import { useResponse } from "../contexts/CustomHooks";
 
 const Login: React.FC = () => {
   const { login } = useClient();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const { responseMessage, setResponseMessage } = useContext(ResponseContext);
+  const { responseMessage, setResponseMessage } = useResponse();
   const theme = useTheme();
 
   const handleLogin = async () => {
@@ -26,7 +26,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="sm" >
+    <Container maxWidth="sm">
       <Box
         sx={{
           display: "flex",
@@ -72,7 +72,7 @@ const Login: React.FC = () => {
               },
             }}
           />
-          <Typography variant="subtitle1" color="textPrimary" sx={{ color: theme.palette.text.secondary }}>
+          <Typography variant="subtitle1" color="error" sx={{ textAlign: "center", fontSize: "1.4em" }}>
             {responseMessage}
           </Typography>
           <Button
@@ -91,24 +91,24 @@ const Login: React.FC = () => {
           >
             Login
           </Button>
-          <Button
-            fullWidth
-            variant="outlined"
-            color="secondary"
-            onClick={handleSignup}
-            sx={{
-              height: "3em",
-              fontSize: "1.5rem",
-              borderRadius: theme.shape.borderRadius,
-              color: theme.palette.text.primary,
-              "&:hover": {
-                color: theme.palette.secondary.main,
-                bgcolor: "transparent",
-              },
-            }}
-          >
-            Signup
-          </Button>
+          <Typography variant="subtitle1" color="text.primary" sx={{ textAlign: "center", fontSize: "1.2em" }}>
+            Don't have an account?{" "}
+            <Button
+              color="secondary"
+              onClick={handleSignup}
+              sx={{
+                fontSize: "1.2em",
+                borderRadius: theme.shape.borderRadius,
+                textTransform: "none",
+                "&:hover": {
+                  color: theme.palette.secondary.main,
+                  bgcolor: "transparent",
+                },
+              }}
+            >
+              Signup
+            </Button>
+          </Typography>
         </Stack>
       </Box>
     </Container>

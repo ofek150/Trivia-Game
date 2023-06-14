@@ -1,21 +1,13 @@
 import { useEffect, useContext } from "react";
-import { AuthContext } from "../components/App";
-import { RoomListContext } from "../contexts/RoomListContext";
-import { CurrentRoomDataContext } from "../contexts/CurrentRoomDataContext";
+import { useAuth, useResponse, useWebSocket, useSelectedRoomId, useCurrentRoomData, useCurrentRoomState, usePersonalStatistics, useRoomList, useHighscores, useUser } from "../contexts/CustomHooks";
 import { useNavigate } from "react-router-dom";
-import { ResponseContext } from "../contexts/ResponseContext";
-import WebSocketContext from "../contexts/WebSocketContext";
-import { SelectedRoomIdContext } from "../contexts/SelectedRoomContext";
-import { HighscoresContext } from "../contexts/HighscoresContext";
-import { PersonalStatisticsContext } from "../contexts/PersonalStatisticsContext";
-import { CurrentRoomStateContext } from "../contexts/CurrentRoomStateContext";
-import { UserContext } from "../contexts/UserContext";
 import {
   LoginRequest,
   SignupRequest,
   GetPlayersInRoomRequest,
   JoinRoomRequest,
   CreateRoomRequest,
+  SubmitAnswerRequest,
   ParsedResponse,
   Rooms,
   RoomState,
@@ -36,7 +28,11 @@ const RequestCodes = {
   CloseRoomRequestCode: 10,
   StartGameRequestCode: 11,
   GetRoomStateRequestCode: 12,
-  LeaveRoomRequestCode: 13
+  LeaveRoomRequestCode: 13,
+  GetGameResultsRequestCode: 14,
+  SubmitAnswerRequestCode: 15,
+  GetQuestionRequestCode: 16,
+  LeaveGameRequestCode: 17
 };
 
 const ResponseCodes = {
@@ -53,7 +49,11 @@ const ResponseCodes = {
   CloseRoomResponseCode: 10,
   StartGameResponseCode: 11,
   GetRoomStateResponseCode: 12,
-  LeaveRoomResponseCode: 13
+  LeaveRoomResponseCode: 13,
+  GetGameResultsResponseCode: 14,
+  SubmitAnswerResponseCode: 15,
+  GetQuestionResponseCode: 16,
+  LeaveGameResponseCode: 17
 };
 
 let username: string;
@@ -62,17 +62,17 @@ let joinedRoomId: number;
 
 
 const useClient = () => {
-  const { socket, setSocket, connectionEstablished } = useContext(WebSocketContext);
+  const { socket, setSocket, connectionEstablished } = useWebSocket();
   const navigate = useNavigate();
-  const { setResponseMessage } = useContext(ResponseContext);
-  const { setIsLoggedIn } = useContext(AuthContext);
-  const { setSelectedRoomId } = useContext(SelectedRoomIdContext);
-  const { setRoomList } = useContext(RoomListContext);
-  const { setHighscores } = useContext(HighscoresContext);
-  const { setPersonalStatistics } = useContext(PersonalStatisticsContext);
-  const { setCurrentRoomState } = useContext(CurrentRoomStateContext);
-  const { setCurrentRoomData } = useContext(CurrentRoomDataContext);
-  const { setIsInRoom, setUsername } = useContext(UserContext);
+  const { setResponseMessage } = useResponse();
+  const { setIsLoggedIn } = useAuth();
+  const { setSelectedRoomId } = useSelectedRoomId();
+  const { setRoomList } = useRoomList();
+  const { setHighscores } = useHighscores();
+  const { setPersonalStatistics } = usePersonalStatistics();
+  const { setCurrentRoomState } = useCurrentRoomState();
+  const { setCurrentRoomData } = useCurrentRoomData();
+  const { setIsInRoom, setUsername } = useUser();
   
   useEffect(() => {
     if (!socket || !connectionEstablished)
@@ -178,6 +178,14 @@ const useClient = () => {
         case ResponseCodes.LeaveRoomResponseCode:
           setIsInRoom(false);
           navigate("/rooms/list");
+          break;
+        case ResponseCodes.GetGameResultsResponseCode:
+          break;
+        case ResponseCodes.SubmitAnswerResponseCode:
+          break;
+        case ResponseCodes.GetQuestionResponseCode:
+          break;
+        case ResponseCodes.LeaveGameResponseCode:
           break;
         //Handle unknown response code
         default:
@@ -313,11 +321,26 @@ const useClient = () => {
   }
 
   const leaveRoom = () => {
-    //console.log("Leaving room!");
     sendDataToServer(RequestCodes.LeaveRoomRequestCode, {});
   }
 
-  return { login, signup, logout, joinRoom, createRoom, getHighscores, getPersonalStatistics, getPlayersInRoom, getRooms, closeRoom, startGame, getRoomState, leaveRoom};
+  const getQuestion = () => {
+    sendDataToServer(RequestCodes.GetQuestionRequestCode, {});
+  }
+
+  const submitAnswer = (request: SubmitAnswerRequest) => {
+    sendDataToServer(RequestCodes.SubmitAnswerRequestCode, request);
+  }
+
+  const getGameResults = () => {
+    sendDataToServer(RequestCodes.GetGameResultsRequestCode, {});
+  }
+
+  const leaveGame = () => {
+    sendDataToServer(RequestCodes.LeaveGameRequestCode, {});
+  }
+
+  return { login, signup, logout, joinRoom, createRoom, getHighscores, getPersonalStatistics, getPlayersInRoom, getRooms, closeRoom, startGame, getRoomState, leaveRoom, getGameResults, submitAnswer, leaveGame, getQuestion };
 };
 
 export default useClient;

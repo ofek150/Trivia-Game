@@ -1,13 +1,12 @@
-import React, { useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ResponseContext } from "../contexts/ResponseContext";
+import { useResponse } from "../contexts/CustomHooks";
 import { IconButton, useTheme } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const GoBackBtn: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { setResponseMessage } = useContext(ResponseContext);
+  const { setResponseMessage } = useResponse();
   const theme = useTheme();
 
   const handleGoBack = () => {

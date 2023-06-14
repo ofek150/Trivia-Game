@@ -1,10 +1,6 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import useClient from "../services/client";
-import { CurrentRoomDataContext } from "../contexts/CurrentRoomDataContext";
-import { RoomListContext } from "../contexts/RoomListContext";
-import { SelectedRoomIdContext } from "../contexts/SelectedRoomContext";
-import { CurrentRoomStateContext } from "../contexts/CurrentRoomStateContext";
-import { UserContext } from "../contexts/UserContext";
+import { useUser, useRoomList, useCurrentRoomData, useCurrentRoomState, useSelectedRoomId } from "../contexts/CustomHooks";
 import WaitingRoom from "./WaitingRoom";
 import Game from "./Game";
 import { useNavigate } from "react-router-dom";
@@ -13,19 +9,15 @@ import { Container, useTheme } from "@mui/material";
 
 const Room: React.FC = () => {
   const theme = useTheme();
-  const { currentRoomData, setCurrentRoomData } = useContext(CurrentRoomDataContext);
-  const { currentRoomState } = useContext(CurrentRoomStateContext);
-  const { roomList } = useContext(RoomListContext);
+  const { currentRoomData, setCurrentRoomData } = useCurrentRoomData();
+  const { currentRoomState } = useCurrentRoomState();
+  const { roomList } = useRoomList();
   const { getRoomState  } = useClient();
-  const { selectedRoomId } = useContext(SelectedRoomIdContext);
-  const { username, isInRoom } = useContext(UserContext);
+  const { selectedRoomId } = useSelectedRoomId();
+  const { username, isInRoom } = useUser();
   const intervalId = useRef<number | undefined>(undefined);
   const navigate = useNavigate();
 
-
-  // useEffect(() => {
-  //   if (!currentRoomData) navigate("/main-menu");
-  // }, [currentRoomData]);
 
   const isRoomAdmin = () => {
     return currentRoomState?.players[0] === username;
@@ -64,7 +56,7 @@ const Room: React.FC = () => {
   }, [roomList]);
 
   //console.log("CurrentRoomData: ", currentRoomData, " CurrentRoomState: ", currentRoomState);
-  if (!currentRoomData || !currentRoomState) return <div><Loading /></div>;
+  if (!currentRoomData || !currentRoomState) return <Loading />;
 
   return (
     <Container

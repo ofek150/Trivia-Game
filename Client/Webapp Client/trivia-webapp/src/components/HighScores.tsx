@@ -1,10 +1,10 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect } from "react";
 import { Typography, Box, useTheme, Container } from "@mui/material";
-import { HighscoresContext } from "../contexts/HighscoresContext";
+import { useHighscores } from "../contexts/CustomHooks";
 import useClient from "../services/client";
 
 const HighScores: React.FC = () => {
-  const { Highscores } = useContext(HighscoresContext);
+  const { Highscores } = useHighscores();
   const { getHighscores } = useClient();
   const theme = useTheme();
 
@@ -41,7 +41,7 @@ const HighScores: React.FC = () => {
         </Typography>
 
         <ol>
-          {Object.entries(HighScores).map(([key, value], index) => {
+          {Object.entries(Highscores).map(([key, value], index) => {
             const [name, score] = String(value).split(": ");
             return (
               <li key={key}>

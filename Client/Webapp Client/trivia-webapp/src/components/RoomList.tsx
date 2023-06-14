@@ -1,18 +1,15 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ResponseContext } from "../contexts/ResponseContext";
 import useClient from "../services/client";
-import { RoomListContext } from "../contexts/RoomListContext";
-import { RoomData } from "../utils/types";
+import { useResponse, useRoomList, useUser } from "../contexts/CustomHooks";
 import { Container, Box, Button, Typography, useTheme } from "@mui/material";
 import GoBackBtn from "./GoBackBtn";
-import { UserContext } from "../contexts/UserContext";
 
 const RoomList: React.FC = () => {
-  const { roomList, setRoomList } = useContext(RoomListContext);
-  const { responseMessage, setResponseMessage } = useContext(ResponseContext);
+  const { roomList, setRoomList } = useRoomList();
+  const { responseMessage, setResponseMessage } = useResponse();
   const { joinRoom, getRooms, leaveRoom } = useClient();
-  const { isInRoom } = useContext(UserContext);
+  const { isInRoom } = useUser();
   const navigate = useNavigate();
   const theme = useTheme();
 

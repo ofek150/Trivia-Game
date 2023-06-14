@@ -1,14 +1,13 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { CurrentRoomDataContext } from "../contexts/CurrentRoomDataContext";
+import { useCurrentRoomData } from "../contexts/CustomHooks";
 
 const RoomNavigator: React.FC = () => {
   const navigate = useNavigate();
-  const { currentRoomData } = useContext(CurrentRoomDataContext);
+  const { currentRoomData } = useCurrentRoomData();
 
   useEffect(() => {
     if (currentRoomData) {
-      console.log("Navigator: currentRoomData: ", currentRoomData);
       navigate(`/rooms/${currentRoomData.roomId}`);
     }
   }, [currentRoomData]);
