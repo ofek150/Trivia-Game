@@ -165,3 +165,63 @@ std::vector<std::string> SqliteDataBase::getTopUserGrades() const
     }
     return userGrades;
 }
+
+std::vector<std::string> SqliteDataBase::getQuestions(const int amount) const
+{
+    std::vector<std::string> questions;
+    std::string sqlStatement = "SELECT QUESTIONS FROM QUESTIONS ORDER BY RANDOM() LIMIT " + std::to_string(amount) + ";";
+    auto callback = [](void* data, int argc, char** argv, char** azColName) -> int {
+        std::vector<std::string>* questionList = static_cast<std::vector<std::string>*>(data);
+        if (argc > 0) {
+            std::string question = argv[0];
+            questionList->push_back(question);
+        }
+        return 0;
+    };
+    char* errMessage = nullptr;
+    int res = sqlite3_exec(db, sqlStatement.c_str(), callback, &questions, &errMessage);
+    if (res != SQLITE_OK) {
+        std::cerr << errMessage << std::endl;
+    }
+    return questions;
+}
+
+std::vector<std::string> SqliteDataBase::getPossibleAnswers(const std::string& title) const
+{
+    std::vector<std::string> possibleAnswers;
+    std::string sqlStatement = "SELECT A, B, C, D FROM QUESTIONS WHERE QUESTIONS = '" + title + "';";
+    auto callback = [](void* data, int argc, char** argv, char** azColName) -> int {
+        std::vector<std::string>* answerList = static_cast<std::vector<std::string>*>(data);
+        for (int i = 0; i < argc; i++) {
+            std::string answer = argv[i];
+            answerList->push_back(answer);
+        }
+        return 0;
+    };
+    char* errMessage = nullptr;
+    int res = sqlite3_exec(db, sqlStatement.c_str(), callback, &possibleAnswers, &errMessage);
+    if (res != SQLITE_OK) {
+        std::cerr << errMessage << std::endl;
+    }
+
+    return possibleAnswers;
+}
+int SqliteDataBase::getAnswerIdByTitle(const std::string& title) const 
+{
+    int answerId = 0;
+    std::string sqlStatement = "SELECT ANSWER FROM QUESTIONS WHERE QUESTIONS = '" + title + "';";
+    auto callback = [](void* data, int argc, char** argv, char** azColName) -> int {
+        int* id = static_cast<int*>(data);
+        if (argc > 0) {
+            *id = std::atoi(argv[0]);
+        }
+        return 0;
+    };
+    char* errMessage = nullptr;
+    int res = sqlite3_exec(db, sqlStatement.c_str(), callback, &answerId, &errMessage);
+    if (res != SQLITE_OK) {
+        std::cerr << errMessage << std::endl;
+    }
+    return answerId;
+}
+

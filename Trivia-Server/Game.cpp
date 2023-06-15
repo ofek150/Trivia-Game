@@ -1,6 +1,6 @@
 #include "Game.h"
 
-Game::Game(const std::vector<Question>& questions, const std::vector<LoggedUser>& players) : m_questions(questions)
+Game::Game(const std::vector<Question>& questions, const std::vector<LoggedUser>& players, int gameId) : m_questions(questions), m_gameId(gameId)
 {
     try {
         m_currentQuestion = m_questions.at(0);
@@ -61,4 +61,14 @@ void Game::removePlayer(LoggedUser& user)
             ++it;
         }
     }
+}
+
+bool Game::areAllPlayersInactive() const {
+    for (const auto& pair : m_players) {
+        const GameData& gameData = pair.second;
+        if (gameData.isActive) {
+            return false;
+        }
+    }
+    return true;
 }

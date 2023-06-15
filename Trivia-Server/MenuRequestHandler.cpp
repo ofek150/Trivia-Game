@@ -169,7 +169,6 @@ RequestResult MenuRequestHandler::createRoom(const RequestInfo& requestInfo) con
 	requestResult.newHandler = m_handlerFactory.createRoomAdminRequestHandler(m_user.getUsername());
 	try {
 		std::vector<std::string> players;
-		int roomCount = m_roomManager.getRooms()->size();
 		CreateRoomRequest createRoomRequest = JsonRequestPacketDeserializer::getInstance().deserializeCreateRoomRequest(requestInfo.buffer);
 
 		RoomData roomData;
@@ -177,7 +176,7 @@ RequestResult MenuRequestHandler::createRoom(const RequestInfo& requestInfo) con
 		roomData.timePerQuestion = createRoomRequest.answerTimeout;
 		roomData.numOfQuestionsInGame = createRoomRequest.questionCount;
 		roomData.maxPlayers = createRoomRequest.maxUsers;
-		roomData.id = roomCount;
+		roomData.id = m_roomManager.getIdCounter();
 		roomData.isActive = 0;
 
 		m_roomManager.createRoom(m_user, roomData);

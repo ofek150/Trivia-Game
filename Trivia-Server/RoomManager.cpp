@@ -18,6 +18,7 @@ void RoomManager::createRoom(const LoggedUser& user, const RoomData& roomData)
 	std::lock_guard<std::mutex> rooms_lock(rooms_mutex);
 	m_rooms.emplace(roomData.id, Room(user, roomData));
 	m_rooms.at(roomData.id).addUser(user);
+	m_idCounter += 1;
 }
 
 void RoomManager::deleteRoom(unsigned int ID)
@@ -81,4 +82,9 @@ unsigned int RoomManager::getRoomIdByUser(const LoggedUser& user) const
 	}
 
 	throw std::exception("The user isn't in any room!");
+}
+
+unsigned int RoomManager::getIdCounter() const
+{
+	return m_idCounter;
 }
