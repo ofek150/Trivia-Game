@@ -1,5 +1,6 @@
 #include "MenuRequestHandler.h"
 #include "RoomMemberRequestHandler.h"
+#include "GameRequestHandler.h"
 
 bool RoomMemberRequestHandler::isRequestRelevant(const RequestInfo& requestInfo) const
 {
@@ -43,7 +44,7 @@ RequestResult RoomMemberRequestHandler::getRoomState(RequestInfo requestInfo) co
 {
 	RequestResult requestResult;
 	GetRoomStateResponse getRoomStateResponse;
-	requestResult.newHandler = m_handlerFactory.createRoomMemberRequestHandler(m_user.getUsername());
+
 	try {
 
 		unsigned int roomId = m_roomManager.getRoomIdByUser(m_user);
@@ -52,6 +53,10 @@ RequestResult RoomMemberRequestHandler::getRoomState(RequestInfo requestInfo) co
 		getRoomStateResponse.hasGameBegun = roomData.isActive;
 		getRoomStateResponse.answerTimeOut = roomData.timePerQuestion;
 		getRoomStateResponse.questionCount = roomData.numOfQuestionsInGame;
+		if (getRoomStateResponse.hasGameBegun)
+			requestResult.newHandler = m_handlerFactory.createGameRequestHandler(m_user.getUsername());
+		else 
+			requestResult.newHandler = m_handlerFactory.createRoomMemberRequestHandler(m_user.getUsername());
 		std::vector<std::string> players;
 		std::vector<LoggedUser> users = m_roomManager.getRoom(roomId).getAllUsers();
 		for (auto user : users)

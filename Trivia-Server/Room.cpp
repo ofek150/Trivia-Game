@@ -32,6 +32,7 @@ const unsigned int Room::getRoomState() const
 void Room::startGame()
 {
     m_metadata.isActive = true;
+    GameManager::getInstance().createGame(*this);
 }
 
 RoomData Room::getRoomData() const

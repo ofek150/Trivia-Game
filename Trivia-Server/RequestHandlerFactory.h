@@ -2,13 +2,14 @@
 #include "LoginManager.h"
 #include "SqliteDataBase.h"
 #include "StatisticsManager.h"
-#include "RoomManager.h";
+#include "RoomManager.h"
 #include "GameManager.h"
 
 class LoginRequestHandler;
 class MenuRequestHandler;
 class RoomAdminRequestHandler;
 class RoomMemberRequestHandler;
+class GameRequestHandler;
 
 class RequestHandlerFactory
 {
@@ -25,6 +26,7 @@ public:
     MenuRequestHandler* createMenuRequestHandler(const std::string& username) const;
     RoomAdminRequestHandler* createRoomAdminRequestHandler(const std::string& username) const;
     RoomMemberRequestHandler* createRoomMemberRequestHandler(const std::string& username) const;
+    GameRequestHandler* createGameRequestHandler(const std::string& username) const;
 
 private:
     // Private constructor to prevent instantiation from outside

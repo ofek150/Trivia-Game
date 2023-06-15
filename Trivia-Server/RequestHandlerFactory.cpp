@@ -3,6 +3,7 @@
 #include "LoginRequestHandler.h"
 #include "RoomAdminRequestHandler.h"
 #include "RoomMemberRequestHandler.h"
+#include "GameRequestHandler.h"
 
 LoginRequestHandler* RequestHandlerFactory::createLoginRequestHandler() const
 {
@@ -28,17 +29,8 @@ RoomMemberRequestHandler* RequestHandlerFactory::createRoomMemberRequestHandler(
     return requestHandler;
 }
 
-LoginManager& RequestHandlerFactory::getLoginManager()
+GameRequestHandler* RequestHandlerFactory::createGameRequestHandler(const std::string& username) const
 {
-    return m_loginManager;
-}
-
-RoomManager& RequestHandlerFactory::getRoomManager()
-{
-    return m_roomManager;
-}
-
-StatisticsManager& RequestHandlerFactory::getStatisticsManager()
-{
-    return m_statisticsManager;
+    GameRequestHandler* requestHandler = new GameRequestHandler(username);
+    return requestHandler;
 }

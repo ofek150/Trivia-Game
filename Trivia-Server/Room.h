@@ -3,6 +3,7 @@
 #include "RoomData.h"
 #include <vector>
 #include <mutex>
+#include "GameManager.h"
 
 class Room
 {
