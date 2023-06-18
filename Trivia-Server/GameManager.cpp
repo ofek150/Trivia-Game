@@ -1,6 +1,6 @@
 #include "GameManager.h"
 
-const Game& GameManager::createGame(const Room& room)
+Game& GameManager::createGame(const Room& room)
 {
     std::vector<std::string> questionsTitle = m_database->getQuestions(room.getRoomData().numOfQuestionsInGame);
     std::vector<Question> questions;
@@ -29,10 +29,10 @@ void GameManager::deleteGame(const int gameId) {
     }
 }
 
-const Game& GameManager::getGameById(const int gameId) const
+Game& GameManager::getGameById(const int gameId)
 {
-    for (const auto& game : m_games) 
+    for (auto& game : m_games) 
         if (game.getGameId() == gameId) 
             return game;
-    throw std::runtime_error("Game not found with ID: " + std::to_string(gameId));
+    throw std::exception(("Game not found with ID: " + std::to_string(gameId)).c_str());
 }

@@ -3,7 +3,9 @@
 Game::Game(const std::vector<Question>& questions, const std::vector<LoggedUser>& players, int gameId) : m_questions(questions), m_gameId(gameId)
 {
     try {
+        m_total_questions = m_questions.size();
         m_currentQuestion = m_questions.at(0);
+        m_question_counter = 1;
         if (!m_questions.empty()) {
             m_questions.erase(m_questions.begin());
         }
@@ -23,7 +25,7 @@ Game::Game(const std::vector<Question>& questions, const std::vector<LoggedUser>
 }
 
 
-Question Game::getQuestionForUser(const LoggedUser& user)
+Question Game::getCurrentQuestion()
 {
     return m_currentQuestion;
 }
@@ -40,6 +42,22 @@ void Game::submitAnswer(const LoggedUser& user, int answerId)
     }
     //need to add avg time
     m_players[user].avgAnswerTime = 0;
+    if (m_submited_players_counter == m_players.size()) {
+        if (m_question_counter != m_total_questions)
+        {
+            if (!m_questions.empty()) {
+                m_currentQuestion = m_questions.at(0);
+                m_question_counter += 1;
+                if (!m_questions.empty()) {
+                    m_questions.erase(m_questions.begin());
+                }
+            }
+            return;
+        }
+        std::vector<std::string> emptyVector;
+        m_currentQuestion = Question("", emptyVector, 0);
+        
+    }
 }
 
 int Game::getGameId() const
@@ -49,18 +67,11 @@ int Game::getGameId() const
 
 void Game::removePlayer(LoggedUser& user)
 {
-    for (auto it = m_players.begin(); it != m_players.end(); )
-    {
-        if (it->first.getUsername() == user.getUsername())
-        {
-            it->second.isActive = false;
-            break;
-        }
-        else
-        {
-            ++it;
-        }
-    }
+    std::lock_guard<std::mutex> players_lock(players_mutex);
+    auto it = std::find_if(m_players.begin(), m_players.end(),
+        [&](const LoggedUser& u) { return u.getUsername() == user.getUsername(); });
+
+    if (it != m_players.end()) m_users.erase(it);
 }
 
 bool Game::areAllPlayersInactive() const {

@@ -26,7 +26,7 @@ public:
     MenuRequestHandler* createMenuRequestHandler(const std::string& username) const;
     RoomAdminRequestHandler* createRoomAdminRequestHandler(const std::string& username) const;
     RoomMemberRequestHandler* createRoomMemberRequestHandler(const std::string& username) const;
-    GameRequestHandler* createGameRequestHandler(const std::string& username) const;
+    GameRequestHandler* createGameRequestHandler(const std::string& username, Game& game) const;
 
 private:
     // Private constructor to prevent instantiation from outside

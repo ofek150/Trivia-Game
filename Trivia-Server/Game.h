@@ -8,7 +8,7 @@ class Game
 {
 public:
 	Game(const std::vector<Question>& questions, const std::vector<LoggedUser>& players, int gameId);
-	Question getQuestionForUser(const LoggedUser& user);
+	Question getCurrentQuestion();
 	void submitAnswer(const LoggedUser& user, int answerId);
 	int getGameId() const;
 	void removePlayer(LoggedUser& user);
@@ -18,7 +18,9 @@ private:
 	std::vector<Question> m_questions;
 	std::map<LoggedUser, GameData> m_players;
 	int m_gameId;
-	int submited_players_counter;
-	std::mutex user_mutex;
+	int m_submited_players_counter;
+	int m_total_questions;
+	int m_question_counter;
+	std::mutex players_mutex;
 };
 

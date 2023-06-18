@@ -29,8 +29,8 @@ RoomMemberRequestHandler* RequestHandlerFactory::createRoomMemberRequestHandler(
     return requestHandler;
 }
 
-GameRequestHandler* RequestHandlerFactory::createGameRequestHandler(const std::string& username) const
+GameRequestHandler* RequestHandlerFactory::createGameRequestHandler(const std::string& username, Game& game) const
 {
-    GameRequestHandler* requestHandler = new GameRequestHandler(username);
+    GameRequestHandler* requestHandler = new GameRequestHandler(username, game);
     return requestHandler;
 }

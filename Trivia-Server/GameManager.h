@@ -16,9 +16,9 @@ public:
 		static GameManager instance;
 		return instance;
 	}
-	const Game& createGame(const Room& room);
+	Game& createGame(const Room& room);
 	void deleteGame(const int gameId);
-	const Game& getGameById(const int gameId) const;
+	Game& getGameById(const int gameId);
 
 private:
 	IDatabase* m_database;

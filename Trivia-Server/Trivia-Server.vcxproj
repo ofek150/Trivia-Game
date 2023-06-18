@@ -55,7 +55,6 @@
     <ClCompile Include="Communicator.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameManager.cpp" />
-    <ClCompile Include="GameRequestHandler .cpp" />
     <ClCompile Include="GameRequestHandler.cpp" />
     <ClCompile Include="IRequestHandler.cpp" />
     <ClCompile Include="JsonRequestPacketDeserializer.cpp" />

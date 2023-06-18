@@ -54,7 +54,7 @@ RequestResult RoomMemberRequestHandler::getRoomState(RequestInfo requestInfo) co
 		getRoomStateResponse.answerTimeOut = roomData.timePerQuestion;
 		getRoomStateResponse.questionCount = roomData.numOfQuestionsInGame;
 		if (getRoomStateResponse.hasGameBegun)
-			requestResult.newHandler = m_handlerFactory.createGameRequestHandler(m_user.getUsername());
+			requestResult.newHandler = m_handlerFactory.createGameRequestHandler(m_user.getUsername(), GameManager::getInstance().createGame(m_roomManager.getRoom(roomId)));
 		else 
 			requestResult.newHandler = m_handlerFactory.createRoomMemberRequestHandler(m_user.getUsername());
 		std::vector<std::string> players;
