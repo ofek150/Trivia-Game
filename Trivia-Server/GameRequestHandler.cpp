@@ -1,6 +1,6 @@
 #include "GameRequestHandler.h"
 #include "RequestCodes.h"
-
+#include "MenuRequestHandler.h"
 
 
 bool GameRequestHandler::isRequestRelevant(const RequestInfo& requestInfo) const
@@ -45,13 +45,12 @@ RequestResult GameRequestHandler::getQuestion(const RequestInfo& requestInfo) co
 
 RequestResult GameRequestHandler::submitAnswer(const RequestInfo& requestInfo) const
 {
-	/*struct SubmitAnswerResponse {
-    unsigned int status;
-    unsigned int correctsAnswerId;
-};*/
+
 	RequestResult requestResult;
 	SubmitAnswerResponse submitAnswerResponse;
 	try {
+		SubmitAnswerRequest submitAnswerRequest = JsonRequestPacketDeserializer::getInstance().deserializeSubmitAnswerRequest(requestInfo.buffer);
+		m_game.submitAnswer(m_user, submitAnswerRequest.answerId);
 		submitAnswerResponse.correctsAnswerId = m_game.getCurrentQuestion().getCorrectAnswerId();
 		submitAnswerResponse.status = StatusCodes::SUCCESSFUL;
 		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(submitAnswerResponse);
@@ -69,7 +68,7 @@ RequestResult GameRequestHandler::getGameResults(const RequestInfo& requestInfo)
 	RequestResult requestResult;
 	GetGameResultsResponse getGameResultsResponse;
 	try {
-		// TO DO
+		getGameResultsResponse.results = m_game.getPlayersResults();
 		getGameResultsResponse.status = StatusCodes::SUCCESSFUL;
 		requestResult.newHandler = m_handlerFactory.createGameRequestHandler(m_user.getUsername(), m_game);
 	}
@@ -80,7 +79,7 @@ RequestResult GameRequestHandler::getGameResults(const RequestInfo& requestInfo)
 	return requestResult;
 }
 
-RequestResult GameRequestHandler::leaveGame(const RequestInfo& requestInfo) const
+RequestResult GameRequestHandler::leaveGame(const RequestInfo& requestInfo)
 {
 	RequestResult requestResult;
 	LeaveGameResponse leaveGameResponse;
@@ -88,7 +87,8 @@ RequestResult GameRequestHandler::leaveGame(const RequestInfo& requestInfo) cons
 		m_game.removePlayer(m_user);
 		leaveGameResponse.status = StatusCodes::SUCCESSFUL;
 		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(leaveGameResponse);
-		requestResult.newHandler = m_handlerFactory.MenuRequestHandler(m_user.getUsername());
+		requestResult.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
+
 	}
 	catch (const std::exception& e)
 	{ 

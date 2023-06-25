@@ -5,6 +5,7 @@
 #include "sqlite3.h"
 #include <io.h>
 #include <vector>
+#include "GameData.h"
 
 class SqliteDataBase : public IDatabase
 {
@@ -31,7 +32,7 @@ public:
     std::vector<std::string> getQuestions(const int amount) const override;
     std::vector<std::string> getPossibleAnswers(const std::string& title) const override;
     int getAnswerIdByTitle(const std::string& title) const override;
-
+    void submitGameStats(const unsigned int gameId, const GameData& data)const override;
 
 private:
     sqlite3* db;

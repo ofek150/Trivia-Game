@@ -54,6 +54,12 @@ void Game::submitAnswer(const LoggedUser& user, int answerId)
             }
             return;
         }
+        else
+        {
+            for (const auto& pair : m_players) {
+                SqliteDataBase::getInstance().submitGameStats(m_gameId, pair.second);
+            } 
+        }
         std::vector<std::string> emptyVector;
         m_currentQuestion = Question("", emptyVector, 0);
         
@@ -65,13 +71,12 @@ int Game::getGameId() const
     return m_gameId;
 }
 
-void Game::removePlayer(LoggedUser& user)
+void Game::removePlayer(const LoggedUser& user)
 {
     std::lock_guard<std::mutex> players_lock(players_mutex);
     auto it = std::find_if(m_players.begin(), m_players.end(),
-        [&](const LoggedUser& u) { return u.getUsername() == user.getUsername(); });
-
-    if (it != m_players.end()) m_users.erase(it);
+        [&](LoggedUser& u) { return u.getUsername() == user.getUsername(); });
+    if (it != m_players.end()) it->second.isActive = false;
 }
 
 bool Game::areAllPlayersInactive() const {
@@ -82,4 +87,19 @@ bool Game::areAllPlayersInactive() const {
         }
     }
     return true;
+}
+
+std::vector<PlayerResults> Game::getPlayersResults()
+{
+    std::vector<PlayerResults> results;
+    for (const auto& player : m_players)
+    {
+        PlayerResults result;
+        result.username = player.first.getUsername();
+        result.correctAnswerCount = player.second.correctAnswerCount;
+        result.wrongAnswerCount = player.second.wrongAnswerCount;
+        result.averageAnswerTime = player.second.avgAnswerTime;
+        results.emplace_back(result);
+    }
+    return results;
 }

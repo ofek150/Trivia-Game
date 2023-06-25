@@ -4,6 +4,9 @@
 #include <map>
 #include "LoggedUser.h"
 #include <mutex>
+#include "Responses.h"
+#include "Requests.h"
+
 class Game
 {
 public:
@@ -11,8 +14,9 @@ public:
 	Question getCurrentQuestion();
 	void submitAnswer(const LoggedUser& user, int answerId);
 	int getGameId() const;
-	void removePlayer(LoggedUser& user);
+	void removePlayer(const LoggedUser& user);
 	bool areAllPlayersInactive() const;
+	std::vector<PlayerResults> getPlayersResults();
 private:
 	Question m_currentQuestion;
 	std::vector<Question> m_questions;

@@ -16,6 +16,13 @@ struct GetPlayersInRoomRequest {
 	unsigned int roomId;
 };
 
+struct PlayerResults {
+	std::string username;
+	unsigned int correctAnswerCount;
+	unsigned int wrongAnswerCount;
+	unsigned int averageAnswerTime;
+};
+
 struct JoinRoomRequest {
 	unsigned int roomId;
 };

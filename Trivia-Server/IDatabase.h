@@ -19,6 +19,6 @@ public:
 	virtual std::vector<std::string> getQuestions(const int amount) const = 0;
 	virtual std::vector<std::string> getPossibleAnswers(const std::string& title) const = 0;
 	virtual int getAnswerIdByTitle(const std::string& title) const = 0;
-
+	virtual void submitGameStats(const unsigned int gameId, const GameData& data) const = 0;
 };
 
