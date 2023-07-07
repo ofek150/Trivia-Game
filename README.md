@@ -1,92 +1,77 @@
-# Trivia
+# Trivia Game (Magshimim Project)
 
+This project is an interactive multiplayer trivia game developed as part of the Magshimim program. It was collaboratively created by a duo, leveraging React, TypeScript, and Material UI for the frontend, and C++ for the backend. The game establishes a connection between the frontend and backend using a proxy to communicate over websockets.
+## Features
 
+* Extensive trivia question database: The game includes a comprehensive collection of trivia questions from various categories, ensuring a diverse and engaging gameplay experience.
+* Multiplayer mode: Challenge your friends in a trivia match and see who can answer the most questions correctly. Compete in real-time to test your knowledge against others.
+* Interactive and intuitive user interface: The frontend provides a visually appealing and user-friendly interface, designed with Material UI components, making it easy and enjoyable to play the game.
+* Real-time multiplayer functionality: Engage in thrilling trivia battles with your friends by connecting to the backend server via websockets. The backend handles the game logic and facilitates smooth communication between players.
+* Score tracking and leaderboard: Keep track of your scores and compare them with other players on the leaderboard. Aim for the top spot and showcase your trivia expertise.
+* Proxy connection to backend: Due to limitations with websockets connecting to normal sockets, the frontend utilizes a proxy to establish a connection with the backend server. This ensures seamless communication and a reliable gaming experience.
 
-## Getting started
+## Screenshots
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## Getting Started
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+To get started with the trivia game project, follow these steps:
 
-## Add your files
+1. **Clone the repository:**
+   
+       git clone <repository-url>
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+3. **Build the backend server code**:
+        Open the backend project in a C++ development environment (e.g., Visual Studio).
+        Build the solution to compile the server code.
 
-```
-cd existing_repo
-git remote add origin https://gitlab.com/leinad1501/trivia.git
-git branch -M main
-git push -uf origin main
-```
+4. **Build the frontend client code**:
+        Open the frontend project in a code editor (e.g., Visual Studio Code).
+        Install the necessary dependencies by running the following command:
+   
+         npm install
+   
+   Build the project by running the following command:
 
-## Integrate with your tools
+        npm run build
+        
+5. **Start the backend server**:
+        Run the compiled server application to start the backend.
+        The backend server will listen for incoming connections from clients.
 
-- [ ] [Set up project integrations](https://gitlab.com/leinad1501/trivia/-/settings/integrations)
+6. **Start the proxy server**:
 
-## Collaborate with your team
+       node proxy.js
+   
+7. **Start the frontend client**:
+        Run the compiled frontend application to start the client.
+        The client will establish a connection with the backend server through the proxy.
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+8. **Play the game**:
+        Once the client is connected to the server, you can start playing the trivia game.
 
-## Test and Deploy
+## Dependencies
 
-Use the built-in continuous integration in GitLab.
+The project has the following dependencies:
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+    React
+    TypeScript
+    Material UI
+    C++ development environment (e.g., Visual Studio)
+    Git (for cloning the repository)
+    Node.js and npm (for frontend development)
 
-***
+Please ensure that you have the necessary development environments and tools installed before proceeding.
+License
 
-# Editing this README
+The project is licensed under the MIT License. Feel free to use, modify, and distribute the code as per the terms of the license.
+Contact
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+We appreciate your interest in the trivia game project! If you have any questions or suggestions, please feel free to reach out to us:
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+## Contact Us
+* Ofek Ifrah:
+    * ofek080306@gmail.com
+* Daniel Mordukhovich:
+    * daniel.mordo06@gmail.com
 
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+We look forward to hearing from you and hope you enjoy playing the trivia game!
