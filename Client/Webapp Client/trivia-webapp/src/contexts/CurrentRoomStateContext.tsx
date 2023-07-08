@@ -1,4 +1,4 @@
-import React, { createContext, useState, ReactNode, useEffect } from "react";
+import React, { createContext, useState, ReactNode, useContext } from "react";
 import { RoomState } from "../utils/types";
 
 interface CurrentRoomStateContextProps {
@@ -19,10 +19,6 @@ interface RoomStateProviderProps {
 
 export const CurrentRoomStateProvider: React.FC<RoomStateProviderProps> = ({ children }) => {
   const [currentRoomState, setCurrentRoomState] = useState<RoomState | null>(initialCurrentRoomState);
-
-  useEffect(() => {
-    console.log(currentRoomState);
-  }, [currentRoomState])
 
   const currentRoomStateContextValue = {
     currentRoomState: currentRoomState,

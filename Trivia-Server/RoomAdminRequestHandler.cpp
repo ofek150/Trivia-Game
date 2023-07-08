@@ -4,7 +4,7 @@
 bool RoomAdminRequestHandler::isRequestRelevant(const RequestInfo& requestInfo) const
 {
     return requestInfo.code == RequestCodes::CloseRoomRequestCode || requestInfo.code == RequestCodes::StartGameRequestCode
-        || requestInfo.code == RequestCodes::GetRoomStateRequestCode;
+        || requestInfo.code == RequestCodes::GetRoomStateRequestCode || requestInfo.code == RequestCodes::CloseRoomRequestCode;
 }
 
 RequestResult RoomAdminRequestHandler::handleRequest(const RequestInfo& requestInfo) const
@@ -17,6 +17,8 @@ RequestResult RoomAdminRequestHandler::handleRequest(const RequestInfo& requestI
 		return startGame(requestInfo);
 	case RequestCodes::GetRoomStateRequestCode:
 		return getRoomState(requestInfo);
+	case RequestCodes::LeaveRoomRequestCode:
+		return closeRoom(requestInfo);
 	}
 }
 

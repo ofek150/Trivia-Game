@@ -1,4 +1,4 @@
-import React, { createContext, useState,  ReactNode } from 'react';
+import React, { createContext, useState,  ReactNode, useEffect } from 'react';
 
 export const HighscoresContext = createContext<{
   Highscores: Object;
@@ -19,6 +19,10 @@ interface HighscoresProviderProps {
       Highscores: Highscores,
       setHighscores: setHighscores
     };
+
+    useEffect(() => {
+      console.log("Mounting HighscoresContext");
+    } ,[]);
 
     return (
       <HighscoresContext.Provider value={HighscoresContextValue}>

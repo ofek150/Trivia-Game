@@ -1,10 +1,8 @@
 import React from "react";
-import RoomList from "../components/RoomList";
-import { Box, useTheme } from "@mui/material";
+import { CircularProgress, Box, useTheme } from "@mui/material";
 
-const RoomListPage: React.FC = () => {
+const Loading: React.FC = () => {
   const theme = useTheme();
-
   return (
     <Box
       sx={{
@@ -12,12 +10,12 @@ const RoomListPage: React.FC = () => {
         justifyContent: "center",
         alignItems: "center",
         height: "100vh",
-        backgroundColor: theme.palette.background.default,
+        background: theme.palette.background.default
       }}
     >
-      <RoomList />
+      <CircularProgress />
     </Box>
   );
 };
 
-export default RoomListPage;
+export default Loading;

@@ -31,16 +31,20 @@ const std::vector<unsigned char> JsonRequestPacketSerializer::serializeResponse(
 
     json_data["status"] = response.status;
     json_data["Rooms"] = {};  // Initialize "Rooms" as an empty array
-
+    int count = 0;
+    
     for (const auto& room : response.rooms)
     {
         nlohmann::json room_data;
+        room_data["roomId"] = room.id;
         room_data["isActive"] = room.isActive;
         room_data["timePerQuestion"] = room.timePerQuestion;
         room_data["numOfQuestionsInGame"] = room.numOfQuestionsInGame;
         room_data["maxPlayers"] = room.maxPlayers;
         room_data["name"] = room.name;
-        json_data["Rooms"][room.id] = room_data;
+
+        json_data["Rooms"][count] = room_data;
+        count++;
 
        //json_data["Rooms"].push_back(room_data);
     }
