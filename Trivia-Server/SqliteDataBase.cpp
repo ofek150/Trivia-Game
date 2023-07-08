@@ -21,6 +21,30 @@ int callbackDouble(void* data, int argc, char** argv, char** azColName)
     return 0;
 }
 
+int answerCallback(void* data, int argc, char** argv, char** azColName)
+{
+    std::vector<int>* answers = static_cast<std::vector<int>*>(data);
+    if (argc > 0) {
+        int answer = std::atoi(argv[0]);
+        answers->emplace_back(answer);
+    }
+    return 0;
+}
+
+int possibleAnswersCallback(void* data, int argc, char** argv, char** azColName)
+{
+    std::vector<std::vector<std::string>>* questionAnswers = static_cast<std::vector<std::vector<std::string>>*>(data);
+    if (argc == 6) {
+        std::vector<std::string> answers;
+        answers.push_back(argv[2]);
+        answers.push_back(argv[3]);
+        answers.push_back(argv[4]);
+        answers.push_back(argv[5]);
+        questionAnswers->push_back(answers);
+    }
+    return 0;
+}
+
 bool SqliteDataBase::open()
 {
     std::string dbFileName = "Database/TriviaDB.sqlite";
@@ -164,4 +188,28 @@ std::vector<std::string> SqliteDataBase::getTopUserGrades() const
         std::cerr << errMessage << std::endl;
     }
     return userGrades;
+}
+
+std::vector<std::string> SqliteDataBase::getCorrectAnswers()
+{
+    std::vector<int> correctAnswersID;
+    std::string sqlStatement = "SELECT ANSWER FROM QUESTIONS;";
+    char* errMessage = nullptr;
+    int res = sqlite3_exec(db, sqlStatement.c_str(), answerCallback, &correctAnswersID, &errMessage);
+
+    std::vector<std::vector<std::string>> questionAnswers;
+    sqlStatement = "SELECT A, B, C, D FROM QUESTIONS;";
+    errMessage = nullptr;
+    res = sqlite3_exec(db, sqlStatement.c_str(), possibleAnswersCallback, &questionAnswers, &errMessage);
+
+    std::vector<std::string> rCorrectAnswers;
+    for (int i = 0; i < correctAnswersID.size(); i++) {
+        int answerId = correctAnswersID[i] - 1; // Subtract 1 to match array index, in the db its 1-4
+        if (answerId >= 0 && answerId < 4 && i < questionAnswers.size()) {
+            std::vector<std::string>& possibleAnswers = questionAnswers[i];
+            rCorrectAnswers.emplace_back(possibleAnswers[answerId]);
+        }
+    }
+
+    return rCorrectAnswers;
 }
