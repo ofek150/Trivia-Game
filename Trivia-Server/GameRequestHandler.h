@@ -16,7 +16,7 @@ public:
     RequestResult getQuestion(const RequestInfo& requestInfo) const;
     RequestResult submitAnswer(const RequestInfo& requestInfo) const;
     RequestResult getGameResults(const RequestInfo& requestInfo) const;
-    RequestResult leaveGame(const RequestInfo& requestInfo);
+    RequestResult leaveGame(const RequestInfo& requestInfo) const;
 
 private:
     LoggedUser m_user;

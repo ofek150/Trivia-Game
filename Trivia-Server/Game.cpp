@@ -1,6 +1,6 @@
 #include "Game.h"
 
-Game::Game(const std::vector<Question>& questions, const std::vector<LoggedUser>& players, int gameId) : m_questions(questions), m_gameId(gameId)
+Game::Game(const std::vector<Question>& questions, const std::vector<LoggedUser>& players, int gameId, std::string category) : m_questions(questions), m_gameId(gameId), m_category(category)
 {
     try {
         m_total_questions = m_questions.size();
@@ -57,7 +57,7 @@ void Game::submitAnswer(const LoggedUser& user, int answerId)
         else
         {
             for (const auto& pair : m_players) {
-                SqliteDataBase::getInstance().submitGameStats(m_gameId, pair.second);
+                SqliteDataBase::getInstance().submitGameStats(pair.first.getUsername(), pair.second);
             } 
         }
         std::vector<std::string> emptyVector;

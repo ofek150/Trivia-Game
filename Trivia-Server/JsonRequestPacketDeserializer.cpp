@@ -62,6 +62,7 @@ CreateRoomRequest JsonRequestPacketDeserializer::deserializeCreateRoomRequest(co
         request.maxUsers = json_data["maxUsers"].get<unsigned int>();
         request.questionCount = json_data["questionCount"].get<unsigned int>();
         request.answerTimeout = json_data["answerTimeout"].get<unsigned int>();
+        request.category = json_data["category"].get<std::string>();
     }
 
     return request;

@@ -79,7 +79,7 @@ RequestResult GameRequestHandler::getGameResults(const RequestInfo& requestInfo)
 	return requestResult;
 }
 
-RequestResult GameRequestHandler::leaveGame(const RequestInfo& requestInfo)
+RequestResult GameRequestHandler::leaveGame(const RequestInfo& requestInfo) const
 {
 	RequestResult requestResult;
 	LeaveGameResponse leaveGameResponse;

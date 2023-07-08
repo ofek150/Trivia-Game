@@ -40,6 +40,7 @@ const std::vector<unsigned char> JsonRequestPacketSerializer::serializeResponse(
         room_data["numOfQuestionsInGame"] = room.numOfQuestionsInGame;
         room_data["maxPlayers"] = room.maxPlayers;
         room_data["name"] = room.name;
+        room_data["category"] = room.category;
         json_data["Rooms"][room.id] = room_data;
 
        //json_data["Rooms"].push_back(room_data);

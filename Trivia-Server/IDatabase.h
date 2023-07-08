@@ -16,9 +16,9 @@ public:
 	virtual int getNumOfCorrectAnswers(const std::string username) = 0;
 	virtual double getPlayerAverageAnswerTime(const std::string username) = 0;
 	virtual std::vector<std::string> getTopUserGrades() const = 0;
-	virtual std::vector<std::string> getQuestions(const int amount) const = 0;
+	virtual std::vector<std::string> getQuestions(const int amount, std::string category) const = 0;
 	virtual std::vector<std::string> getPossibleAnswers(const std::string& title) const = 0;
 	virtual int getAnswerIdByTitle(const std::string& title) const = 0;
-	virtual void submitGameStats(const unsigned int gameId, const GameData& data) const = 0;
+	virtual void submitGameStats(std::string username, const GameData& data) const = 0;
 };
 

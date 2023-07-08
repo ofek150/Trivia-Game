@@ -32,6 +32,7 @@ struct CreateRoomRequest {
 	unsigned int maxUsers;
 	unsigned int questionCount;
 	unsigned int answerTimeout;
+	std::string category;
 };
 
 struct SubmitAnswerRequest

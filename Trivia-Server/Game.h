@@ -10,7 +10,7 @@
 class Game
 {
 public:
-	Game(const std::vector<Question>& questions, const std::vector<LoggedUser>& players, int gameId);
+	Game(const std::vector<Question>& questions, const std::vector<LoggedUser>& players, int gameId, std::string category);
 	Question getCurrentQuestion();
 	void submitAnswer(const LoggedUser& user, int answerId);
 	int getGameId() const;
@@ -26,5 +26,6 @@ private:
 	int m_total_questions;
 	int m_question_counter;
 	std::mutex players_mutex;
+	std::string m_category;
 };
 

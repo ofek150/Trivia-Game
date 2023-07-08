@@ -29,10 +29,10 @@ public:
     int getNumOfCorrectAnswers(const std::string username) override;
     double getPlayerAverageAnswerTime(const std::string username) override;
     std::vector<std::string> getTopUserGrades() const override;
-    std::vector<std::string> getQuestions(const int amount) const override;
+    std::vector<std::string> getQuestions(const int amount, std::string category) const override;
     std::vector<std::string> getPossibleAnswers(const std::string& title) const override;
     int getAnswerIdByTitle(const std::string& title) const override;
-    void submitGameStats(const unsigned int gameId, const GameData& data)const override;
+    void submitGameStats(std::string username, const GameData& data) const override;
 
 private:
     sqlite3* db;

@@ -166,10 +166,10 @@ std::vector<std::string> SqliteDataBase::getTopUserGrades() const
     return userGrades;
 }
 
-std::vector<std::string> SqliteDataBase::getQuestions(const int amount) const
+std::vector<std::string> SqliteDataBase::getQuestions(const int amount, std::string category) const
 {
     std::vector<std::string> questions;
-    std::string sqlStatement = "SELECT QUESTIONS FROM QUESTIONS ORDER BY RANDOM() LIMIT " + std::to_string(amount) + ";";
+    std::string sqlStatement = "SELECT QUESTIONS FROM QUESTIONS WHERE CATEGORY = '" + category + "' ORDER BY RANDOM() LIMIT " + std::to_string(amount) + ";";
     auto callback = [](void* data, int argc, char** argv, char** azColName) -> int {
         std::vector<std::string>* questionList = static_cast<std::vector<std::string>*>(data);
         if (argc > 0) {
@@ -225,3 +225,17 @@ int SqliteDataBase::getAnswerIdByTitle(const std::string& title) const
     return answerId;
 }
 
+void SqliteDataBase::submitGameStats(std::string username, const GameData& data) const
+{
+    std::string sqlStatement = "UPDATE STATISTICS SET NUM_OF_GAMES = NUM_OF_GAMES + 1, "
+        "AVG_TIME = ((AVG_TIME * NUM_OF_GAMES) + " + std::to_string(data.avgAnswerTime) + ") / (NUM_OF_GAMES + 1), "
+        "CORRECT_ANSWERS = CORRECT_ANSWERS + " + std::to_string(data.correctAnswerCount) + ", "
+        "WRONG_ANSWERS = WRONG_ANSWERS + " + std::to_string(data.wrongAnswerCount) + " "
+        "WHERE USERNAME = '" + username + "';";
+
+    char* errMessage = nullptr;
+    int res = sqlite3_exec(db, sqlStatement.c_str(), nullptr, nullptr, &errMessage);
+    if (res != SQLITE_OK) {
+        std::cerr << errMessage << std::endl;
+    }
+}

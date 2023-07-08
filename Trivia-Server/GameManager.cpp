@@ -2,7 +2,7 @@
 
 Game& GameManager::createGame(const Room& room)
 {
-    std::vector<std::string> questionsTitle = m_database->getQuestions(room.getRoomData().numOfQuestionsInGame);
+    std::vector<std::string> questionsTitle = m_database->getQuestions(room.getRoomData().numOfQuestionsInGame, room.getRoomData().category);
     std::vector<Question> questions;
     for (int i = 0; i < questionsTitle.size(); i++) {
         Question q(questionsTitle[i], m_database->getPossibleAnswers(questionsTitle[i]), m_database->getAnswerIdByTitle(questionsTitle[i]));
@@ -12,11 +12,10 @@ Game& GameManager::createGame(const Room& room)
     for (const auto& player : room.getAllUsers()) {
         newGamePlayers.emplace_back(player);
     }
-    Game newGame(questions, newGamePlayers, room.getRoomData().id);
+    Game newGame(questions, newGamePlayers, room.getRoomData().id, room.getRoomData().category);
     m_games.emplace_back(newGame);
-    return getGameById(room.getRoomData().id);//do it in room 
+    return getGameById(room.getRoomData().id);
 }
-
 void GameManager::deleteGame(const int gameId) {
     auto it = std::find_if(m_games.begin(), m_games.end(), [gameId](const Game& game) {
         return game.getGameId() == gameId;

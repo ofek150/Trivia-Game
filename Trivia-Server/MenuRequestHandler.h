@@ -25,6 +25,8 @@ private:
     RequestResult joinRoom(const RequestInfo& requestInfo) const;
     RequestResult createRoom(const RequestInfo& requestInfo) const;
 
+    bool isValidCategory(const std::string& targetCategory) const;
+
     LoggedUser m_user;
     RequestHandlerFactory& m_handlerFactory;
     RoomManager& m_roomManager;

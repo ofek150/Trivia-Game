@@ -171,6 +171,8 @@ RequestResult MenuRequestHandler::createRoom(const RequestInfo& requestInfo) con
 		std::vector<std::string> players;
 		CreateRoomRequest createRoomRequest = JsonRequestPacketDeserializer::getInstance().deserializeCreateRoomRequest(requestInfo.buffer);
 
+		if(!isValidCategory) throw std::exception("Invalid category!");
+
 		RoomData roomData;
 		roomData.name = createRoomRequest.roomName;
 		roomData.timePerQuestion = createRoomRequest.answerTimeout;
@@ -178,6 +180,7 @@ RequestResult MenuRequestHandler::createRoom(const RequestInfo& requestInfo) con
 		roomData.maxPlayers = createRoomRequest.maxUsers;
 		roomData.id = m_roomManager.getIdCounter();
 		roomData.isActive = 0;
+		roomData.category = createRoomRequest.category;
 
 		m_roomManager.createRoom(m_user, roomData);
 		createRoomResponse.status = StatusCodes::SUCCESSFUL;
@@ -191,4 +194,11 @@ RequestResult MenuRequestHandler::createRoom(const RequestInfo& requestInfo) con
 	}
 
 	return requestResult;
+}
+
+bool MenuRequestHandler::isValidCategory(const std::string& targetCategory) const
+{
+	const std::vector<std::string> categories = { "General", "Geography", "Sports" };
+	auto it = std::find(categories.begin(), categories.end(), targetCategory);
+    return it != categories.end();
 }
