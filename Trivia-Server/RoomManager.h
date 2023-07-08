@@ -2,7 +2,7 @@
 #include <map>
 #include <mutex>
 #include "Room.h"
-
+#include "SqliteDataBase.h"
 class RoomManager
 {
 public:
@@ -23,11 +23,12 @@ public:
 	const std::vector<RoomData> getRoomsDatas() const;
 	Room& getRoom(unsigned int ID);
 	unsigned int getRoomIdByUser(const LoggedUser& user) const;
+	unsigned int getIdCounter() const;
 
 private:
 	std::map<unsigned int, Room> m_rooms;
 	std::mutex rooms_mutex;
-
+	unsigned int m_idCounter = 0;
 
 	// Private constructor to prevent instantiation from outside
 	RoomManager() {}

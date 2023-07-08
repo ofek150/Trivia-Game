@@ -16,6 +16,13 @@ struct GetPlayersInRoomRequest {
 	unsigned int roomId;
 };
 
+struct PlayerResults {
+	std::string username;
+	unsigned int correctAnswerCount;
+	unsigned int wrongAnswerCount;
+	unsigned int averageAnswerTime;
+};
+
 struct JoinRoomRequest {
 	unsigned int roomId;
 };
@@ -25,6 +32,7 @@ struct CreateRoomRequest {
 	unsigned int maxUsers;
 	unsigned int questionCount;
 	unsigned int answerTimeout;
+	std::string category;
 };
 
 struct SubmitAnswerRequest

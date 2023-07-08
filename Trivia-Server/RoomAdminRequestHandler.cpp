@@ -1,5 +1,6 @@
 #include "MenuRequestHandler.h"
 #include "RoomAdminRequestHandler.h"
+#include "GameRequestHandler.h"
 
 bool RoomAdminRequestHandler::isRequestRelevant(const RequestInfo& requestInfo) const
 {
@@ -51,14 +52,13 @@ RequestResult RoomAdminRequestHandler::startGame(RequestInfo requestInfo) const
 {
 	RequestResult requestResult;
 	StartGameResponse startGameResponse;
-	// Change to game request handler
-	requestResult.newHandler = m_handlerFactory.createRoomAdminRequestHandler(m_user.getUsername());
 	try {
 
 		unsigned int roomId = m_roomManager.getRoomIdByUser(m_user);
 		if (m_roomManager.getRoom(roomId).getAdmin().getUsername() != m_user.getUsername()) throw std::exception("You are not authorized to start the game!");
 		// Notify all users to start game
 		m_roomManager.getRoom(roomId).startGame();
+		requestResult.newHandler = m_handlerFactory.createGameRequestHandler(m_user.getUsername());
 		startGameResponse.status = StatusCodes::SUCCESSFUL;
 
 		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(startGameResponse);
@@ -74,8 +74,6 @@ RequestResult RoomAdminRequestHandler::getRoomState(RequestInfo requestInfo) con
 {
 	RequestResult requestResult;
 	GetRoomStateResponse getRoomStateResponse;
-
-	requestResult.newHandler = m_handlerFactory.createRoomAdminRequestHandler(m_user.getUsername());
 	try {
 
 		unsigned int roomId = m_roomManager.getRoomIdByUser(m_user);
@@ -86,6 +84,11 @@ RequestResult RoomAdminRequestHandler::getRoomState(RequestInfo requestInfo) con
 		getRoomStateResponse.questionCount = roomData.numOfQuestionsInGame;
 		std::vector<std::string> players;
 		std::vector<LoggedUser> users = m_roomManager.getRoom(roomId).getAllUsers();
+		if (getRoomStateResponse.hasGameBegun)
+			requestResult.newHandler = m_handlerFactory.createGameRequestHandler(m_user.getUsername(), GameManager::getInstance().createGame(m_roomManager.getRoom(roomId)));
+		else
+			requestResult.newHandler = m_handlerFactory.createRoomAdminRequestHandler(m_user.getUsername());
+
 		for (auto user : users)
 		{
 			players.push_back(user.getUsername());

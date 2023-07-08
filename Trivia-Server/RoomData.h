@@ -8,4 +8,5 @@ struct RoomData {
 	unsigned int numOfQuestionsInGame;
 	unsigned int timePerQuestion;
 	unsigned int isActive;
+	std::string category;
 };
