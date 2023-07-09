@@ -132,7 +132,8 @@ const useClient = () => {
                 maxUsers: item.maxPlayers,
                 questionCount: item.numOfQuestionsInGame,
                 answerTimeout: item.timePerQuestion,
-                isActive: item.isActive
+                isActive: item.isActive,
+                category: item.category
             });
         });
           const updatedRoomList: Rooms = {
@@ -288,7 +289,8 @@ const useClient = () => {
       maxUsers: request.maxUsers,
       questionCount: request.questionCount,
       answerTimeout: request.answerTimeout,
-      isActive: 0
+      isActive: 0,
+      category: "General"
     };
   };
 

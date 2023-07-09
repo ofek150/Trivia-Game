@@ -12,7 +12,9 @@ Communicator::~Communicator()
 
 		closesocket(m_serverSocket);
 	}
-	catch (...) {}
+	catch (...)
+	{
+	}
 }
 
 void Communicator::startHandleRequests()
@@ -27,11 +29,11 @@ void Communicator::startHandleRequests()
 
 void Communicator::bindAndListen()
 {
-	struct sockaddr_in sa = { 0 };
+	struct sockaddr_in sa = {0};
 
 	sa.sin_port = htons(SERVER_PORT); // port that server will listen for
-	sa.sin_family = AF_INET;   // must be AF_INET
-	sa.sin_addr.s_addr = INADDR_ANY;    // when there are few ip's for the machine. We will use always "INADDR_ANY"
+	sa.sin_family = AF_INET; // must be AF_INET
+	sa.sin_addr.s_addr = INADDR_ANY; // when there are few ip's for the machine. We will use always "INADDR_ANY"
 
 	// Connects between the socket and the configuration (port and etc..)
 	if (bind(m_serverSocket, (struct sockaddr*)&sa, sizeof(sa)) == SOCKET_ERROR)
@@ -55,7 +57,7 @@ void Communicator::handleNewClient()
 {
 	// this accepts the client and create a specific socket from server to this client
 	// the process will not continue until a client connects to the server
-	SOCKET clientSocket = accept(m_serverSocket, NULL, NULL);
+	SOCKET clientSocket = accept(m_serverSocket, nullptr, nullptr);
 	if (clientSocket == INVALID_SOCKET)
 		throw std::exception(__FUNCTION__);
 	insertNewClient(clientSocket);
@@ -64,12 +66,11 @@ void Communicator::handleNewClient()
 	// the function that handle the conversation with the client
 	std::thread clientThread(&Communicator::clientHandler, this, clientSocket);
 	clientThread.detach();
-
-
 }
 
 void Communicator::clientHandler(SOCKET clientSocket)
-{	while (true)
+{
+	while (true)
 	{
 		try
 		{
@@ -79,11 +80,14 @@ void Communicator::clientHandler(SOCKET clientSocket)
 			if (handler->isRequestRelevant(requestInfo))
 			{
 				RequestResult requestResult = handler->handleRequest(requestInfo);
-				if (requestResult.responseBuffer[0] == ResponseCodes::ErrorResponseCode)
+				if (requestResult.responseBuffer[0] == ErrorResponseCode)
 				{
-					std::string errorMessage = JsonRequestPacketDeserializer::deserializeErrorResponse(requestResult.responseBuffer);
-					if(errorMessage == "The user isn't in any room!")
-						m_clients[clientSocket] = m_handlerFactory.createMenuRequestHandler((dynamic_cast<RoomMemberRequestHandler*>(m_clients[clientSocket]))->getUser().getUsername());		
+					std::string errorMessage = JsonRequestPacketDeserializer::deserializeErrorResponse(
+						requestResult.responseBuffer);
+					if (errorMessage == "The user isn't in any room!")
+						m_clients[clientSocket] = m_handlerFactory.createMenuRequestHandler(
+							(dynamic_cast<RoomMemberRequestHandler*>(m_clients[clientSocket]))->getUser().
+							getUsername());
 				}
 				else
 				{
@@ -113,17 +117,19 @@ void Communicator::logOutClient(SOCKET clientSocket)
 {
 	try
 	{
-		closesocket(clientSocket);
+		std::lock_guard<std::mutex> clients_lock(this->clients_mutex);
+
 		IRequestHandler* handler = m_clients[clientSocket];
+		closesocket(clientSocket);
 
 		if (dynamic_cast<MenuRequestHandler*>(handler))
 		{
-			MenuRequestHandler* menuRequestHandler = dynamic_cast<MenuRequestHandler*>(m_clients[clientSocket]);
+			auto menuRequestHandler = dynamic_cast<MenuRequestHandler*>(handler);
 			LoginManager::getInstance().logout(menuRequestHandler->getUser().getUsername());
 		}
 		else if (dynamic_cast<RoomAdminRequestHandler*>(handler))
 		{
-			RoomAdminRequestHandler* roomAdminRequestHandler = dynamic_cast<RoomAdminRequestHandler*>(m_clients[clientSocket]);
+			auto roomAdminRequestHandler = dynamic_cast<RoomAdminRequestHandler*>(handler);
 			const LoggedUser& user = roomAdminRequestHandler->getUser();
 			RoomManager& roomManagerInstance = RoomManager::getInstance();
 
@@ -135,7 +141,7 @@ void Communicator::logOutClient(SOCKET clientSocket)
 		}
 		else if (dynamic_cast<RoomMemberRequestHandler*>(handler))
 		{
-			RoomMemberRequestHandler* roomMemberRequestHandler = dynamic_cast<RoomMemberRequestHandler*>(m_clients[clientSocket]);
+			auto roomMemberRequestHandler = dynamic_cast<RoomMemberRequestHandler*>(handler);
 			const LoggedUser& user = roomMemberRequestHandler->getUser();
 			RoomManager& roomManagerInstance = RoomManager::getInstance();
 
@@ -146,29 +152,31 @@ void Communicator::logOutClient(SOCKET clientSocket)
 			LoginManager::getInstance().logout(user.getUsername());
 		}
 
-		std::lock_guard<std::mutex>clients_lock(this->clients_mutex);
 		delete m_clients[clientSocket];
 		m_clients.erase(clientSocket);
 		std::cout << "Removed a user from the connected users list" << std::endl;
 	}
-	catch (...) {}
+	catch (...)
+	{
+	}
 }
 
 int Communicator::getRequestCodeFromRequest(const SOCKET socket)
 {
 	// Receive the message from the client
-	char buffer[1] = { 0 };
+	char buffer[1] = {0};
 	int bytesReceived = recv(socket, buffer, 1, 0);
 	if (bytesReceived < 0) throw std::exception("Error in connection. Logging out client...");
 	if (bytesReceived == 0) throw std::exception("Client has closed the connection");
-	return static_cast<int>(buffer[0]);
+	return buffer[0];
 }
 
 void Communicator::sendMessage(const SOCKET socket, const std::vector<unsigned char>& message) const
 {
-	const unsigned char* buffer = reinterpret_cast<const unsigned char*>(message.data());
+	auto buffer = message.data();
 
-	if(send(socket, reinterpret_cast<const char*>(buffer), message.size(), 0) == SOCKET_ERROR) throw std::exception("Error in connection. Logging out client...");
+	if (send(socket, reinterpret_cast<const char*>(buffer), message.size(), 0) == SOCKET_ERROR) throw std::exception(
+		"Error in connection. Logging out client...");
 }
 
 RequestInfo Communicator::getRequest(const SOCKET socket)
@@ -177,13 +185,13 @@ RequestInfo Communicator::getRequest(const SOCKET socket)
 	requestInfo.code = getRequestCodeFromRequest(socket);
 
 	// Receive the message from the client
-	char data_size_buffer[4] = { 0 };
+	char data_size_buffer[4] = {0};
 	int bytesReceived = recv(socket, data_size_buffer, 4, 0);
 	if (bytesReceived < 0) throw std::exception("Error in connection. Logging out client...");
 
 	int data_size = ntohl(*reinterpret_cast<uint32_t*>(data_size_buffer));
 
-	char* buffer = new char[data_size];
+	auto buffer = new char[data_size];
 	int bytesReceived2 = recv(socket, buffer, data_size, 0);
 	if (bytesReceived2 < 0) throw std::exception("Error in connection. Logging out client...");
 
@@ -191,7 +199,7 @@ RequestInfo Communicator::getRequest(const SOCKET socket)
 	time(&current_time);
 	requestInfo.arrival_time = current_time;
 	requestInfo.buffer = std::vector<unsigned char>(buffer, buffer + data_size);
-	
+
 	delete[] buffer;
 
 	return requestInfo;
@@ -199,8 +207,8 @@ RequestInfo Communicator::getRequest(const SOCKET socket)
 
 void Communicator::insertNewClient(SOCKET clientSocket)
 {
-	std::lock_guard<std::mutex>clients_lock(this->clients_mutex);
-	LoginRequestHandler* loginRequestHandler = new LoginRequestHandler();
+	std::lock_guard<std::mutex> clients_lock(this->clients_mutex);
+	auto loginRequestHandler = new LoginRequestHandler();
 	m_clients[clientSocket] = loginRequestHandler;
 }
 

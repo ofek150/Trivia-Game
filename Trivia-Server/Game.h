@@ -6,17 +6,20 @@
 #include <mutex>
 #include "Responses.h"
 #include "Requests.h"
+#include "SqliteDataBase.h"
 
 class Game
 {
 public:
-	Game(const std::vector<Question>& questions, const std::vector<LoggedUser>& players, int gameId, std::string category);
+	Game(const std::vector<Question>& questions, const std::vector<LoggedUser>& players, int gameId,
+	     std::string category);
 	Question getCurrentQuestion();
 	void submitAnswer(const LoggedUser& user, int answerId);
 	int getGameId() const;
 	void removePlayer(const LoggedUser& user);
 	bool areAllPlayersInactive() const;
 	std::vector<PlayerResults> getPlayersResults();
+
 private:
 	Question m_currentQuestion;
 	std::vector<Question> m_questions;
@@ -28,4 +31,3 @@ private:
 	std::mutex players_mutex;
 	std::string m_category;
 };
-

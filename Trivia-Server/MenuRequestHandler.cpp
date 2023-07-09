@@ -6,29 +6,29 @@
 
 bool MenuRequestHandler::isRequestRelevant(const RequestInfo& requestInfo) const
 {
-	return requestInfo.code == RequestCodes::CreateRoomRequestCode || requestInfo.code == RequestCodes::GetRoomsRequestCode
-		|| requestInfo.code == RequestCodes::GetPlayersInRoomRequestCode || requestInfo.code == RequestCodes::JoinRoomRequestCode
-		|| requestInfo.code == RequestCodes::GetHighScoreRequestCode || requestInfo.code == RequestCodes::GetPersonalStatsRequestCode
-		|| requestInfo.code == RequestCodes::LogoutRequestCode;
+	return requestInfo.code == CreateRoomRequestCode || requestInfo.code == GetRoomsRequestCode
+		|| requestInfo.code == GetPlayersInRoomRequestCode || requestInfo.code == JoinRoomRequestCode
+		|| requestInfo.code == GetHighScoreRequestCode || requestInfo.code == GetPersonalStatsRequestCode
+		|| requestInfo.code == LogoutRequestCode;
 }
 
 RequestResult MenuRequestHandler::handleRequest(const RequestInfo& requestInfo) const
 {
 	switch (requestInfo.code)
 	{
-	case RequestCodes::CreateRoomRequestCode:
+	case CreateRoomRequestCode:
 		return createRoom(requestInfo);
-	case RequestCodes::GetRoomsRequestCode:
+	case GetRoomsRequestCode:
 		return getRooms(requestInfo);
-	case RequestCodes::GetPlayersInRoomRequestCode:
+	case GetPlayersInRoomRequestCode:
 		return getPlayersInRoom(requestInfo);
-	case RequestCodes::JoinRoomRequestCode:
+	case JoinRoomRequestCode:
 		return joinRoom(requestInfo);
-	case RequestCodes::GetHighScoreRequestCode:
+	case GetHighScoreRequestCode:
 		return getHighScore(requestInfo);
-	case RequestCodes::GetPersonalStatsRequestCode:
+	case GetPersonalStatsRequestCode:
 		return getPersonalStats(requestInfo);
-	case RequestCodes::LogoutRequestCode:
+	case LogoutRequestCode:
 		return signout(requestInfo);
 	}
 }
@@ -44,11 +44,12 @@ RequestResult MenuRequestHandler::signout(const RequestInfo& requestInfo) const
 	LogoutResponse logoutResponse;
 	requestResult.newHandler = requestResult.newHandler = m_handlerFactory.createLoginRequestHandler();
 
-	try {
-		LoginManager& loginManager = m_handlerFactory.getLoginManager();
+	try
+	{
+		LoginManager& loginManager = LoginManager::getInstance();
 		loginManager.logout(m_user.getUsername());
 
-		logoutResponse.status = StatusCodes::SUCCESSFUL;
+		logoutResponse.status = SUCCESSFUL;
 		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(logoutResponse);
 	}
 	catch (const std::exception& e)
@@ -64,8 +65,9 @@ RequestResult MenuRequestHandler::getRooms(const RequestInfo& requestInfo) const
 	RequestResult requestResult;
 	GetRoomsResponse getRoomsResponse;
 	requestResult.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
-	try {
-		getRoomsResponse.status = StatusCodes::SUCCESSFUL;
+	try
+	{
+		getRoomsResponse.status = SUCCESSFUL;
 		getRoomsResponse.rooms = m_roomManager.getRoomsDatas();
 		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(getRoomsResponse);
 	}
@@ -82,17 +84,20 @@ RequestResult MenuRequestHandler::getPlayersInRoom(const RequestInfo& requestInf
 	RequestResult requestResult;
 	GetPlayersInRoomResponse getPlayersInRoomResponse;
 	requestResult.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
-	try {
+	try
+	{
 		std::vector<std::string> players;
-		GetPlayersInRoomRequest getPlayersInRoomRequest = JsonRequestPacketDeserializer::getInstance().deserializeGetPlayersInRoomRequest(requestInfo.buffer);
-		std::vector<LoggedUser> users =  m_roomManager.getRoom(getPlayersInRoomRequest.roomId).getAllUsers();
+		GetPlayersInRoomRequest getPlayersInRoomRequest = JsonRequestPacketDeserializer::getInstance().
+			deserializeGetPlayersInRoomRequest(requestInfo.buffer);
+		std::vector<LoggedUser> users = m_roomManager.getRoom(getPlayersInRoomRequest.roomId).getAllUsers();
 		for (auto user : users)
 		{
 			players.push_back(user.getUsername());
 		}
 		getPlayersInRoomResponse.players = players;
 
-		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(getPlayersInRoomResponse);
+		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(
+			getPlayersInRoomResponse);
 	}
 	catch (const std::exception& e)
 	{
@@ -107,11 +112,13 @@ RequestResult MenuRequestHandler::getPersonalStats(const RequestInfo& requestInf
 	RequestResult requestResult;
 	GetPersonalStatsResponse getPersonalStatsResponse;
 	requestResult.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
-	try {
+	try
+	{
 		getPersonalStatsResponse.statistics = m_statisticsManager.getUserStatistics(m_user.getUsername());
-		getPersonalStatsResponse.status = StatusCodes::SUCCESSFUL;
+		getPersonalStatsResponse.status = SUCCESSFUL;
 
-		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(getPersonalStatsResponse);
+		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(
+			getPersonalStatsResponse);
 	}
 	catch (const std::exception& e)
 	{
@@ -126,11 +133,13 @@ RequestResult MenuRequestHandler::getHighScore(const RequestInfo& requestInfo) c
 	RequestResult requestResult;
 	GetHighScoreRoomResponse getHighScoreResponse;
 	requestResult.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
-	try {
+	try
+	{
 		getHighScoreResponse.statistics = m_statisticsManager.getHighScore();
-		getHighScoreResponse.status = StatusCodes::SUCCESSFUL;
+		getHighScoreResponse.status = SUCCESSFUL;
 
-		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(getHighScoreResponse);
+		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(
+			getHighScoreResponse);
 	}
 	catch (const std::exception& e)
 	{
@@ -145,12 +154,14 @@ RequestResult MenuRequestHandler::joinRoom(const RequestInfo& requestInfo) const
 	RequestResult requestResult;
 	JoinRoomResponse joinRoomResponse;
 	requestResult.newHandler = m_handlerFactory.createRoomMemberRequestHandler(m_user.getUsername());
-	try {
+	try
+	{
 		std::vector<std::string> players;
-		JoinRoomRequest joinRoomRequest = JsonRequestPacketDeserializer::getInstance().deserializeJoinRoomRequest(requestInfo.buffer);
+		JoinRoomRequest joinRoomRequest = JsonRequestPacketDeserializer::getInstance().deserializeJoinRoomRequest(
+			requestInfo.buffer);
 
 		m_roomManager.joinRoom(m_user, joinRoomRequest.roomId);
-		joinRoomResponse.status = StatusCodes::SUCCESSFUL;
+		joinRoomResponse.status = SUCCESSFUL;
 
 		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(joinRoomResponse);
 	}
@@ -167,11 +178,12 @@ RequestResult MenuRequestHandler::createRoom(const RequestInfo& requestInfo) con
 	RequestResult requestResult;
 	CreateRoomResponse createRoomResponse;
 	requestResult.newHandler = m_handlerFactory.createRoomAdminRequestHandler(m_user.getUsername());
-	try {
+	try
+	{
 		std::vector<std::string> players;
 		CreateRoomRequest createRoomRequest = JsonRequestPacketDeserializer::getInstance().deserializeCreateRoomRequest(requestInfo.buffer);
 
-		if(!isValidCategory) throw std::exception("Invalid category!");
+		if (!isValidCategory(createRoomRequest.category)) throw std::exception("Invalid category!");
 
 		RoomData roomData;
 		roomData.name = createRoomRequest.roomName;
@@ -183,7 +195,7 @@ RequestResult MenuRequestHandler::createRoom(const RequestInfo& requestInfo) con
 		roomData.category = createRoomRequest.category;
 
 		m_roomManager.createRoom(m_user, roomData);
-		createRoomResponse.status = StatusCodes::SUCCESSFUL;
+		createRoomResponse.status = SUCCESSFUL;
 		createRoomResponse.roomId = roomData.id;
 
 		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(createRoomResponse);
@@ -198,7 +210,7 @@ RequestResult MenuRequestHandler::createRoom(const RequestInfo& requestInfo) con
 
 bool MenuRequestHandler::isValidCategory(const std::string& targetCategory) const
 {
-	const std::vector<std::string> categories = { "General", "Geography", "Sports" };
+	const std::vector<std::string> categories = {"General", "Geography", "Sports"};
 	auto it = std::find(categories.begin(), categories.end(), targetCategory);
-    return it != categories.end();
+	return it != categories.end();
 }

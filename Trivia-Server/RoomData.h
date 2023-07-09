@@ -1,7 +1,8 @@
 #pragma once
 #include <string>
 
-struct RoomData {
+struct RoomData
+{
 	unsigned int id;
 	std::string name;
 	unsigned int maxPlayers;

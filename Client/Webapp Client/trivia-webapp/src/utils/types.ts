@@ -40,6 +40,7 @@ export interface RoomData {
   questionCount: number;
   answerTimeout: number;
   isActive: number;
+  category: string;
 }
 
 export interface Rooms {

@@ -3,13 +3,15 @@
 #include <mutex>
 #include "Room.h"
 #include "SqliteDataBase.h"
+
 class RoomManager
 {
 public:
 	void operator=(const RoomManager&) = delete;
 
 	// Public static function to get the singleton instance
-	static RoomManager& getInstance() {
+	static RoomManager& getInstance()
+	{
 		static RoomManager instance;
 		return instance;
 	}
@@ -31,9 +33,10 @@ private:
 	unsigned int m_idCounter = 0;
 
 	// Private constructor to prevent instantiation from outside
-	RoomManager() {}
+	RoomManager()
+	{
+	}
 
 	// Private copy constructor to prevent cloning
 	RoomManager(const RoomManager&);
 };
-

@@ -1,19 +1,21 @@
 #pragma once
 #include "IRequestHandler.h"
+#include "LoginManager.h"
 
 class RequestHandlerFactory;
 
 class LoginRequestHandler : public IRequestHandler
 {
 public:
-    LoginRequestHandler();
+	LoginRequestHandler();
 
-    bool isRequestRelevant(const RequestInfo& requestInfo) const override;
-    RequestResult handleRequest(const RequestInfo& requestInfo) const override;
+	bool isRequestRelevant(const RequestInfo& requestInfo) const override;
+	RequestResult handleRequest(const RequestInfo& requestInfo) const override;
 
 private:
-    RequestResult login(const RequestInfo& requestInfo) const;
-    RequestResult signup(const RequestInfo& requestInfo) const;
+	RequestResult login(const RequestInfo& requestInfo) const;
+	RequestResult signup(const RequestInfo& requestInfo) const;
 
-    RequestHandlerFactory& m_handlerFactory;
+	RequestHandlerFactory& m_handlerFactory;
+	LoginManager& m_loginManager;
 };

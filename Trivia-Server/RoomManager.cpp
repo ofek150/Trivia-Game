@@ -4,12 +4,14 @@
 void RoomManager::createRoom(const LoggedUser& user, const RoomData& roomData)
 {
 	if (roomData.maxPlayers < 2 || roomData.maxPlayers > 5) throw std::exception("Max players has be between 2 and 5.");
-	if (roomData.numOfQuestionsInGame < 1 || roomData.numOfQuestionsInGame > 40) throw std::exception("The number of questions has to be between 1 and 40.");
-	if (roomData.timePerQuestion < 1 || roomData.timePerQuestion > 120) throw std::exception("The time for each question has to be between 1 and 120 seconds.");
+	if (roomData.numOfQuestionsInGame < 1 || roomData.numOfQuestionsInGame > 40) throw std::exception(
+		"The number of questions has to be between 1 and 40.");
+	if (roomData.timePerQuestion < 1 || roomData.timePerQuestion > 120) throw std::exception(
+		"The time for each question has to be between 1 and 120 seconds.");
 	if (roomData.name.length() <= 2) throw std::exception("The room's name has to be at least 2 characters long.");
 	for (const auto& room : m_rooms)
 	{
-		if(room.second.getRoomData().name == roomData.name) throw std::exception("The room's name is already taken.");
+		if (room.second.getRoomData().name == roomData.name) throw std::exception("The room's name is already taken.");
 	}
 
 	/*Room newRoom(user, roomData);
@@ -40,9 +42,10 @@ void RoomManager::joinRoom(const LoggedUser& user, unsigned int ID)
 	auto it = m_rooms.find(ID);
 	if (it == m_rooms.end()) throw std::exception("Invalid Room id!");
 	if (it->second.getRoomState()) throw std::exception("Game already started!");
-	if (it->second.getAllUsers().size() == it->second.getRoomData().maxPlayers) throw std::exception("The room is already full!");
+	if (it->second.getAllUsers().size() == it->second.getRoomData().maxPlayers) throw std::exception(
+		"The room is already full!");
 	if (it->second.isUserInRoom(user)) throw std::exception("You can't be in multiple rooms simultaneously!");
-	
+
 	it->second.addUser(user);
 }
 
@@ -73,7 +76,7 @@ Room& RoomManager::getRoom(unsigned int ID)
 
 unsigned int RoomManager::getRoomIdByUser(const LoggedUser& user) const
 {
-	if(m_rooms.size() == 0) throw std::exception("The user isn't in any room!");
+	if (m_rooms.size() == 0) throw std::exception("The user isn't in any room!");
 	for (const auto& room : m_rooms)
 	{
 		if (room.second.isUserInRoom(user))

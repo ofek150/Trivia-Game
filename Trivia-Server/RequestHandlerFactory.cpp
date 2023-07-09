@@ -7,30 +7,30 @@
 
 LoginRequestHandler* RequestHandlerFactory::createLoginRequestHandler() const
 {
-    LoginRequestHandler* requestHandler = new LoginRequestHandler();
-    return requestHandler;
+	auto requestHandler = new LoginRequestHandler();
+	return requestHandler;
 }
 
 MenuRequestHandler* RequestHandlerFactory::createMenuRequestHandler(const std::string& username) const
 {
-    MenuRequestHandler* requestHandler = new MenuRequestHandler(username);
-    return requestHandler;
+	auto requestHandler = new MenuRequestHandler(username);
+	return requestHandler;
 }
 
 RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler(const std::string& username) const
 {
-    RoomAdminRequestHandler* requestHandler = new RoomAdminRequestHandler(username);
-    return requestHandler;
+	auto requestHandler = new RoomAdminRequestHandler(username);
+	return requestHandler;
 }
 
 RoomMemberRequestHandler* RequestHandlerFactory::createRoomMemberRequestHandler(const std::string& username) const
 {
-    RoomMemberRequestHandler* requestHandler = new RoomMemberRequestHandler(username);
-    return requestHandler;
+	auto requestHandler = new RoomMemberRequestHandler(username);
+	return requestHandler;
 }
 
 GameRequestHandler* RequestHandlerFactory::createGameRequestHandler(const std::string& username, Game& game) const
 {
-    GameRequestHandler* requestHandler = new GameRequestHandler(username, game);
-    return requestHandler;
+	auto requestHandler = new GameRequestHandler(username, game);
+	return requestHandler;
 }
