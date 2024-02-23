@@ -20,6 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Communicator.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="GameData.h" />
+    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="GameRequestHandler.h" />
     <ClInclude Include="IDatabase.h" />
     <ClInclude Include="IRequestHandler.h" />
     <ClInclude Include="json.hpp" />
@@ -29,6 +33,7 @@
     <ClInclude Include="LoginManager.h" />
     <ClInclude Include="LoginRequestHandler.h" />
     <ClInclude Include="MenuRequestHandler.h" />
+    <ClInclude Include="Question.h" />
     <ClInclude Include="RequestCodes.h" />
     <ClInclude Include="RequestHandlerFactory.h" />
     <ClInclude Include="Requests.h" />
@@ -48,6 +53,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Communicator.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="GameRequestHandler.cpp" />
     <ClCompile Include="IRequestHandler.cpp" />
     <ClCompile Include="JsonRequestPacketDeserializer.cpp" />
     <ClCompile Include="JsonRequestPacketSerializer.cpp" />
@@ -55,6 +63,7 @@
     <ClCompile Include="LoginManager.cpp" />
     <ClCompile Include="LoginRequestHandler.cpp" />
     <ClCompile Include="MenuRequestHandler.cpp" />
+    <ClCompile Include="Question.cpp" />
     <ClCompile Include="RequestHandlerFactory.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="RoomAdminRequestHandler.cpp" />

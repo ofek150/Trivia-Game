@@ -24,6 +24,10 @@ export interface CreateRoomRequest {
   answerTimeout: number;
 }
 
+export interface SubmitAnswerRequest {
+  answer: string;
+}
+
 export interface ParsedResponse {
   responseCode: number;
   data: any;
@@ -36,6 +40,7 @@ export interface RoomData {
   questionCount: number;
   answerTimeout: number;
   isActive: number;
+  category: string;
 }
 
 export interface Rooms {
@@ -51,4 +56,9 @@ export interface RoomState {
 
 export interface Highscores {
   highscores : Object;
+}
+
+export interface GameData {
+  question: string;
+  answers: string[];
 }

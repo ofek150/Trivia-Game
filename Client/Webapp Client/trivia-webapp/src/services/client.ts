@@ -1,21 +1,13 @@
-import { useEffect, useContext, useRef} from "react";
-import { AuthContext } from "../App";
-import { RoomListContext } from "../contexts/RoomListContext";
-import { CurrentRoomDataContext } from "../contexts/CurrentRoomDataContext";
+import { useEffect, useContext } from "react";
+import { useAuth, useResponse, useWebSocket, useSelectedRoomId, useCurrentRoomData, useCurrentRoomState, usePersonalStatistics, useRoomList, useHighscores, useUser } from "../contexts/CustomHooks";
 import { useNavigate } from "react-router-dom";
-import { ResponseContext } from "../contexts/ResponseContext";
-import WebSocketContext from "../contexts/WebSocketContext";
-import { SelectedRoomIdContext } from "../contexts/SelectedRoomContext";
-import { HighscoresContext } from "../contexts/HighscoresContext";
-import { PersonalStatisticsContext } from "../contexts/PersonalStatisticsContext";
-import { CurrentRoomStateContext } from "../contexts/CurrentRoomStateContext";
-import { UserContext } from "../contexts/UserContext";
 import {
   LoginRequest,
   SignupRequest,
   GetPlayersInRoomRequest,
   JoinRoomRequest,
   CreateRoomRequest,
+  SubmitAnswerRequest,
   ParsedResponse,
   Rooms,
   RoomState,
@@ -36,7 +28,11 @@ const RequestCodes = {
   CloseRoomRequestCode: 10,
   StartGameRequestCode: 11,
   GetRoomStateRequestCode: 12,
-  LeaveRoomRequestCode: 13
+  LeaveRoomRequestCode: 13,
+  GetGameResultsRequestCode: 14,
+  SubmitAnswerRequestCode: 15,
+  GetQuestionRequestCode: 16,
+  LeaveGameRequestCode: 17
 };
 
 const ResponseCodes = {
@@ -53,7 +49,11 @@ const ResponseCodes = {
   CloseRoomResponseCode: 10,
   StartGameResponseCode: 11,
   GetRoomStateResponseCode: 12,
-  LeaveRoomResponseCode: 13
+  LeaveRoomResponseCode: 13,
+  GetGameResultsResponseCode: 14,
+  SubmitAnswerResponseCode: 15,
+  GetQuestionResponseCode: 16,
+  LeaveGameResponseCode: 17
 };
 
 let username: string;
@@ -62,17 +62,17 @@ let joinedRoomId: number;
 
 
 const useClient = () => {
-  const { socket, setSocket, connectionEstablished } = useContext(WebSocketContext);
+  const { socket, setSocket, connectionEstablished } = useWebSocket();
   const navigate = useNavigate();
-  const { setResponseMessage } = useContext(ResponseContext);
-  const { setIsLoggedIn } = useContext(AuthContext);
-  const { setSelectedRoomId } = useContext(SelectedRoomIdContext);
-  const { setRoomList } = useContext(RoomListContext);
-  const { setHighscores } = useContext(HighscoresContext);
-  const { setPersonalStatistics } = useContext(PersonalStatisticsContext);
-  const { setCurrentRoomState } = useContext(CurrentRoomStateContext);
-  const { setUsername, setIsRoomAdmin } = useContext(UserContext);
-  const { setCurrentRoomData } = useContext(CurrentRoomDataContext);
+  const { setResponseMessage } = useResponse();
+  const { setIsLoggedIn } = useAuth();
+  const { setSelectedRoomId } = useSelectedRoomId();
+  const { setRoomList } = useRoomList();
+  const { setHighscores } = useHighscores();
+  const { setPersonalStatistics } = usePersonalStatistics();
+  const { setCurrentRoomState } = useCurrentRoomState();
+  const { setCurrentRoomData } = useCurrentRoomData();
+  const { setIsInRoom, setUsername } = useUser();
   
   useEffect(() => {
     if (!socket || !connectionEstablished)
@@ -84,93 +84,84 @@ const useClient = () => {
     socket.binaryType = "arraybuffer";
 
     socket.onmessage = (event) => {
-      console.log("Got message from server.");
-      //console.log(event.data);
       // Parse the server response
-      console.log(event.data);
       const response = new Uint8Array(event.data);
       const parsedResponse = parseServerResponse(response);
 
       // Extract the response code and data from the parsed response
       const { responseCode, data } = parsedResponse;
-      console.log("Response code: ", responseCode);
-
       //Use a switch statement to handle the response differently based on the response code
       switch (responseCode) {
         case ResponseCodes.ErrorResponseCode:
           if(data["message"])
           {
-            console.log(data["message"]);
             if(data["message"] === "The user isn't in any room!")
             {
-              navigate("/room-list");
+              setRoomList(null);
+              setIsInRoom(false);
+              navigate("/rooms/list");
               return;
             }
             setResponseMessage(data["message"])
           }
           break;
         case ResponseCodes.LoginResponseCode:
-          console.log("User is now logged in");
           setResponseMessage("");
           setIsLoggedIn(true);
           setUsername(username);
-          navigate("/main-menu");
           break;
         case ResponseCodes.SignupResponseCode:
-          console.log("Signup successful");
           break;
         case ResponseCodes.LogoutResponseCode:
           setIsLoggedIn(false);
-          navigate("/login");
-          console.log("Logged out");
+          setIsInRoom(false);
           break;
         case ResponseCodes.GetRoomsResponseCode:
-          console.log("Data: " + data);
           if(!data["Rooms"] || data["Rooms"].length === 0)
           {
             setRoomList(null);
-            console.log(data);
             return;
           }
 
           const updatedRoomsData: Map<number, RoomData> = new Map();
-
-          Object.entries(data["Rooms"]).forEach(([roomId, item]: [string, any]) => {
-            const numericRoomId = Number(roomId);
+          Object.entries(data["Rooms"]).forEach(([index, item]: [string, any]) => {
+            const numericRoomId = Number(item.roomId);
             updatedRoomsData.set(numericRoomId, {
                 roomId: numericRoomId,
                 roomName: item.name,
                 maxUsers: item.maxPlayers,
                 questionCount: item.numOfQuestionsInGame,
                 answerTimeout: item.timePerQuestion,
-                isActive: item.isActive
+                isActive: item.isActive,
+                category: item.category
             });
         });
           const updatedRoomList: Rooms = {
             rooms: updatedRoomsData
           };
-          console.log(updatedRoomList);
           setRoomList(updatedRoomList);
           break;
         case ResponseCodes.CreateRoomResponseCode:
           setSelectedRoomId(data["roomId"]);
           newRoomData.roomId = Number(data["roomId"]);
+          console.log("Setting room data");
           setCurrentRoomData(newRoomData);
-          setIsRoomAdmin(true);
-          navigate("/room-list/" + newRoomData.roomId);
+          setIsInRoom(true);
           break;
         case ResponseCodes.JoinRoomResponseCode:
-            setIsRoomAdmin(false);
-            navigate("/room-list/" + joinedRoomId);
+            setIsInRoom(true);
+            navigate("/rooms/" + joinedRoomId);
           break;
         case ResponseCodes.GetHighScoreResponseCode:
-          data["HighScores"] ? setHighscores(data["HighScores"]) : console.log(data["HighScores"]);  
+          if(data["Highscores"]) setHighscores(data["HighScores"])
           break;
         case ResponseCodes.GetPersonalStatsResponseCode:
-          data["UserStatistics"] ? setPersonalStatistics(data["UserStatistics"]) : console.log(data["UserStatistics"]);    
+          if(data["UserStatistics"]) setPersonalStatistics(data["UserStatistics"])  
           break;
         case ResponseCodes.CloseRoomResponseCode:
-          navigate("/main-menu");
+          setCurrentRoomData(null);
+          //setIsInRoom(false);
+          
           break;
         case ResponseCodes.StartGameResponseCode:
           //Start game
@@ -186,7 +177,16 @@ const useClient = () => {
           setCurrentRoomState(updatedRoomState);
           break;
         case ResponseCodes.LeaveRoomResponseCode:
-          navigate("/room-list/");
+          setIsInRoom(false);
+          navigate("/rooms/list");
+          break;
+        case ResponseCodes.GetGameResultsResponseCode:
+          break;
+        case ResponseCodes.SubmitAnswerResponseCode:
+          break;
+        case ResponseCodes.GetQuestionResponseCode:
+          break;
+        case ResponseCodes.LeaveGameResponseCode:
           break;
         //Handle unknown response code
         default:
@@ -238,15 +238,12 @@ const useClient = () => {
 
       // Finally, send the payload over the WebSocket connection
       socket.send(payload.buffer);
-
-      console.log("Buffer" + payload.buffer);
     }
   };
 
   const parseServerResponse = (response: Uint8Array): ParsedResponse => {
     const responseCode: number = response[0];
     const dataLengthBytes: Uint8Array = response.slice(1, 5);
-    console.log(response);
     const dataLength: number =
       (dataLengthBytes[3] << 24) +
       (dataLengthBytes[2] << 16) +
@@ -278,7 +275,7 @@ const useClient = () => {
   };
 
   const joinRoom = (request: JoinRoomRequest) => {
-    console.log("Joining room with the id: " + request.roomId);
+    //console.log("Joining room with the id: " + request.roomId);
     setSelectedRoomId(request.roomId);
     joinedRoomId = request.roomId;
     sendDataToServer(RequestCodes.JoinRoomRequestCode, request);
@@ -292,7 +289,8 @@ const useClient = () => {
       maxUsers: request.maxUsers,
       questionCount: request.questionCount,
       answerTimeout: request.answerTimeout,
-      isActive: 0
+      isActive: 0,
+      category: "General"
     };
   };
 
@@ -328,7 +326,23 @@ const useClient = () => {
     sendDataToServer(RequestCodes.LeaveRoomRequestCode, {});
   }
 
-  return { login, signup, logout, joinRoom, createRoom, getHighscores, getPersonalStatistics, getPlayersInRoom, getRooms, closeRoom, startGame, getRoomState, leaveRoom};
+  const getQuestion = () => {
+    sendDataToServer(RequestCodes.GetQuestionRequestCode, {});
+  }
+
+  const submitAnswer = (request: SubmitAnswerRequest) => {
+    sendDataToServer(RequestCodes.SubmitAnswerRequestCode, request);
+  }
+
+  const getGameResults = () => {
+    sendDataToServer(RequestCodes.GetGameResultsRequestCode, {});
+  }
+
+  const leaveGame = () => {
+    sendDataToServer(RequestCodes.LeaveGameRequestCode, {});
+  }
+
+  return { login, signup, logout, joinRoom, createRoom, getHighscores, getPersonalStatistics, getPlayersInRoom, getRooms, closeRoom, startGame, getRoomState, leaveRoom, getGameResults, submitAnswer, leaveGame, getQuestion };
 };
 
 export default useClient;

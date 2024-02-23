@@ -10,7 +10,8 @@ public:
 	void operator=(const LoginManager&) = delete;
 
 	// Public static function to get the singleton instance
-	static LoginManager& getInstance() {
+	static LoginManager& getInstance()
+	{
 		static LoginManager instance;
 		return instance;
 	}
@@ -19,6 +20,7 @@ public:
 	void signup(std::string username, std::string password, std::string email);
 	void login(std::string username, std::string password);
 	void logout(std::string username);
+
 private:
 	bool isUserInLoggedUsers(const std::string& username);
 
@@ -28,9 +30,10 @@ private:
 
 
 	// Private constructor to prevent instantiation from outside
-	LoginManager() : m_database(&SqliteDataBase::getInstance()) {}
+	LoginManager() : m_database(&SqliteDataBase::getInstance())
+	{
+	}
 
 	// Private copy constructor to prevent cloning
 	LoginManager(const LoginManager&);
 };
-

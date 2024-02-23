@@ -14,5 +14,9 @@ enum RequestCodes
 	CloseRoomRequestCode = 10,
 	StartGameRequestCode = 11,
 	GetRoomStateRequestCode = 12,
-	LeaveRoomRequestCode = 13
+	LeaveRoomRequestCode = 13,
+	GetGameResultsRequestCode = 14,
+	SubmitAnswerRequestCode = 15,
+	GetQuestionRequestCode = 16,
+	LeaveGameRequestCode = 17
 };

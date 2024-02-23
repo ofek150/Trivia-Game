@@ -1,7 +1,8 @@
 #pragma once
 
 
-enum StatusCodes {
+enum StatusCodes
+{
 	FAILED = 0,
 	SUCCESSFUL = 1
 };

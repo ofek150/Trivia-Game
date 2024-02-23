@@ -1,18 +1,19 @@
 #include "MenuRequestHandler.h"
 #include "RoomMemberRequestHandler.h"
+#include "GameRequestHandler.h"
 
 bool RoomMemberRequestHandler::isRequestRelevant(const RequestInfo& requestInfo) const
 {
-	return requestInfo.code == RequestCodes::LeaveRoomRequestCode || requestInfo.code == RequestCodes::GetRoomStateRequestCode;
+	return requestInfo.code == LeaveRoomRequestCode || requestInfo.code == GetRoomStateRequestCode;
 }
 
 RequestResult RoomMemberRequestHandler::handleRequest(const RequestInfo& requestInfo) const
 {
 	switch (requestInfo.code)
 	{
-	case RequestCodes::LeaveRoomRequestCode:
+	case LeaveRoomRequestCode:
 		return leaveRoom(requestInfo);
-	case RequestCodes::GetRoomStateRequestCode:
+	case GetRoomStateRequestCode:
 		return getRoomState(requestInfo);
 	}
 }
@@ -27,9 +28,10 @@ RequestResult RoomMemberRequestHandler::leaveRoom(RequestInfo requestInfo) const
 	RequestResult requestResult;
 	LeaveRoomResponse leaveRoomResponse;
 	requestResult.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
-	try {
+	try
+	{
 		m_roomManager.leaveRoom(m_user);
-		leaveRoomResponse.status = StatusCodes::SUCCESSFUL;
+		leaveRoomResponse.status = SUCCESSFUL;
 		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(leaveRoomResponse);
 	}
 	catch (const std::exception& e)
@@ -43,15 +45,20 @@ RequestResult RoomMemberRequestHandler::getRoomState(RequestInfo requestInfo) co
 {
 	RequestResult requestResult;
 	GetRoomStateResponse getRoomStateResponse;
-	requestResult.newHandler = m_handlerFactory.createRoomMemberRequestHandler(m_user.getUsername());
-	try {
 
+	try
+	{
 		unsigned int roomId = m_roomManager.getRoomIdByUser(m_user);
 		RoomData roomData = m_roomManager.getRoom(roomId).getRoomData();
-		getRoomStateResponse.status = StatusCodes::SUCCESSFUL;
+		getRoomStateResponse.status = SUCCESSFUL;
 		getRoomStateResponse.hasGameBegun = roomData.isActive;
 		getRoomStateResponse.answerTimeOut = roomData.timePerQuestion;
 		getRoomStateResponse.questionCount = roomData.numOfQuestionsInGame;
+		if (getRoomStateResponse.hasGameBegun)
+			requestResult.newHandler = m_handlerFactory.createGameRequestHandler(
+				m_user.getUsername(), GameManager::getInstance().getGameById(roomId));
+		else
+			requestResult.newHandler = m_handlerFactory.createRoomMemberRequestHandler(m_user.getUsername());
 		std::vector<std::string> players;
 		std::vector<LoggedUser> users = m_roomManager.getRoom(roomId).getAllUsers();
 		for (auto user : users)
@@ -60,7 +67,8 @@ RequestResult RoomMemberRequestHandler::getRoomState(RequestInfo requestInfo) co
 		}
 		getRoomStateResponse.players = players;
 
-		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(getRoomStateResponse);
+		requestResult.responseBuffer = JsonRequestPacketSerializer::getInstance().serializeResponse(
+			getRoomStateResponse);
 	}
 	catch (const std::exception& e)
 	{

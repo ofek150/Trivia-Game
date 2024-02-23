@@ -8,11 +8,11 @@
 class Server
 {
 public:
-
 	void operator=(const Server&) = delete;
 
 	// Public static function to get the singleton instance
-	static Server& getInstance() {
+	static Server& getInstance()
+	{
 		static Server instance;
 		return instance;
 	}
@@ -28,9 +28,10 @@ private:
 
 
 	// Private constructor to prevent instantiation from outside
-	Server() : m_communicator(Communicator::getInstance()), m_handlerFactory(RequestHandlerFactory::getInstance()) {}
+	Server() : m_communicator(Communicator::getInstance()), m_handlerFactory(RequestHandlerFactory::getInstance())
+	{
+	}
 
 	// Private copy constructor to prevent cloning
 	Server(const Server&);
 };
-

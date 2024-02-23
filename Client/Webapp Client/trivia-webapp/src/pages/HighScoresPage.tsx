@@ -1,10 +1,15 @@
-import React from "react"
+import React from "react";
 import HighScores from "../components/HighScores";
+import { Box, useTheme } from "@mui/material";
 
 const HighScoresPage: React.FC = () => {
-    return (
-        <HighScores/>
-    );
+  const theme = useTheme();
+
+  return (
+    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", background: theme.palette.background.default }}>
+      <HighScores />
+    </Box>
+  );
 };
 
 export default HighScoresPage;

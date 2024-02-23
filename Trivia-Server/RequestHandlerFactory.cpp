@@ -3,42 +3,34 @@
 #include "LoginRequestHandler.h"
 #include "RoomAdminRequestHandler.h"
 #include "RoomMemberRequestHandler.h"
+#include "GameRequestHandler.h"
 
 LoginRequestHandler* RequestHandlerFactory::createLoginRequestHandler() const
 {
-    LoginRequestHandler* requestHandler = new LoginRequestHandler();
-    return requestHandler;
+	auto requestHandler = new LoginRequestHandler();
+	return requestHandler;
 }
 
 MenuRequestHandler* RequestHandlerFactory::createMenuRequestHandler(const std::string& username) const
 {
-    MenuRequestHandler* requestHandler = new MenuRequestHandler(username);
-    return requestHandler;
+	auto requestHandler = new MenuRequestHandler(username);
+	return requestHandler;
 }
 
 RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler(const std::string& username) const
 {
-    RoomAdminRequestHandler* requestHandler = new RoomAdminRequestHandler(username);
-    return requestHandler;
+	auto requestHandler = new RoomAdminRequestHandler(username);
+	return requestHandler;
 }
 
 RoomMemberRequestHandler* RequestHandlerFactory::createRoomMemberRequestHandler(const std::string& username) const
 {
-    RoomMemberRequestHandler* requestHandler = new RoomMemberRequestHandler(username);
-    return requestHandler;
+	auto requestHandler = new RoomMemberRequestHandler(username);
+	return requestHandler;
 }
 
-LoginManager& RequestHandlerFactory::getLoginManager()
+GameRequestHandler* RequestHandlerFactory::createGameRequestHandler(const std::string& username, Game& game) const
 {
-    return m_loginManager;
-}
-
-RoomManager& RequestHandlerFactory::getRoomManager()
-{
-    return m_roomManager;
-}
-
-StatisticsManager& RequestHandlerFactory::getStatisticsManager()
-{
-    return m_statisticsManager;
+	auto requestHandler = new GameRequestHandler(username, game);
+	return requestHandler;
 }

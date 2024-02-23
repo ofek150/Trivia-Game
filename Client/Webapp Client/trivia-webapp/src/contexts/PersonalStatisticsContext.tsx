@@ -1,4 +1,4 @@
-import React, { createContext, useState,  ReactNode } from 'react';
+import React, { createContext, useState,  ReactNode, useEffect } from 'react';
 
 export const PersonalStatisticsContext = createContext<{
     personalStatistics: string[];
