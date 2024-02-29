@@ -1,4 +1,4 @@
-# Trivia Game (Magshimim Project)
+# Trivia Game (2nd Year Magshimim Project)
 
 This project is an interactive multiplayer trivia game developed as part of the Magshimim program. It was collaboratively created by a duo, leveraging React, TypeScript, and Material UI for the frontend, and C++ for the backend. The game establishes a connection between the frontend and backend using a proxy to communicate over websockets.
 
